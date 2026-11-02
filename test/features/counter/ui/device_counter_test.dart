@@ -86,6 +86,29 @@ void main() {
     expect(repo.stored, _state(count: 3, total: 3));
   });
 
+  testWidgets('taps while a save is still running are all counted', (
+    tester,
+  ) async {
+    // VERIFY round 1, G-1: on a device the save takes real time; taps that
+    // arrive meanwhile must neither be dropped nor reordered.
+    final repo = FakeCounterRepository()..holdSave = Completer<void>();
+    await tester.pumpWidget(testApp(tester, repo: repo));
+    await tester.pump();
+
+    await tester.tap(_button);
+    await tester.tap(_button);
+    await tester.tap(_button);
+    await tester.pump();
+
+    expect(_text(tester, _value), '3');
+    expect(_text(tester, _total), 'Toplam 3');
+    expect(repo.saves.map((s) => s.total), [1, 2, 3]);
+
+    repo.holdSave!.complete();
+    await tester.pump();
+    expect(repo.stored, _state(count: 3, total: 3));
+  });
+
   testWidgets('tapping the device body does not count', (tester) async {
     final repo = await _pump(tester, CounterState.initial);
 

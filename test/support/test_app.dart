@@ -47,6 +47,9 @@ class FakeCounterRepository implements CounterRepository {
   /// When set, [load] waits for it, so the loading state stays visible.
   Completer<void>? holdLoad;
 
+  /// When set, each [save] stays in flight until it completes (a slow disk).
+  Completer<void>? holdSave;
+
   final List<CounterState> saves = [];
 
   @override
@@ -62,6 +65,7 @@ class FakeCounterRepository implements CounterRepository {
   Future<Result<void>> save(CounterState state) async {
     saves.add(state);
     stored = state;
+    await holdSave?.future;
     return const Ok(null);
   }
 }
