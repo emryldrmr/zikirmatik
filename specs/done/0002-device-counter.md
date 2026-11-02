@@ -1,6 +1,6 @@
 # Spec 0002 — Cihaz sayaç ekranı
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0002-plan.md`
 - Self-critique: done
@@ -75,29 +75,50 @@ Uygulama hiçbir hazır dini metin göstermez; iş hassas alanın dışındadır
 - Split: proposed 0002 cihaz sayaç ekranı → 0003 Zikirlerim → 0004 Görünüm ve Ayarlar; emryldrmr, 2026-11-02.
 
 ## Acceptance criteria
-- [ ] AC-1 — Zikirlerim ekranında cihaz gösterilir: LCD sayımı, hedef/tur satırı, toplam, "geri al", "sıfırla" ve büyük sayma butonu; ilk açılışta hedef yok, sayım 0, toplam 0.
-- [ ] AC-2 — Sayma butonuna 3 dokunuş (hızlı ardışık dahil) sayımı ve toplamı 3 artırır; cihazın buton dışındaki bir yerine dokunmak hiçbir şeyi değiştirmez.
-- [ ] AC-3 — Hedef seçimi: "Hedef yok", 33, 99, 100 seçilebilir; "Özel…" ile 1 ve 100000 kabul edilir; 0, 100001, boş ve sayı olmayan giriş reddedilir ("1 ile 100.000 arasında bir sayı girin.") ve hedef değişmez.
-- [ ] AC-4 — Hedef 33 iken sayım 32'den sonraki dokunuşta: titreşim tam bir kez tetiklenir, tur 1 artar, sayım 0 olur, toplam 1 artar; hedefsizken 33. dokunuşta titreşim olmaz ve sayım 33 olur.
-- [ ] AC-5 — Geri al: sayım ve toplam 1 azalır; sayım 0 iken (tur tamamlandıktan hemen sonra dahil) hiçbir değer değişmez ve buton devre dışıdır.
-- [ ] AC-6 — Sıfırla: onay penceresi açılır; "Sıfırla" sayımı ve turu 0 yapar, toplamı ve hedefi korur; "Vazgeç" hiçbir şeyi değiştirmez.
-- [ ] AC-7 — Sayım veya tur 0'dan büyükken hedef değişikliği onay ister; "Değiştir" yeni hedefi uygular, sayım ve turu 0 yapar, toplamı korur; "Vazgeç" hedefi ve değerleri değiştirmez. Sayım ve tur 0 iken onay sorulmaz.
-- [ ] AC-8 — Sayım, tur, toplam ve hedef uygulama yeniden başlatılınca (aynı kalıcı depoyla) aynen görünür; spec 0001'den kalan sayım N ise ilk açılışta sayım N, toplam N, hedef yok, tur 0'dır.
-- [ ] AC-9 — Yükleniyor ve hata durumlarında cihaz yerine spec 0001'deki gösterge/mesaj görünür ve hiçbir sayaç değeri değişmez.
-- [ ] AC-10 — Erişilebilirlik: sayma butonu "Sayım n. Saymak için dokunun.", geri al "Geri al", sıfırla "Sıfırla", hedef "Hedef: 33" / "Hedef: yok" etiketini taşır; her dokunma hedefi en az 48×48 dp; toplam Türkçe binlik ayırıcıyla gösterilir (1250 → "1.250").
+- [x] AC-1 — Zikirlerim ekranında cihaz gösterilir: LCD sayımı, hedef/tur satırı, toplam, "geri al", "sıfırla" ve büyük sayma butonu; ilk açılışta hedef yok, sayım 0, toplam 0.
+- [x] AC-2 — Sayma butonuna 3 dokunuş (hızlı ardışık dahil) sayımı ve toplamı 3 artırır; cihazın buton dışındaki bir yerine dokunmak hiçbir şeyi değiştirmez.
+- [x] AC-3 — Hedef seçimi: "Hedef yok", 33, 99, 100 seçilebilir; "Özel…" ile 1 ve 100000 kabul edilir; 0, 100001, boş ve sayı olmayan giriş reddedilir ("1 ile 100.000 arasında bir sayı girin.") ve hedef değişmez.
+- [x] AC-4 — Hedef 33 iken sayım 32'den sonraki dokunuşta: titreşim tam bir kez tetiklenir, tur 1 artar, sayım 0 olur, toplam 1 artar; hedefsizken 33. dokunuşta titreşim olmaz ve sayım 33 olur.
+- [x] AC-5 — Geri al: sayım ve toplam 1 azalır; sayım 0 iken (tur tamamlandıktan hemen sonra dahil) hiçbir değer değişmez ve buton devre dışıdır.
+- [x] AC-6 — Sıfırla: onay penceresi açılır; "Sıfırla" sayımı ve turu 0 yapar, toplamı ve hedefi korur; "Vazgeç" hiçbir şeyi değiştirmez.
+- [x] AC-7 — Sayım veya tur 0'dan büyükken hedef değişikliği onay ister; "Değiştir" yeni hedefi uygular, sayım ve turu 0 yapar, toplamı korur; "Vazgeç" hedefi ve değerleri değiştirmez. Sayım ve tur 0 iken onay sorulmaz.
+- [x] AC-8 — Sayım, tur, toplam ve hedef uygulama yeniden başlatılınca (aynı kalıcı depoyla) aynen görünür; spec 0001'den kalan sayım N ise ilk açılışta sayım N, toplam N, hedef yok, tur 0'dır.
+- [x] AC-9 — Yükleniyor ve hata durumlarında cihaz yerine spec 0001'deki gösterge/mesaj görünür ve hiçbir sayaç değeri değişmez.
+- [x] AC-10 — Erişilebilirlik: sayma butonu "Sayım n. Saymak için dokunun.", geri al "Geri al", sıfırla "Sıfırla", hedef "Hedef: 33" / "Hedef: yok" etiketini taşır; her dokunma hedefi en az 48×48 dp; toplam Türkçe binlik ayırıcıyla gösterilir (1250 → "1.250").
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 0 |
+| Fix rounds | 2 (fix-1: F-1, F-2, F-4; fix-2: I-1, I-2, G-1) |
+| Review findings: real / noise / deferred | 6 / 1 / 0 (1 Medium, 2 Low, 4 Info incl. VERIFY gap G-1) |
+| Regressions introduced | 0 |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+Independent VERIFY (QA subagent), 2026-11-02: full VERIFY @c337784 plus a narrow VERIFY of fix-2.
+Full green: CHECK GREEN (full, 6 steps, 233 s) @8dc082d — https://github.com/emryldrmr/zikirmatik/actions/runs/41501290295
+(68 tests; attempt 1 failed on a corrupt NDK download, only the failed job rerun — R-03). Deliberate breaks
+B1–B10 outside the repo; each turned its mapped test red (B9 after fix-2).
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `device_counter_test.dart` — `shows the device with no target, count 0, total 0`; `drift_counter_repository_test.dart` — `load returns the initial state when nothing is stored`; S-3 | PASS |
+| AC-2 | `device_counter_test.dart` — `button taps count, rapid taps included`, `taps while a save is still running are all counted`, `tapping the device body does not count`; `counter_state_test.dart` — `tap adds one to count and total`; breaks B8, B9 | PASS |
+| AC-3 | `device_counter_test.dart` — `preset targets can be chosen`, `custom target accepts bounds and rejects invalid input`; `target_test.dart` — `parse accepts 1 and 100000`, `parse rejects 0, 100001, empty and non-numbers`; breaks B1–B4; S-8…S-11 | PASS |
+| AC-4 | `device_counter_test.dart` — `reaching the target vibrates once and completes a round`, `without a target no round and no vibration`, `a failing vibration does not stop counting or saving`; `counter_state_test.dart` — `tap at target completes a round`; breaks B5, B6; S-6 | PASS |
+| AC-5 | `device_counter_test.dart` — `undo decrements and is disabled at zero`, `undo right after a completed round does nothing`; `counter_state_test.dart` — `undo at zero changes nothing, also right after a round`; S-3, S-6 | PASS |
+| AC-6 | `device_counter_test.dart` — `reset asks and keeps total and target`, `reset cancel changes nothing`; S-7, S-13 | PASS |
+| AC-7 | `device_counter_test.dart` — `target change asks when progress exists`, `target change asks when only rounds exist`, `target change cancel keeps everything`, `target change at zero does not ask`; `counter_state_test.dart` — `changeTarget clears count and rounds, keeps total`; S-12 | PASS |
+| AC-8 | `drift_counter_repository_test.dart` — `state survives reopening the database`, `migrates a v1 count to count and total`; `device_counter_test.dart` — `restart shows persisted state`, `a tap during a slow vibration is stored in order`; breaks B7, B10 | PASS |
+| AC-9 | `device_counter_test.dart` — `loading and error show no device and change nothing`; `counter_screen_test.dart` — `loading hides count and ignores taps`, `error shows message without details and ignores taps`; S-1, S-2 | PASS |
+| AC-10 | `device_counter_test.dart` — `semantics labels and touch targets`, `total uses Turkish thousands separator`; `counter_screen_test.dart` — `semantics labels`; S-4, S-5 | PASS |
+
+UI: S-1…S-13 agent-captured, judged by emryldrmr at SHIP, 2026-11-02 (images outside the repo, deleted after ship). Count button stays a plain circle (no "●"), accepted at SHIP.
