@@ -462,7 +462,7 @@ void main() {
       expect(size.height, greaterThanOrEqualTo(48), reason: '$f');
     }
     // Review round 1, I-5: the form buttons too.
-    Future<void> expectMinSize(Finder f) async {
+    void expectMinSize(Finder f) {
       final size = tester.getSize(f);
       expect(size.width, greaterThanOrEqualTo(48), reason: '$f');
       expect(size.height, greaterThanOrEqualTo(48), reason: '$f');
@@ -470,14 +470,16 @@ void main() {
 
     await tester.tap(find.byKey(const Key('dhikr-add')));
     await tester.pumpAndSettle();
-    await expectMinSize(_save);
-    await expectMinSize(find.byKey(const Key('dhikr-cancel')));
+    expectMinSize(_save);
+    expectMinSize(find.byKey(const Key('dhikr-cancel')));
     await tester.tap(find.byKey(const Key('dhikr-cancel')));
     await tester.pumpAndSettle();
+    // N-2: a cancelled add keeps the picker open.
+    expect(find.byKey(const Key('dhikr-picker')), findsOneWidget);
     await tester.tap(find.byKey(const Key('dhikr-edit-1')));
     await tester.pumpAndSettle();
-    await expectMinSize(find.byKey(const Key('dhikr-delete')));
-    await expectMinSize(_save);
+    expectMinSize(find.byKey(const Key('dhikr-delete')));
+    expectMinSize(_save);
     await tester.tap(find.byKey(const Key('dhikr-cancel')));
     await tester.pumpAndSettle();
     semantics.dispose();
