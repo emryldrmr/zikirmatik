@@ -7,11 +7,12 @@ import 'confirm_dialog.dart';
 import 'dhikr_form.dart';
 import 'dhikr_list_controller.dart';
 
-/// Opens the add form and stores the new dhikr (AC-3, AC-7).
-Future<void> addDhikr(BuildContext context, WidgetRef ref) async {
+/// Opens the add form and stores the new dhikr (AC-3, AC-7). True when a
+/// dhikr was added (it is then selected).
+Future<bool> addDhikr(BuildContext context, WidgetRef ref) async {
   final created = await showAddDhikrForm(context);
-  if (created == null) return;
-  await ref
+  if (created == null) return false;
+  return ref
       .read(dhikrListControllerProvider.notifier)
       .add(created.name, created.target);
 }
@@ -96,7 +97,12 @@ class _DhikrPickerSheet extends ConsumerWidget {
               key: const Key('dhikr-add'),
               leading: const Icon(Icons.add),
               title: Text(l10n.newDhikr),
-              onTap: () => addDhikr(context, ref),
+              onTap: () async {
+                // Like selecting a row: the new dhikr is selected, so the
+                // sheet closes and the device is ready to count (spec Flow).
+                final added = await addDhikr(context, ref);
+                if (added && context.mounted) Navigator.of(context).pop();
+              },
             ),
           ],
         ),
