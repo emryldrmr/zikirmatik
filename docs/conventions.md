@@ -61,6 +61,9 @@
   fontu yükle — from bootstrap 2026-11-02.
 - Platform kanalları testte sessizce çalışmaz/patlar (`HapticFeedback`) — titreşimi enjekte edilen
   `Haptics` arayüzü üzerinden çağır, testte sahtesiyle doğrula — from bootstrap 2026-11-02.
+- Dokunuş yolunda kayıttan önce platform çağrısı (titreşim vb.) beklenir; beklerken gelen dokunuşun
+  kaydı eskisiyle ezilir — kaydı dokunuş sırasıyla hemen başlat, platform çağrısını beklemeden
+  (`unawaited`) ve hatasını yutarak yap — from spec 0002 review round 1, F-1 (A-2).
 
 ## Enforced by tooling
 - `flutter analyze --fatal-infos --fatal-warnings` + `flutter_lints` ve ek kurallar

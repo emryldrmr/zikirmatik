@@ -185,6 +185,46 @@ void main() {
     expect(_text(tester, _value), '1');
   });
 
+  testWidgets('a tap during a slow vibration is stored in order', (
+    tester,
+  ) async {
+    // Review round 1, F-1: the round's save must not wait for the vibration.
+    final haptics = FakeHaptics()..hold = Completer<void>();
+    final repo = await _pump(
+      tester,
+      _state(count: 32, total: 32, target: 33),
+      haptics: haptics,
+    );
+
+    await tester.tap(_button); // completes the round; vibration still running
+    await tester.tap(_button); // the next tap
+    await tester.pump();
+    haptics.hold!.complete();
+    await tester.pump();
+
+    expect(_text(tester, _value), '1');
+    expect(repo.stored, _state(count: 1, rounds: 1, total: 34, target: 33));
+    expect(repo.saves.map((s) => s.total), [33, 34]);
+  });
+
+  testWidgets('a failing vibration does not stop counting or saving', (
+    tester,
+  ) async {
+    final haptics = FakeHaptics()..fail = true;
+    final repo = await _pump(
+      tester,
+      _state(count: 32, total: 32, target: 33),
+      haptics: haptics,
+    );
+
+    await tester.tap(_button);
+    await tester.pump();
+
+    expect(haptics.roundsCompleted, 1);
+    expect(_targetText(tester), 'Hedef 33 · Tur 1');
+    expect(repo.stored, _state(rounds: 1, total: 33, target: 33));
+  });
+
   testWidgets('without a target no round and no vibration', (tester) async {
     final haptics = FakeHaptics();
     await _pump(tester, _state(count: 32, total: 32), haptics: haptics);

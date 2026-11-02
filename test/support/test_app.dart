@@ -70,6 +70,16 @@ class FakeCounterRepository implements CounterRepository {
 class FakeHaptics implements Haptics {
   int roundsCompleted = 0;
 
+  /// When set, each vibration waits for it (a slow platform channel).
+  Completer<void>? hold;
+
+  /// When true, each vibration fails after being counted.
+  bool fail = false;
+
   @override
-  Future<void> roundCompleted() async => roundsCompleted++;
+  Future<void> roundCompleted() async {
+    roundsCompleted++;
+    await hold?.future;
+    if (fail) throw StateError('vibrator unavailable');
+  }
 }

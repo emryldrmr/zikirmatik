@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/haptics.dart';
@@ -32,16 +34,27 @@ class CounterController extends AsyncNotifier<CounterState> {
   };
 
   /// BR-3, BR-4: one tap; vibrates once when it completes a round.
-  /// The state is updated synchronously, so rapid taps are all counted.
+  ///
+  /// The state is updated and its save is issued synchronously, in tap order,
+  /// so rapid taps are all counted and stored in order (BR-8). The vibration
+  /// is never awaited before the save (docs/conventions.md, Known traps).
   Future<void> tap() async {
     final current = _current;
     if (current == null) return;
     final outcome = current.tap();
     state = AsyncData(outcome.state);
-    if (outcome.roundCompleted) {
+    final saved = _save(outcome.state);
+    if (outcome.roundCompleted) unawaited(_vibrate());
+    await saved;
+  }
+
+  /// A failed vibration never affects counting.
+  Future<void> _vibrate() async {
+    try {
       await ref.read(hapticsProvider).roundCompleted();
+    } on Object catch (_) {
+      // Haptics are best effort.
     }
-    await _save(outcome.state);
   }
 
   /// BR-5.
