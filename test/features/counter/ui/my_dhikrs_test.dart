@@ -158,8 +158,8 @@ void main() {
       expect(_saveEnabled(tester), isTrue);
       await tester.tap(_save);
       await tester.pumpAndSettle();
-      await tester.tapAt(const Offset(5, 5)); // close the picker
-      await tester.pumpAndSettle();
+      // F-2: a successful add closes the picker; the device is ready.
+      expect(find.byKey(const Key('dhikr-picker')), findsNothing);
 
       expect(_text(tester, _name), 'Sabah');
       expect(_text(tester, _value), '0');
@@ -171,8 +171,6 @@ void main() {
 
       // 1 and 50 characters are accepted; an empty target means no target.
       await _addViaPicker(tester, 'a');
-      await tester.tapAt(const Offset(5, 5));
-      await tester.pumpAndSettle();
       expect(_text(tester, _name), 'a');
       expect(_targetText(tester), 'Hedef yok');
       await _addViaPicker(tester, 'b' * 50);
@@ -218,6 +216,30 @@ void main() {
 
     expect(store.stateOf(2), _state(total: 8));
     expect(store.stateOf(1), _state(count: 5, total: 20));
+  });
+
+  testWidgets('target change affects only the selected dhikr', (tester) async {
+    // Review round 1, F-1: the target part of AC-4.
+    final store = FakeDhikrStore([
+      ('Zikir', _state(count: 5, total: 20, target: 33)),
+      ('Sabah', _state(count: 7, total: 7)),
+    ], selectedId: 2);
+    await _start(tester, store);
+
+    await tester.tap(_targetButton);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('target-option-99')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('confirm-ok'))); // Sabah has progress
+    await tester.pumpAndSettle();
+
+    expect(_targetText(tester), 'Hedef 99 · Tur 0');
+    expect(store.stateOf(2), _state(total: 7, target: 99));
+    expect(store.stateOf(1), _state(count: 5, total: 20, target: 33));
+
+    await _choose(tester, 1);
+    expect(_targetText(tester), 'Hedef 33 · Tur 0');
+    expect(_text(tester, _value), '5');
   });
 
   testWidgets('renaming keeps the values', (tester) async {
@@ -329,6 +351,9 @@ void main() {
       expect(_device, findsNothing);
       expect(_pickerButton, findsNothing);
       expect(store.selectedId, isNull);
+      final emptyAdd = tester.getSize(find.byKey(const Key('dhikr-empty-add')));
+      expect(emptyAdd.width, greaterThanOrEqualTo(48)); // I-5
+      expect(emptyAdd.height, greaterThanOrEqualTo(48));
 
       await tester.tap(find.byKey(const Key('dhikr-empty-add')));
       await tester.pumpAndSettle();
@@ -348,8 +373,6 @@ void main() {
     final store = FakeDhikrStore([('Zikir', CounterState.initial)]);
     await _start(tester, store);
     await _addViaPicker(tester, 'Sabah', target: '99');
-    await tester.tapAt(const Offset(5, 5));
-    await tester.pumpAndSettle();
     await tester.tap(_button);
     await tester.pump();
 
@@ -371,11 +394,10 @@ void main() {
     await _start(tester, store);
     await _addViaPicker(tester, 'Zikir');
 
-    expect(_rowTitles(tester), ['Zikir', 'Zikir', 'Zikir']);
-    await tester.tapAt(const Offset(5, 5));
-    await tester.pumpAndSettle();
     await tester.tap(_button);
     await tester.pump();
+    await _openPicker(tester);
+    expect(_rowTitles(tester), ['Zikir', 'Zikir', 'Zikir']);
     expect(store.stateOf(3), _state(count: 1, total: 1));
     expect(store.stateOf(1), _state(count: 3, total: 3));
     expect(store.stateOf(2), _state(count: 8, total: 8));
@@ -439,6 +461,25 @@ void main() {
       expect(size.width, greaterThanOrEqualTo(48), reason: '$f');
       expect(size.height, greaterThanOrEqualTo(48), reason: '$f');
     }
+    // Review round 1, I-5: the form buttons too.
+    Future<void> expectMinSize(Finder f) async {
+      final size = tester.getSize(f);
+      expect(size.width, greaterThanOrEqualTo(48), reason: '$f');
+      expect(size.height, greaterThanOrEqualTo(48), reason: '$f');
+    }
+
+    await tester.tap(find.byKey(const Key('dhikr-add')));
+    await tester.pumpAndSettle();
+    await expectMinSize(_save);
+    await expectMinSize(find.byKey(const Key('dhikr-cancel')));
+    await tester.tap(find.byKey(const Key('dhikr-cancel')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dhikr-edit-1')));
+    await tester.pumpAndSettle();
+    await expectMinSize(find.byKey(const Key('dhikr-delete')));
+    await expectMinSize(_save);
+    await tester.tap(find.byKey(const Key('dhikr-cancel')));
+    await tester.pumpAndSettle();
     semantics.dispose();
   });
 }
