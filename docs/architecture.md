@@ -17,8 +17,8 @@ sınırlar, saf Dart'ta hızlı test edilen iş kuralları ve tek dosyada izole 
 
 | Module | Single responsibility | Owns |
 |---|---|---|
-| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema, DI kökü (Riverpod `ProviderScope`) | Gezinme yapısı, tema |
-| `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure`, `Clock`, `Haptics` arayüzü, veritabanı açılışı | Ortak tipler |
+| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
+| `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure` (`StorageFailure`, `ValidationFailure`), `Haptics` arayüzü + `hapticsProvider`; `Clock` ilk ihtiyaç duyan spec'te eklenir | Ortak tipler |
 | `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8; tesbihat modu (BR-13); tam ekran dokunma alanı, ses tuşuyla sayma, sayaç ekranında ekranı açık tutma | Kullanıcının zikirleri, sayım, tur, toplam; tesbihat dizileri ve ilerlemesi |
 | `lib/features/suggested/` | Önerilen Zikirler listesi (gömülü veri), BR-9 | Önerilen zikir içeriği |
 | `lib/features/esma/` | Esmaü'l-Hüsna listesi (gömülü veri), BR-9 | 99 isim içeriği |

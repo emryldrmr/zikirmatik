@@ -16,5 +16,19 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'zikirmatik'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        // Spec 0002: rounds, total and target. The count kept from spec 0001
+        // becomes the starting total (spec 0002, G6).
+        await m.addColumn(counters, counters.rounds);
+        await m.addColumn(counters, counters.total);
+        await m.addColumn(counters, counters.target);
+        await customStatement('UPDATE counters SET total = count');
+      }
+    },
+  );
 }

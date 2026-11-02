@@ -15,5 +15,37 @@
     "placeholders": {
       "count": {"type": "int"}
     }
-  }
+  },
+  "targetNone": "Hedef yok",
+  "targetAndRound": "Hedef {target} · Tur {rounds}",
+  "@targetAndRound": {
+    "placeholders": {
+      "target": {"type": "String"},
+      "rounds": {"type": "String"}
+    }
+  },
+  "targetSemanticsNone": "Hedef: yok",
+  "targetSemantics": "Hedef: {target}",
+  "@targetSemantics": {
+    "placeholders": {
+      "target": {"type": "String"}
+    }
+  },
+  "totalLabel": "Toplam {total}",
+  "@totalLabel": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "undo": "Geri al",
+  "reset": "Sıfırla",
+  "cancel": "Vazgeç",
+  "resetConfirmMessage": "Sayaç sıfırlansın mı?",
+  "targetPickerTitle": "Hedef",
+  "targetCustom": "Özel…",
+  "customTargetTitle": "Özel hedef",
+  "customTargetInvalid": "1 ile 100.000 arasında bir sayı girin.",
+  "save": "Kaydet",
+  "targetChangeConfirmMessage": "Hedef değişirse sayım ve tur sıfırlanır.",
+  "targetChangeConfirm": "Değiştir"
 }

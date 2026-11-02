@@ -27,8 +27,42 @@ class $CountersTable extends Counters with TableInfo<$CountersTable, Counter> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _roundsMeta = const VerificationMeta('rounds');
   @override
-  List<GeneratedColumn> get $columns => [id, count];
+  late final GeneratedColumn<int> rounds = GeneratedColumn<int>(
+    'rounds',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('rounds >= 0'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  @override
+  late final GeneratedColumn<int> total = GeneratedColumn<int>(
+    'total',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('total >= 0'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<int> target = GeneratedColumn<int>(
+    'target',
+    aliasedName,
+    true,
+    check: () => const CustomExpression<bool>(
+      'target IS NULL OR target BETWEEN 1 AND 100000',
+    ),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, count, rounds, total, target];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -52,6 +86,24 @@ class $CountersTable extends Counters with TableInfo<$CountersTable, Counter> {
     } else if (isInserting) {
       context.missing(_countMeta);
     }
+    if (data.containsKey('rounds')) {
+      context.handle(
+        _roundsMeta,
+        rounds.isAcceptableOrUnknown(data['rounds']!, _roundsMeta),
+      );
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    }
     return context;
   }
 
@@ -69,6 +121,18 @@ class $CountersTable extends Counters with TableInfo<$CountersTable, Counter> {
         DriftSqlType.int,
         data['${effectivePrefix}count'],
       )!,
+      rounds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rounds'],
+      )!,
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total'],
+      )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target'],
+      ),
     );
   }
 
@@ -81,17 +145,39 @@ class $CountersTable extends Counters with TableInfo<$CountersTable, Counter> {
 class Counter extends DataClass implements Insertable<Counter> {
   final int id;
   final int count;
-  const Counter({required this.id, required this.count});
+  final int rounds;
+  final int total;
+  final int? target;
+  const Counter({
+    required this.id,
+    required this.count,
+    required this.rounds,
+    required this.total,
+    this.target,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['count'] = Variable<int>(count);
+    map['rounds'] = Variable<int>(rounds);
+    map['total'] = Variable<int>(total);
+    if (!nullToAbsent || target != null) {
+      map['target'] = Variable<int>(target);
+    }
     return map;
   }
 
   CountersCompanion toCompanion(bool nullToAbsent) {
-    return CountersCompanion(id: Value(id), count: Value(count));
+    return CountersCompanion(
+      id: Value(id),
+      count: Value(count),
+      rounds: Value(rounds),
+      total: Value(total),
+      target: target == null && nullToAbsent
+          ? const Value.absent()
+          : Value(target),
+    );
   }
 
   factory Counter.fromJson(
@@ -102,6 +188,9 @@ class Counter extends DataClass implements Insertable<Counter> {
     return Counter(
       id: serializer.fromJson<int>(json['id']),
       count: serializer.fromJson<int>(json['count']),
+      rounds: serializer.fromJson<int>(json['rounds']),
+      total: serializer.fromJson<int>(json['total']),
+      target: serializer.fromJson<int?>(json['target']),
     );
   }
   @override
@@ -110,15 +199,32 @@ class Counter extends DataClass implements Insertable<Counter> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'count': serializer.toJson<int>(count),
+      'rounds': serializer.toJson<int>(rounds),
+      'total': serializer.toJson<int>(total),
+      'target': serializer.toJson<int?>(target),
     };
   }
 
-  Counter copyWith({int? id, int? count}) =>
-      Counter(id: id ?? this.id, count: count ?? this.count);
+  Counter copyWith({
+    int? id,
+    int? count,
+    int? rounds,
+    int? total,
+    Value<int?> target = const Value.absent(),
+  }) => Counter(
+    id: id ?? this.id,
+    count: count ?? this.count,
+    rounds: rounds ?? this.rounds,
+    total: total ?? this.total,
+    target: target.present ? target.value : this.target,
+  );
   Counter copyWithCompanion(CountersCompanion data) {
     return Counter(
       id: data.id.present ? data.id.value : this.id,
       count: data.count.present ? data.count.value : this.count,
+      rounds: data.rounds.present ? data.rounds.value : this.rounds,
+      total: data.total.present ? data.total.value : this.total,
+      target: data.target.present ? data.target.value : this.target,
     );
   }
 
@@ -126,40 +232,77 @@ class Counter extends DataClass implements Insertable<Counter> {
   String toString() {
     return (StringBuffer('Counter(')
           ..write('id: $id, ')
-          ..write('count: $count')
+          ..write('count: $count, ')
+          ..write('rounds: $rounds, ')
+          ..write('total: $total, ')
+          ..write('target: $target')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, count);
+  int get hashCode => Object.hash(id, count, rounds, total, target);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Counter && other.id == this.id && other.count == this.count);
+      (other is Counter &&
+          other.id == this.id &&
+          other.count == this.count &&
+          other.rounds == this.rounds &&
+          other.total == this.total &&
+          other.target == this.target);
 }
 
 class CountersCompanion extends UpdateCompanion<Counter> {
   final Value<int> id;
   final Value<int> count;
+  final Value<int> rounds;
+  final Value<int> total;
+  final Value<int?> target;
   const CountersCompanion({
     this.id = const Value.absent(),
     this.count = const Value.absent(),
+    this.rounds = const Value.absent(),
+    this.total = const Value.absent(),
+    this.target = const Value.absent(),
   });
-  CountersCompanion.insert({this.id = const Value.absent(), required int count})
-    : count = Value(count);
+  CountersCompanion.insert({
+    this.id = const Value.absent(),
+    required int count,
+    this.rounds = const Value.absent(),
+    this.total = const Value.absent(),
+    this.target = const Value.absent(),
+  }) : count = Value(count);
   static Insertable<Counter> custom({
     Expression<int>? id,
     Expression<int>? count,
+    Expression<int>? rounds,
+    Expression<int>? total,
+    Expression<int>? target,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (count != null) 'count': count,
+      if (rounds != null) 'rounds': rounds,
+      if (total != null) 'total': total,
+      if (target != null) 'target': target,
     });
   }
 
-  CountersCompanion copyWith({Value<int>? id, Value<int>? count}) {
-    return CountersCompanion(id: id ?? this.id, count: count ?? this.count);
+  CountersCompanion copyWith({
+    Value<int>? id,
+    Value<int>? count,
+    Value<int>? rounds,
+    Value<int>? total,
+    Value<int?>? target,
+  }) {
+    return CountersCompanion(
+      id: id ?? this.id,
+      count: count ?? this.count,
+      rounds: rounds ?? this.rounds,
+      total: total ?? this.total,
+      target: target ?? this.target,
+    );
   }
 
   @override
@@ -171,6 +314,15 @@ class CountersCompanion extends UpdateCompanion<Counter> {
     if (count.present) {
       map['count'] = Variable<int>(count.value);
     }
+    if (rounds.present) {
+      map['rounds'] = Variable<int>(rounds.value);
+    }
+    if (total.present) {
+      map['total'] = Variable<int>(total.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<int>(target.value);
+    }
     return map;
   }
 
@@ -178,7 +330,10 @@ class CountersCompanion extends UpdateCompanion<Counter> {
   String toString() {
     return (StringBuffer('CountersCompanion(')
           ..write('id: $id, ')
-          ..write('count: $count')
+          ..write('count: $count, ')
+          ..write('rounds: $rounds, ')
+          ..write('total: $total, ')
+          ..write('target: $target')
           ..write(')'))
         .toString();
   }
@@ -196,9 +351,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 }
 
 typedef $$CountersTableCreateCompanionBuilder =
-    CountersCompanion Function({Value<int> id, required int count});
+    CountersCompanion Function({
+      Value<int> id,
+      required int count,
+      Value<int> rounds,
+      Value<int> total,
+      Value<int?> target,
+    });
 typedef $$CountersTableUpdateCompanionBuilder =
-    CountersCompanion Function({Value<int> id, Value<int> count});
+    CountersCompanion Function({
+      Value<int> id,
+      Value<int> count,
+      Value<int> rounds,
+      Value<int> total,
+      Value<int?> target,
+    });
 
 class $$CountersTableFilterComposer
     extends Composer<_$AppDatabase, $CountersTable> {
@@ -216,6 +383,21 @@ class $$CountersTableFilterComposer
 
   ColumnFilters<int> get count => $composableBuilder(
     column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rounds => $composableBuilder(
+    column: $table.rounds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get target => $composableBuilder(
+    column: $table.target,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -238,6 +420,21 @@ class $$CountersTableOrderingComposer
     column: $table.count,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rounds => $composableBuilder(
+    column: $table.rounds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CountersTableAnnotationComposer
@@ -254,6 +451,15 @@ class $$CountersTableAnnotationComposer
 
   GeneratedColumn<int> get count =>
       $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<int> get rounds =>
+      $composableBuilder(column: $table.rounds, builder: (column) => column);
+
+  GeneratedColumn<int> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
+
+  GeneratedColumn<int> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
 }
 
 class $$CountersTableTableManager
@@ -286,10 +492,30 @@ class $$CountersTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<int> count = const Value.absent(),
-              }) => CountersCompanion(id: id, count: count),
+                Value<int> rounds = const Value.absent(),
+                Value<int> total = const Value.absent(),
+                Value<int?> target = const Value.absent(),
+              }) => CountersCompanion(
+                id: id,
+                count: count,
+                rounds: rounds,
+                total: total,
+                target: target,
+              ),
           createCompanionCallback:
-              ({Value<int> id = const Value.absent(), required int count}) =>
-                  CountersCompanion.insert(id: id, count: count),
+              ({
+                Value<int> id = const Value.absent(),
+                required int count,
+                Value<int> rounds = const Value.absent(),
+                Value<int> total = const Value.absent(),
+                Value<int?> target = const Value.absent(),
+              }) => CountersCompanion.insert(
+                id: id,
+                count: count,
+                rounds: rounds,
+                total: total,
+                target: target,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),

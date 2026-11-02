@@ -38,7 +38,11 @@ void main() {
     await tester.pump();
 
     expect(_shownCount(tester), '3');
-    expect(repo.saves.map((c) => c.value), [1, 2, 3]); // stored right away
+    expect(repo.saves.map((s) => s.count.value), [
+      1,
+      2,
+      3,
+    ]); // stored right away
   });
 
   testWidgets('restart shows persisted count', (tester) async {
