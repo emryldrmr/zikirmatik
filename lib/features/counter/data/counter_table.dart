@@ -19,7 +19,9 @@ class Counters extends Table {
       .check(const CustomExpression<bool>('total >= 0'))();
 
   IntColumn get target => integer().nullable().check(
-    const CustomExpression<bool>('target IS NULL OR target BETWEEN 1 AND 100000'),
+    const CustomExpression<bool>(
+      'target IS NULL OR target BETWEEN 1 AND 100000',
+    ),
   )();
 
   @override

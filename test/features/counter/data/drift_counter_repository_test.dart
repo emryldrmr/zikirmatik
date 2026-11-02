@@ -15,8 +15,7 @@ CounterState _loaded(Result<CounterState> result) => switch (result) {
   Err(:final failure) => fail('expected Ok, got $failure'),
 };
 
-CounterState _withCount(int n) =>
-    CounterState(count: DhikrCount(n), total: n);
+CounterState _withCount(int n) => CounterState(count: DhikrCount(n), total: n);
 
 void main() {
   // These tests open several AppDatabase instances on purpose, each on its own
@@ -120,7 +119,9 @@ void main() {
   });
 
   test('a cleared target is stored as no target', () async {
-    await repo.save(CounterState(count: DhikrCount.zero, target: Target.of(99)));
+    await repo.save(
+      CounterState(count: DhikrCount.zero, target: Target.of(99)),
+    );
     await repo.save(const CounterState(count: DhikrCount.zero, total: 3));
     expect(_loaded(await repo.load()).target, isNull);
   });
