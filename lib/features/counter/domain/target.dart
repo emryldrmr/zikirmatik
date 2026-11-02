@@ -24,9 +24,14 @@ final class Target {
     return Target._(value);
   }
 
-  /// A target from user input: an integer between [min] and [max] (BR-2).
+  static final _digits = RegExp(r'^[0-9]+$');
+
+  /// A target from user input: decimal digits only, between [min] and [max]
+  /// (BR-2). `int.tryParse` alone would also accept "0x21" and "+33"
+  /// (docs/conventions.md, Known traps).
   static Result<Target> parse(String input) {
-    final value = int.tryParse(input.trim());
+    final text = input.trim();
+    final value = _digits.hasMatch(text) ? int.tryParse(text) : null;
     if (value == null || value < min || value > max) {
       return Err(ValidationFailure(input));
     }

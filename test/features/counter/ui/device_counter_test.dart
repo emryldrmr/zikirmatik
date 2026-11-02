@@ -130,7 +130,7 @@ void main() {
     }
 
     await openCustom();
-    for (final bad in ['0', '100001', '', 'abc']) {
+    for (final bad in ['0', '100001', '', 'abc', '0x21', '+33']) {
       await tester.enterText(field, bad);
       await tester.pump();
       expect(

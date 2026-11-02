@@ -64,6 +64,9 @@
 - Dokunuş yolunda kayıttan önce platform çağrısı (titreşim vb.) beklenir; beklerken gelen dokunuşun
   kaydı eskisiyle ezilir — kaydı dokunuş sırasıyla hemen başlat, platform çağrısını beklemeden
   (`unawaited`) ve hatasını yutarak yap — from spec 0002 review round 1, F-1 (A-2).
+- Dart `int.tryParse` `0x21` (onaltılık), `+33` ve bazı başka biçimleri sayı kabul eder — kullanıcı
+  girişinde önce `^[0-9]+$` deseni kontrol edilir; alan filtresi (digitsOnly) kullanılmaz, çünkü
+  yapıştırılan `0x21`'i sessizce `021`'e (21) çevirir — from spec 0002 review round 1, F-2 (A-3).
 
 ## Enforced by tooling
 - `flutter analyze --fatal-infos --fatal-warnings` + `flutter_lints` ve ek kurallar

@@ -15,7 +15,21 @@ void main() {
   });
 
   test('parse rejects 0, 100001, empty and non-numbers', () {
-    for (final input in ['0', '100001', '', '   ', 'abc', '3.5', '-5', '1e3']) {
+    for (final input in [
+      '0',
+      '100001',
+      '',
+      '   ',
+      'abc',
+      '3.5',
+      '-5',
+      '1e3',
+      '0x21',
+      '0X186A0',
+      '+33',
+      '١٢',
+      '99999999999999999999',
+    ]) {
       expect(
         Target.parse(input),
         isA<Err<Target>>().having(
