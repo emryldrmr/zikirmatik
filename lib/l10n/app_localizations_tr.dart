@@ -42,4 +42,59 @@ class AppLocalizationsTr extends AppLocalizations {
   String counterSemantics(int count) {
     return 'Sayım $count. Saymak için dokunun.';
   }
+
+  @override
+  String get targetNone => 'Hedef yok';
+
+  @override
+  String targetAndRound(String target, String rounds) {
+    return 'Hedef $target · Tur $rounds';
+  }
+
+  @override
+  String get targetSemanticsNone => 'Hedef: yok';
+
+  @override
+  String targetSemantics(String target) {
+    return 'Hedef: $target';
+  }
+
+  @override
+  String totalLabel(String total) {
+    return 'Toplam $total';
+  }
+
+  @override
+  String get undo => 'Geri al';
+
+  @override
+  String get reset => 'Sıfırla';
+
+  @override
+  String get cancel => 'Vazgeç';
+
+  @override
+  String get resetConfirmMessage => 'Sayaç sıfırlansın mı?';
+
+  @override
+  String get targetPickerTitle => 'Hedef';
+
+  @override
+  String get targetCustom => 'Özel…';
+
+  @override
+  String get customTargetTitle => 'Özel hedef';
+
+  @override
+  String get customTargetInvalid => '1 ile 100.000 arasında bir sayı girin.';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String get targetChangeConfirmMessage =>
+      'Hedef değişirse sayım ve tur sıfırlanır.';
+
+  @override
+  String get targetChangeConfirm => 'Değiştir';
 }

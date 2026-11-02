@@ -1,18 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/haptics.dart';
 import '../../../core/result.dart';
-import '../domain/dhikr_count.dart';
+import '../domain/counter_state.dart';
+import '../domain/target.dart';
 import 'counter_providers.dart';
 
-/// Holds the counter's state: loading, error, or the current [DhikrCount].
+/// Holds the counter's state: loading, error, or the current [CounterState].
 ///
 /// Kept alive for the app's lifetime, so switching sections does not reset it.
 final counterControllerProvider =
-    AsyncNotifierProvider<CounterController, DhikrCount>(CounterController.new);
+    AsyncNotifierProvider<CounterController, CounterState>(
+      CounterController.new,
+    );
 
-class CounterController extends AsyncNotifier<DhikrCount> {
+class CounterController extends AsyncNotifier<CounterState> {
   @override
-  Future<DhikrCount> build() async {
+  Future<CounterState> build() async {
     final result = await ref.read(counterRepositoryProvider).load();
     return switch (result) {
       Ok(:final value) => value,
@@ -20,16 +24,46 @@ class CounterController extends AsyncNotifier<DhikrCount> {
     };
   }
 
-  /// BR-3: adds one and stores it right away (BR-8).
-  ///
-  /// Ignored while loading or after a load error (spec 0001, AC-4/AC-5).
+  /// The loaded state, or null while loading or after a load error — then
+  /// every action is ignored (spec 0001 AC-4/AC-5, spec 0002 AC-9).
+  CounterState? get _current => switch (state) {
+    AsyncData(:final value) => value,
+    _ => null,
+  };
+
+  /// BR-3, BR-4: one tap; vibrates once when it completes a round.
   /// The state is updated synchronously, so rapid taps are all counted.
-  Future<void> increment() async {
-    final current = state;
-    if (current is! AsyncData<DhikrCount>) return;
-    final next = current.value.increment();
-    state = AsyncData(next);
-    // Behaviour on a failed save is out of scope for spec 0001.
-    await ref.read(counterRepositoryProvider).save(next);
+  Future<void> tap() async {
+    final current = _current;
+    if (current == null) return;
+    final outcome = current.tap();
+    state = AsyncData(outcome.state);
+    if (outcome.roundCompleted) {
+      await ref.read(hapticsProvider).roundCompleted();
+    }
+    await _save(outcome.state);
   }
+
+  /// BR-5.
+  Future<void> undo() => _apply((s) => s.undo());
+
+  /// BR-7 (the confirmation of BR-6 is asked by the screen).
+  Future<void> reset() => _apply((s) => s.reset());
+
+  /// Spec 0002 G4 (the confirmation is asked by the screen).
+  Future<void> changeTarget(Target? target) =>
+      _apply((s) => s.changeTarget(target));
+
+  Future<void> _apply(CounterState Function(CounterState) rule) async {
+    final current = _current;
+    if (current == null) return;
+    final next = rule(current);
+    if (next == current) return;
+    state = AsyncData(next);
+    await _save(next);
+  }
+
+  // Behaviour on a failed save is out of scope (specs 0001, 0002).
+  Future<void> _save(CounterState next) =>
+      ref.read(counterRepositoryProvider).save(next);
 }

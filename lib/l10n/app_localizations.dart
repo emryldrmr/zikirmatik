@@ -159,6 +159,102 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Sayım {count}. Saymak için dokunun.'**
   String counterSemantics(int count);
+
+  /// No description provided for @targetNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef yok'**
+  String get targetNone;
+
+  /// No description provided for @targetAndRound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef {target} · Tur {rounds}'**
+  String targetAndRound(String target, String rounds);
+
+  /// No description provided for @targetSemanticsNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef: yok'**
+  String get targetSemanticsNone;
+
+  /// No description provided for @targetSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef: {target}'**
+  String targetSemantics(String target);
+
+  /// No description provided for @totalLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam {total}'**
+  String totalLabel(String total);
+
+  /// No description provided for @undo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri al'**
+  String get undo;
+
+  /// No description provided for @reset.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfırla'**
+  String get reset;
+
+  /// No description provided for @cancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get cancel;
+
+  /// No description provided for @resetConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayaç sıfırlansın mı?'**
+  String get resetConfirmMessage;
+
+  /// No description provided for @targetPickerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef'**
+  String get targetPickerTitle;
+
+  /// No description provided for @targetCustom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel…'**
+  String get targetCustom;
+
+  /// No description provided for @customTargetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel hedef'**
+  String get customTargetTitle;
+
+  /// No description provided for @customTargetInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'1 ile 100.000 arasında bir sayı girin.'**
+  String get customTargetInvalid;
+
+  /// No description provided for @save.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet'**
+  String get save;
+
+  /// No description provided for @targetChangeConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef değişirse sayım ve tur sıfırlanır.'**
+  String get targetChangeConfirmMessage;
+
+  /// No description provided for @targetChangeConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değiştir'**
+  String get targetChangeConfirm;
 }
 
 class _AppLocalizationsDelegate
