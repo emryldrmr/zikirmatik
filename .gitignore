@@ -14,3 +14,16 @@ Thumbs.db
 
 # Claude Code personal settings (shared settings.json IS committed after init)
 .claude/settings.local.json
+
+# Flutter / Dart
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+
+# Android — local paths and signing keys never committed (docs/security.md)
+android/local.properties
+android/key.properties
+*.jks
+*.keystore

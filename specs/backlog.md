@@ -13,3 +13,9 @@ step 7). Nothing lands here without that decision; noise is rejected in the tria
   — Recommendation: <the reviewer's action> — Deferred by: <name>, <YYYY-MM-DD>, <why>
   A decision deferred at bootstrap (its REPORT) uses Source: bootstrap <YYYY-MM-DD>.
 -->
+
+- **B-1** — Reklam (AdMob) eklenmesi ticari kullanım olur: önce meal lisansı yeniden değerlendirilmeli
+  (yayıncı izni veya serbest lisanslı meal), gizlilik maddesi (`docs/security.md`) ve izinler güncellenmeli;
+  ayrı spec, hassas alana dokunur — Source: bootstrap 2026-11-02 — Severity: Medium
+  — Recommendation: reklam kararı verildiğinde önce ADR 0002'yi yeniden aç, sonra spec yaz
+  — Deferred by: emryldrmr, 2026-11-02, uygulama şu an ücretsiz ve reklamsız; reklam yalnızca çok kullanılırsa

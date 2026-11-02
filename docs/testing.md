@@ -1,6 +1,6 @@
 # Testing
 
-> **Template — filled during bootstrap.**
+> Bootstrap 2026-11-02 ile dolduruldu (Frameworks & layout, What must be tested). Diğer bölümler ANEW kuralıdır.
 
 ## The contract
 - Every acceptance criterion maps to at least one test (criterion ↔ test map lives in the plan).
@@ -8,11 +8,44 @@
 - The whole suite runs inside `scripts/check` — one command, everywhere.
 
 ## Frameworks & layout
-<!-- Test framework(s), where tests live, naming pattern. -->
+- Çatı: `flutter_test` (birim + widget). **e2e yok** — `integration_test` kullanılmaz; emülatör
+  check'in parçası değildir.
+- Yerleşim: `test/` klasörü `lib/` yapısını aynalar; dosyalar `<name>_test.dart`. Mimari testleri
+  `test/architecture/`, veri bütünlüğü testleri `test/integrity/` altında.
+- Katmanlar:
+  - `domain` kuralları → saf Dart birim testleri.
+  - Repository'ler → bellek içi drift veritabanı (`NativeDatabase.memory()`), her test kendi
+    veritabanıyla başlar (Resource hygiene kural 5).
+  - AlQuran Cloud adaptörü → `package:http/testing.dart` `MockClient` ve repoda duran küçük örnek
+    JSON fixture'ları.
+  - Ekran durumları (boş / yükleniyor / hata / başarılı / çevrimdışı) → başsız widget testleri.
+- Hızlı/tam ayrımı: yavaş testler `@Tags(['slow'])` ile işaretlenir. Fast profil
+  `flutter test --exclude-tags slow`, full profil ek olarak `flutter test --tags slow` çalıştırır
+  (seçiciyle ayırma, Two speeds kural 4). Başlangıçta hiçbir test `slow` değildir.
+- **Determinism (bu yığında nasıl):**
+  - Saat `core`'daki `Clock` arayüzüyle enjekte edilir; testte sabit saat.
+  - Locale `tr` ve saat dilimi testte sabitlenir; rastgelelik kullanılmaz (gerekirse sabit seed).
+  - Animasyonlar: test kökünde `MediaQuery(disableAnimations: true)` ve uygulamanın
+    `AppConfig.reduceMotion` test anahtarı; `pumpAndSettle` yerine durum beklenir.
+  - **Testlerde gerçek ağ yasaktır:** HTTP istemcisi her zaman enjekte edilir; testte `MockClient`.
+    Gerçek ağa çıkan test kırmızıdır.
+  - Platform kanalları (`HapticFeedback` vb.) enjekte edilen arayüzlerin sahteleriyle değiştirilir.
+- UI ekran görüntüsü (Evidence for UI criteria): VERIFY oturumu, repo dışında geçici bir dizinde,
+  gerçek fontları (Amiri Quran + Roboto) yükleyen başsız bir widget-render betiğiyle her durumun PNG'sini
+  üretir; betik ve görüntüler repoya girmez, check'in parçası değildir.
+- Kapsama yüzdesi kapı değildir; yalnızca bilgi amaçlı.
 
 ## What must be tested
-<!-- e.g. every business rule (BR-n), every boundary/forbidden dependency; the e2e journeys and
-     budget, if the project has e2e at all (Test layers). -->
+- Her iş kuralı BR-1…BR-12 (`docs/domain.md`) en az bir testle.
+- Her yasak bağımlılık FD-1…FD-4 (`docs/architecture.md`) `test/architecture/` import-tarama testiyle.
+- **Hassas alan — dini metin bütünlüğü** (`test/integrity/`):
+  - Kur'an doğrulayıcısı: 114 sure, toplam 6236 ayet, her surenin ayet sayısı beklenen tabloyla aynı,
+    her ayetin meali aynı (sure, ayet) ile birebir hizalı; bunlardan biri bozuk olan fixture reddedilir
+    ve önbelleğe hiçbir şey yazılmaz (BR-11).
+  - Esmaü'l-Hüsna: tam 99 kayıt, sıra 1–99 kesintisiz, gömülü veri kaynak dosyayla birebir aynı.
+  - Önerilen zikirler: gömülü metin kaynağıyla birebir aynı; hedefler BR-2 aralığında.
+  - Gösterimde metin değişmez: ekrandaki metin depodaki metinle bayt düzeyinde eşit (BR-12).
+- e2e journeys: **yok**, bütçe 0.
 
 ## Test layers
 1. **The cheapest test that proves the criterion.** Unit first, then component or integration
