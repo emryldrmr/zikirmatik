@@ -45,7 +45,7 @@ spec'leriyle gelir; iskelet bu yüzden hassas alanın dışında kalır.
   metin kontrastı WCAG AA.
 
 ## Constraints & out of scope
-- Platform: Android, minSdk 23 (ADR 0001). Yığın ve paketler: `docs/conventions.md`.
+- Platform: Android, minSdk 24 (ADR 0001, ADR 0003). Revizyon 1 (2026-11-02, emryldrmr): 23 → 24, plan 0001 risk R3. Yığın ve paketler: `docs/conventions.md`.
 - Testlerde gerçek ağ yok; bu spec'te ağ erişimi de yok.
 - Sayımın üst sınırı yoktur (Dart 64-bit `int`). Her dokunuş hemen kalıcı kaydedilir. Hata durumunda "Tekrar dene" yoktur (sayaç spec'ine). Ekran yönü serbest, açık tema. Self-critique G1–G6: emryldrmr, 2026-11-02.
 - **Out of scope:** zikir adı ve birden çok zikir, hedef/tur (BR-2, BR-4), geri alma (BR-5),

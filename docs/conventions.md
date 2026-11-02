@@ -19,7 +19,7 @@
 - Flutter **3.41.x** (stable kanal), Dart **3.11.x** — bootstrap makinesinde 3.41.2 / 3.11.0.
   Kesin alt sınır walking skeleton'da `pubspec.yaml` `environment:` ve `check.conf` `requires`
   satırlarıyla sabitlenir.
-- Android: minSdk 23; targetSdk = Flutter'ın varsayılanı.
+- Android: minSdk 24 (ADR 0003, Flutter varsayılanı); targetSdk = Flutter'ın varsayılanı.
 - Temel paketler: `flutter_riverpod`, `drift` (+ `drift_dev`, `build_runner`), `http`,
   `flutter_lints`. Sürümler `pubspec.lock` ile sabitlenir (commit edilir).
 - Font: Amiri Quran (SIL OFL), `assets/fonts/` altında gömülü.

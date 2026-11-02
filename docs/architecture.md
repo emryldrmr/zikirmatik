@@ -5,7 +5,7 @@
 
 ## System overview
 
-zikirmatik, tek bir Flutter uygulamasıdır (Android önce, minSdk 23; kod iOS'a uyumlu tutulur).
+zikirmatik, tek bir Flutter uygulamasıdır (Android önce, minSdk 24 — ADR 0003; kod iOS'a uyumlu tutulur).
 Stil: **feature-first modüler monolit**; her özellik kendi içinde `domain` / `data` / `ui`
 katmanlarına ayrılır. Sunucu, hesap ve senkron yoktur; tüm durum cihazda SQLite'ta (drift) tutulur.
 Tek dış bağımlılık, Kur'an ve meal metnini ilk kullanımda indiren AlQuran Cloud API'sidir; indirilen
