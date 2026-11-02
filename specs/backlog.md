@@ -19,3 +19,7 @@ step 7). Nothing lands here without that decision; noise is rejected in the tria
   ayrı spec, hassas alana dokunur — Source: bootstrap 2026-11-02 — Severity: Medium
   — Recommendation: reklam kararı verildiğinde önce ADR 0002'yi yeniden aç, sonra spec yaz
   — Deferred by: emryldrmr, 2026-11-02, uygulama şu an ücretsiz ve reklamsız; reklam yalnızca çok kullanılırsa
+
+- **B-2** — Depolama yazma hatası kullanıcıya bildirilmiyor: sayaç kaydı (spec 0001/0002 kapsam dışı bırakmıştı) ve zikir listesi (ekle başarısızsa form sessizce açık kalır; seç/yeniden adlandır/sil ekranda başarılı görünür, yeniden başlatınca geri gelir) — Source: spec 0003, review round 1 (lib/features/counter/ui/dhikr_list_controller.dart) — Severity: Low
+  — Recommendation: tek bir spec'te ortak bir "kaydedilemedi" geri bildirimi (sayaç + liste) ve durumun geri alınması
+  — Deferred by: emryldrmr, 2026-11-02, depolama hatası nadir; sayaç ve listeyi birlikte, tutarlı çözmek için
