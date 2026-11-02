@@ -41,6 +41,10 @@ class DhikrListController extends AsyncNotifier<DhikrList> {
     _ => null,
   };
 
+  // Behaviour on a failed storage write is out of scope (specs 0001–0003):
+  // a failed add leaves the list as it was; select, rename and delete update
+  // the screen first. Deferred as backlog B-2.
+
   /// AC-3, AC-7: true when the dhikr was stored; it is then selected.
   Future<bool> add(DhikrName name, Target? target) async {
     final current = _current;
