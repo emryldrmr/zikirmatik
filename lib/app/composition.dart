@@ -8,7 +8,10 @@ import 'database/app_database.dart';
 /// Composition root: binds every feature's abstract dependencies to their
 /// on-device implementations. Tests build their own overrides instead.
 List<Override> appOverrides(AppDatabase db) => [
-  counterRepositoryProvider.overrideWithValue(DriftCounterRepository(db)),
+  counterRepositoryForProvider.overrideWithValue(
+    (dhikrId) => DriftCounterRepository(db, dhikrId: dhikrId),
+  ),
+  dhikrListRepositoryProvider.overrideWithValue(DriftDhikrListRepository(db)),
   hapticsProvider.overrideWithValue(const SystemHaptics()),
 ];
 

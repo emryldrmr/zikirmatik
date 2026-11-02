@@ -47,5 +47,32 @@
   "customTargetInvalid": "1 ile 100.000 arasında bir sayı girin.",
   "save": "Kaydet",
   "targetChangeConfirmMessage": "Hedef değişirse sayım ve tur sıfırlanır.",
-  "targetChangeConfirm": "Değiştir"
+  "targetChangeConfirm": "Değiştir",
+  "dhikrPickerSemantics": "Zikir: {name}. Değiştirmek için dokunun.",
+  "@dhikrPickerSemantics": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "dhikrEditSemantics": "{name} zikrini düzenle",
+  "@dhikrEditSemantics": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "dhikrPickerTitle": "Zikir seç",
+  "newDhikr": "Yeni zikir",
+  "editDhikr": "Zikri düzenle",
+  "dhikrNameLabel": "Ad",
+  "dhikrTargetLabel": "Hedef (isteğe bağlı)",
+  "dhikrNameInvalid": "Ad 1–50 karakter olmalı.",
+  "delete": "Sil",
+  "deleteDhikrConfirmMessage": "“{name}” silinsin mi? Sayımı ve toplamı da silinir.",
+  "@deleteDhikrConfirmMessage": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "noDhikrs": "Henüz zikir yok.",
+  "addDhikr": "Zikir ekle"
 }

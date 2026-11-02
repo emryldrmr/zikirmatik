@@ -9,16 +9,23 @@ import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 
 /// The app under test in its deterministic mode (docs/testing.md, Determinism):
-/// animations off, Turkish locale (fixed in the app), storage replaced by [repo],
-/// vibration by [haptics]. Never touches the network or the device database.
+/// animations off, Turkish locale (fixed in the app), vibration by [haptics].
+/// Never touches the network or the device database.
+///
+/// Storage: [store] when given (several dhikrs, spec 0003); otherwise a single
+/// dhikr "Zikir" (id 1) whose counter is [repo] — the setup of specs 0001/0002.
 Widget testApp(
   WidgetTester tester, {
-  required CounterRepository repo,
+  CounterRepository? repo,
+  FakeDhikrStore? store,
   FakeHaptics? haptics,
 }) {
+  final dhikrs =
+      store ?? FakeDhikrStore.single(repo ?? FakeCounterRepository());
   return ProviderScope(
     overrides: [
-      counterRepositoryProvider.overrideWithValue(repo),
+      counterRepositoryForProvider.overrideWithValue(dhikrs.counterFor),
+      dhikrListRepositoryProvider.overrideWithValue(dhikrs),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
     ],
     child: MediaQuery(
@@ -85,5 +92,72 @@ class FakeHaptics implements Haptics {
     roundsCompleted++;
     await hold?.future;
     if (fail) throw StateError('vibrator unavailable');
+  }
+}
+
+/// In-memory dhikr list plus one [FakeCounterRepository] per dhikr (spec 0003).
+/// Survives a "restart" (a new ProviderScope) when the same instance is reused.
+class FakeDhikrStore implements DhikrListRepository {
+  FakeDhikrStore(List<(String, CounterState)> dhikrs, {int? selectedId}) {
+    for (final (name, state) in dhikrs) {
+      final id = _nextId++;
+      entries.add(DhikrEntry(id, DhikrName.stored(name)));
+      counters[id] = FakeCounterRepository(state: state);
+    }
+    this.selectedId = selectedId ?? (entries.isEmpty ? null : entries.first.id);
+  }
+
+  /// One dhikr "Zikir" (id 1) whose counter is [repo].
+  FakeDhikrStore.single(CounterRepository repo) {
+    entries.add(DhikrEntry(_nextId++, DhikrName.first));
+    counters[1] = repo;
+    selectedId = 1;
+  }
+
+  final List<DhikrEntry> entries = [];
+  final Map<int, CounterRepository> counters = {};
+  int? selectedId;
+  int _nextId = 1;
+
+  CounterRepository counterFor(int id) =>
+      counters[id] ?? (throw StateError('no counter for dhikr $id'));
+
+  /// The stored counter state of a fake counter.
+  CounterState stateOf(int id) =>
+      (counters[id]! as FakeCounterRepository).stored;
+
+  @override
+  Future<Result<DhikrList>> load() async =>
+      Ok(DhikrList(List.of(entries), selectedId: selectedId));
+
+  @override
+  Future<Result<DhikrEntry>> add(DhikrName name, Target? target) async {
+    final entry = DhikrEntry(_nextId++, name);
+    entries.add(entry);
+    counters[entry.id] = FakeCounterRepository(
+      state: CounterState(count: DhikrCount.zero, target: target),
+    );
+    selectedId = entry.id;
+    return Ok(entry);
+  }
+
+  @override
+  Future<Result<void>> rename(int id, DhikrName name) async {
+    final i = entries.indexWhere((e) => e.id == id);
+    entries[i] = DhikrEntry(id, name);
+    return const Ok(null);
+  }
+
+  @override
+  Future<Result<void>> delete(int id) async {
+    entries.removeWhere((e) => e.id == id);
+    counters.remove(id);
+    return const Ok(null);
+  }
+
+  @override
+  Future<Result<void>> select(int? id) async {
+    selectedId = id;
+    return const Ok(null);
   }
 }
