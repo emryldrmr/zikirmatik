@@ -16,12 +16,14 @@
   paths and protocol fields verbatim.
 
 ## Language & framework versions
-- Flutter **3.41.x** (stable kanal), Dart **3.11.x** — bootstrap makinesinde 3.41.2 / 3.11.0.
-  Kesin alt sınır walking skeleton'da `pubspec.yaml` `environment:` ve `check.conf` `requires`
-  satırlarıyla sabitlenir.
-- Android: minSdk 23; targetSdk = Flutter'ın varsayılanı.
-- Temel paketler: `flutter_riverpod`, `drift` (+ `drift_dev`, `build_runner`), `http`,
-  `flutter_lints`. Sürümler `pubspec.lock` ile sabitlenir (commit edilir).
+- Flutter **3.41.2** (stable), Dart **3.11** — `pubspec.yaml` `environment:` (sdk ^3.11.0,
+  flutter >=3.41.0), `check.conf` `requires pub get` (Dart ≥ 3.11) ve CI (`flutter-version: 3.41.2`).
+- Android: minSdk 24 (ADR 0003, Flutter varsayılanı); targetSdk = Flutter'ın varsayılanı. JDK 17.
+- Temel paketler (spec 0001'de çözülen sürümler): `flutter_riverpod` 2.6.1, `drift` 2.34.4 +
+  `drift_dev` 2.34.0 (Flutter 3.41.2'nin sabitlediği `meta 1.17.0` yeni drift_dev'i engelliyor),
+  `drift_flutter` 0.3.1, `sqlite3` 3.5.2 (sqlite'ı derleme kancasıyla paketler — host testleri ek
+  kurulum istemez), `intl` 0.20.2, `build_runner` 2.15.1, `flutter_lints` 6. Sürümler `pubspec.lock`
+  ile sabitlenir (commit edilir); `pub get --enforce-lockfile`. `http` Kur'an spec'inde eklenir.
 - Font: Amiri Quran (SIL OFL), `assets/fonts/` altında gömülü.
 
 ## Naming
@@ -61,9 +63,10 @@
   `Haptics` arayüzü üzerinden çağır, testte sahtesiyle doğrula — from bootstrap 2026-11-02.
 
 ## Enforced by tooling
-- `flutter analyze --fatal-infos --fatal-warnings` + `flutter_lints` (`analysis_options.yaml`):
-  isimlendirme, kullanılmayan import, null-safety.
-- `dart format --set-exit-if-changed`: biçim.
-- Yasak bağımlılıklar FD-1…FD-4: `test/architecture/` import-tarama testi.
-- Üretilen kodun güncelliği: check'teki codegen adımı.
-(Walking skeleton bu adımları `scripts/check.conf`'ta etkinleştirir.)
+- `flutter analyze --fatal-infos --fatal-warnings` + `flutter_lints` ve ek kurallar
+  (`analysis_options.yaml`: strict-casts/inference/raw-types, tek tırnak, sondaki virgül,
+  `unawaited_futures`): isimlendirme, kullanılmayan import, null-safety.
+- Biçim: `tool/format_check.sh` (`dart format --set-exit-if-changed`; üretilen dosyalar hariç).
+- Yasak bağımlılıklar FD-1…FD-4: `test/architecture/import_rules_test.dart`.
+- Üretilen kodun güncelliği (drift + gen-l10n): `tool/codegen_check.sh`.
+(Hepsi `scripts/check.conf` adımları; spec 0001 ile etkin.)

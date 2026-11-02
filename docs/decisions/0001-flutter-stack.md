@@ -1,6 +1,6 @@
 # ADR 0001 — Mobil yığın olarak Flutter (Dart), önce Android
 
-- Status: Accepted
+- Status: Accepted — minSdk kısmı ADR-0003 ile değiştirildi (Superseded in part by ADR-0003)
 - Date: 2026-11-02
 
 ## Context

@@ -1,0 +1,19 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Zikirmatik",
+  "sectionMyDhikrs": "Zikirlerim",
+  "sectionSuggested": "Önerilen Zikirler",
+  "sectionAsma": "Esmaü'l-Hüsna",
+  "sectionQuran": "Kur'an + Meal",
+  "sectionSettings": "Ayarlar",
+  "comingSoon": "Bu bölüm yakında.",
+  "openMenu": "Menüyü aç",
+  "counterLoadFailed": "Sayaç yüklenemedi.",
+  "counterLoading": "Sayaç yükleniyor",
+  "counterSemantics": "Sayım {count}. Saymak için dokunun.",
+  "@counterSemantics": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
+}
