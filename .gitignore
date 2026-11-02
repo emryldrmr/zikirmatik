@@ -27,3 +27,13 @@ android/local.properties
 android/key.properties
 *.jks
 *.keystore
+
+# Flutter (flutter create defaults)
+.pub-cache/
+.pub/
+/coverage/
+app.*.symbols
+app.*.map.json
+/android/app/debug
+/android/app/profile
+/android/app/release
