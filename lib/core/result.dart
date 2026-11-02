@@ -28,3 +28,8 @@ sealed class Failure {
 final class StorageFailure extends Failure {
   const StorageFailure([super.cause]);
 }
+
+/// User input broke a business rule (e.g. BR-2's target range).
+final class ValidationFailure extends Failure {
+  const ValidationFailure([super.cause]);
+}
