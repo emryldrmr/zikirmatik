@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/database/app_database.dart';
@@ -13,6 +14,11 @@ DhikrCount _loaded(Result<DhikrCount> result) => switch (result) {
 };
 
 void main() {
+  // These tests open several AppDatabase instances on purpose, each on its own
+  // executor (memory, temp file, broken file); drift's shared-executor warning
+  // does not apply.
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
   // Each test owns its database (docs/testing.md, Resource hygiene rule 5).
   late AppDatabase db;
   late DriftCounterRepository repo;
