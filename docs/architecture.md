@@ -19,11 +19,11 @@ sınırlar, saf Dart'ta hızlı test edilen iş kuralları ve tek dosyada izole 
 |---|---|---|
 | `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema, DI kökü (Riverpod `ProviderScope`) | Gezinme yapısı, tema |
 | `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure`, `Clock`, `Haptics` arayüzü, veritabanı açılışı | Ortak tipler |
-| `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8 | Kullanıcının zikirleri, sayım, tur, toplam |
+| `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8; tesbihat modu (BR-13); tam ekran dokunma alanı, ses tuşuyla sayma, sayaç ekranında ekranı açık tutma | Kullanıcının zikirleri, sayım, tur, toplam; tesbihat dizileri ve ilerlemesi |
 | `lib/features/suggested/` | Önerilen Zikirler listesi (gömülü veri), BR-9 | Önerilen zikir içeriği |
 | `lib/features/esma/` | Esmaü'l-Hüsna listesi (gömülü veri), BR-9 | 99 isim içeriği |
 | `lib/features/quran/` | Kur'an + meal: indirme, doğrulama, önbellek, okuma ekranı; BR-10…BR-12 | Kur'an/meal önbelleği; AlQuran Cloud adaptörü |
-| `lib/features/settings/` | Ayarlar (titreşim, tema, varsayılan meal) ve Kaynaklar ekranı | Kullanıcı tercihleri |
+| `lib/features/settings/` | Ayarlar (titreşim, ara titreşim, tema, büyük rakam, sol/sağ el yerleşimi, ses tuşuyla sayma, ekranı açık tut, varsayılan meal) ve Kaynaklar ekranı | Kullanıcı tercihleri |
 
 ## Communication rules
 
@@ -44,7 +44,21 @@ Hepsi `test/architecture/` altındaki import-tarama testiyle `scripts/check` iç
 3. **FD-3:** `package:http` ve AlQuran Cloud adresi yalnızca `lib/features/quran/data/` içinde geçer.
 4. **FD-4:** `lib/**/ui/**`, `drift` paketini ve herhangi bir `data/` dosyasını import etmez.
 
+## Sürüm 1 kapsamı (2026-11-02'de kararlaştırıldı)
+
+Walking skeleton → sayaç (BR-1…BR-8) → tesbihat modu → tam ekran dokunma + ses tuşuyla sayma +
+ekranı açık tut + görünüm seçenekleri (büyük rakam, el yerleşimi, ara titreşim) → Önerilen Zikirler ve
+Esmaü'l-Hüsna → Kur'an + meal → Ayarlar/Kaynaklar. Her biri kendi spec'iyle gelir.
+
 ## Deliberately out of scope
 
-Hesap/giriş, bulut senkronu, istatistik/grafik, bildirim/hatırlatıcı, iOS derlemesi ve mağaza süreci,
-reklam (bkz. `specs/backlog.md` B-1), analitik/telemetri/crash raporlama, ses (sesli okuma/kıraat).
+Sürüm 1 için bilinçli olarak dışarıda:
+- **Sürüm 2 adayları:** Kur'an'da yer imi / kaldığın yer; yazı boyutu, meal göster/gizle, mealde
+  arama; günlük geçmiş ve seri (istatistik); dosyaya yedekleme/geri yükleme (JSON); Android ana ekran
+  widget'ı.
+- **Sonraki adaylar (her biri ayrı karar ister):** hatırlatıcı bildirimleri (yeni izin, `docs/security.md`);
+  kişisel hatim takibi; okunuş (transliterasyon) ve ayet/Esma görsel paylaşımı (hassas alan); kıraat
+  dinleme (ses).
+- **Önerilmiyor:** hesap/giriş, bulut senkronu, toplu hatim ve sosyal özellikler; namaz vakitleri/kıble
+  (konum izni); iOS derlemesi ve mağaza süreci (ADR 0001); reklam (`specs/backlog.md` B-1);
+  analitik/telemetri/crash raporlama.

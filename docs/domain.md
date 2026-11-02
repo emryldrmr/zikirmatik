@@ -19,6 +19,8 @@
 | Sure (`Surah`) | Kur'an'ın 114 bölümünden biri (1–114). | |
 | Ayet (`Ayah`) | Bir surenin ayeti; kimliği **(sure no, ayet no)** çiftidir. | Global ayet indeksiyle (1–6236) karıştırılmaz; o yalnızca API adaptörünün içinde kalır. |
 | Meal (`Translation`) | Bir ayetin Türkçe çevirisi; kaynağı (çevirmen/yayıncı) ile birlikte. | Tefsir değildir. Ayetle birebir hizalanır. |
+| Tesbihat (`DhikrSequence`) | Sırayla çekilen zikirlerden oluşan dizi; her adımın bir zikri ve hedefi vardır (ör. namaz sonrası tesbihat). | Tek bir zikrin turlarıyla karıştırılmaz. Varsayılan dizinin metni ve hedefleri ilgili spec'te kaynağıyla belirlenir; hassas alan. |
+| Adım (`step`) | Tesbihat içindeki tek zikir + hedef. | |
 | Önbellek (`QuranCache`) | API'den indirilip doğrulanmış, cihazda saklanan Kur'an + meal verisi. | Doğrulanmamış veri önbellek sayılmaz (BR-11). |
 
 ## Business rules
@@ -39,6 +41,9 @@
   meali birebir hizalı). Doğrulamayı geçmeyen veri reddedilir, hiçbir kısmı yazılmaz.
 - **BR-12:** Kur'an metni, meal, Esma ve önerilen zikir metni gösterilirken değiştirilmez, kırpılmaz,
   normalleştirilmez. Kaynaklar Ayarlar > Kaynaklar'da anılır (Tanzil, AlQuran Cloud, meal sahibi, Amiri fontu).
+- **BR-13:** Tesbihatta bir adımın hedefine ulaşılınca titreşim tetiklenir ve sıradaki adıma geçilir;
+  son adımın hedefi tamamlanınca tesbihat tamamlanır. (Ayrıntılar — ör. tamamlandıktan sonra ne olduğu —
+  tesbihat spec'inde netleşir.)
 
 ## Key domain invariants
 

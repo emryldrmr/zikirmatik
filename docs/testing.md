@@ -36,7 +36,7 @@
 - Kapsama yüzdesi kapı değildir; yalnızca bilgi amaçlı.
 
 ## What must be tested
-- Her iş kuralı BR-1…BR-12 (`docs/domain.md`) en az bir testle.
+- Her iş kuralı BR-1…BR-13 (`docs/domain.md`) en az bir testle.
 - Her yasak bağımlılık FD-1…FD-4 (`docs/architecture.md`) `test/architecture/` import-tarama testiyle.
 - **Hassas alan — dini metin bütünlüğü** (`test/integrity/`):
   - Kur'an doğrulayıcısı: 114 sure, toplam 6236 ayet, her surenin ayet sayısı beklenen tabloyla aynı,
