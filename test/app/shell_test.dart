@@ -81,11 +81,7 @@ void main() {
     // The button's accessible name comes from its tooltip; TalkBack reads it.
     expect(
       tester.getSemantics(_menuButton),
-      isSemantics(
-        tooltip: 'Menüyü aç',
-        isButton: true,
-        hasTapAction: true,
-      ),
+      isSemantics(tooltip: 'Menüyü aç', isButton: true, hasTapAction: true),
     );
     semantics.dispose();
   });
