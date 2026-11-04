@@ -139,4 +139,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get addDhikr => 'Zikir ekle';
+
+  @override
+  String get settingsVibration => 'Titreşim';
+
+  @override
+  String get settingsVibrationSubtitle => 'Tur tamamlanınca titreşir';
+
+  @override
+  String get settingsTheme => 'Tema';
+
+  @override
+  String get themeLight => 'Açık';
+
+  @override
+  String get themeDark => 'Koyu';
+
+  @override
+  String get themeSystem => 'Sistem';
+
+  @override
+  String get appLoading => 'Yükleniyor';
 }
