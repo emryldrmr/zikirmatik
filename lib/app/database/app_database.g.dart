@@ -725,6 +725,255 @@ class DhikrSelectionsCompanion extends UpdateCompanion<DhikrSelection> {
   }
 }
 
+class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('id = 1'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _vibrationMeta = const VerificationMeta(
+    'vibration',
+  );
+  @override
+  late final GeneratedColumn<bool> vibration = GeneratedColumn<bool>(
+    'vibration',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("vibration" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _themeMeta = const VerificationMeta('theme');
+  @override
+  late final GeneratedColumn<String> theme = GeneratedColumn<String>(
+    'theme',
+    aliasedName,
+    false,
+    check: () =>
+        const CustomExpression<bool>("theme IN ('light', 'dark', 'system')"),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, vibration, theme];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Setting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('vibration')) {
+      context.handle(
+        _vibrationMeta,
+        vibration.isAcceptableOrUnknown(data['vibration']!, _vibrationMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vibrationMeta);
+    }
+    if (data.containsKey('theme')) {
+      context.handle(
+        _themeMeta,
+        theme.isAcceptableOrUnknown(data['theme']!, _themeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_themeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Setting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Setting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      vibration: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}vibration'],
+      )!,
+      theme: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}theme'],
+      )!,
+    );
+  }
+
+  @override
+  $SettingsTable createAlias(String alias) {
+    return $SettingsTable(attachedDatabase, alias);
+  }
+}
+
+class Setting extends DataClass implements Insertable<Setting> {
+  final int id;
+  final bool vibration;
+  final String theme;
+  const Setting({
+    required this.id,
+    required this.vibration,
+    required this.theme,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['vibration'] = Variable<bool>(vibration);
+    map['theme'] = Variable<String>(theme);
+    return map;
+  }
+
+  SettingsCompanion toCompanion(bool nullToAbsent) {
+    return SettingsCompanion(
+      id: Value(id),
+      vibration: Value(vibration),
+      theme: Value(theme),
+    );
+  }
+
+  factory Setting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Setting(
+      id: serializer.fromJson<int>(json['id']),
+      vibration: serializer.fromJson<bool>(json['vibration']),
+      theme: serializer.fromJson<String>(json['theme']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'vibration': serializer.toJson<bool>(vibration),
+      'theme': serializer.toJson<String>(theme),
+    };
+  }
+
+  Setting copyWith({int? id, bool? vibration, String? theme}) => Setting(
+    id: id ?? this.id,
+    vibration: vibration ?? this.vibration,
+    theme: theme ?? this.theme,
+  );
+  Setting copyWithCompanion(SettingsCompanion data) {
+    return Setting(
+      id: data.id.present ? data.id.value : this.id,
+      vibration: data.vibration.present ? data.vibration.value : this.vibration,
+      theme: data.theme.present ? data.theme.value : this.theme,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Setting(')
+          ..write('id: $id, ')
+          ..write('vibration: $vibration, ')
+          ..write('theme: $theme')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, vibration, theme);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Setting &&
+          other.id == this.id &&
+          other.vibration == this.vibration &&
+          other.theme == this.theme);
+}
+
+class SettingsCompanion extends UpdateCompanion<Setting> {
+  final Value<int> id;
+  final Value<bool> vibration;
+  final Value<String> theme;
+  const SettingsCompanion({
+    this.id = const Value.absent(),
+    this.vibration = const Value.absent(),
+    this.theme = const Value.absent(),
+  });
+  SettingsCompanion.insert({
+    this.id = const Value.absent(),
+    required bool vibration,
+    required String theme,
+  }) : vibration = Value(vibration),
+       theme = Value(theme);
+  static Insertable<Setting> custom({
+    Expression<int>? id,
+    Expression<bool>? vibration,
+    Expression<String>? theme,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (vibration != null) 'vibration': vibration,
+      if (theme != null) 'theme': theme,
+    });
+  }
+
+  SettingsCompanion copyWith({
+    Value<int>? id,
+    Value<bool>? vibration,
+    Value<String>? theme,
+  }) {
+    return SettingsCompanion(
+      id: id ?? this.id,
+      vibration: vibration ?? this.vibration,
+      theme: theme ?? this.theme,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (vibration.present) {
+      map['vibration'] = Variable<bool>(vibration.value);
+    }
+    if (theme.present) {
+      map['theme'] = Variable<String>(theme.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('vibration: $vibration, ')
+          ..write('theme: $theme')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -733,6 +982,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DhikrSelectionsTable dhikrSelections = $DhikrSelectionsTable(
     this,
   );
+  late final $SettingsTable settings = $SettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -741,6 +991,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     counters,
     dhikrs,
     dhikrSelections,
+    settings,
   ];
 }
 
@@ -1180,6 +1431,153 @@ typedef $$DhikrSelectionsTableProcessedTableManager =
       DhikrSelection,
       PrefetchHooks Function()
     >;
+typedef $$SettingsTableCreateCompanionBuilder =
+    SettingsCompanion Function({
+      Value<int> id,
+      required bool vibration,
+      required String theme,
+    });
+typedef $$SettingsTableUpdateCompanionBuilder =
+    SettingsCompanion Function({
+      Value<int> id,
+      Value<bool> vibration,
+      Value<String> theme,
+    });
+
+class $$SettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $SettingsTable> {
+  $$SettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get vibration => $composableBuilder(
+    column: $table.vibration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get theme => $composableBuilder(
+    column: $table.theme,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SettingsTable> {
+  $$SettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get vibration => $composableBuilder(
+    column: $table.vibration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get theme => $composableBuilder(
+    column: $table.theme,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SettingsTable> {
+  $$SettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get vibration =>
+      $composableBuilder(column: $table.vibration, builder: (column) => column);
+
+  GeneratedColumn<String> get theme =>
+      $composableBuilder(column: $table.theme, builder: (column) => column);
+}
+
+class $$SettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SettingsTable,
+          Setting,
+          $$SettingsTableFilterComposer,
+          $$SettingsTableOrderingComposer,
+          $$SettingsTableAnnotationComposer,
+          $$SettingsTableCreateCompanionBuilder,
+          $$SettingsTableUpdateCompanionBuilder,
+          (Setting, BaseReferences<_$AppDatabase, $SettingsTable, Setting>),
+          Setting,
+          PrefetchHooks Function()
+        > {
+  $$SettingsTableTableManager(_$AppDatabase db, $SettingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<bool> vibration = const Value.absent(),
+                Value<String> theme = const Value.absent(),
+              }) =>
+                  SettingsCompanion(id: id, vibration: vibration, theme: theme),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required bool vibration,
+                required String theme,
+              }) => SettingsCompanion.insert(
+                id: id,
+                vibration: vibration,
+                theme: theme,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SettingsTable,
+      Setting,
+      $$SettingsTableFilterComposer,
+      $$SettingsTableOrderingComposer,
+      $$SettingsTableAnnotationComposer,
+      $$SettingsTableCreateCompanionBuilder,
+      $$SettingsTableUpdateCompanionBuilder,
+      (Setting, BaseReferences<_$AppDatabase, $SettingsTable, Setting>),
+      Setting,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1190,4 +1588,6 @@ class $AppDatabaseManager {
       $$DhikrsTableTableManager(_db, _db.dhikrs);
   $$DhikrSelectionsTableTableManager get dhikrSelections =>
       $$DhikrSelectionsTableTableManager(_db, _db.dhikrSelections);
+  $$SettingsTableTableManager get settings =>
+      $$SettingsTableTableManager(_db, _db.settings);
 }
