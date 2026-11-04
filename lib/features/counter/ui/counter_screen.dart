@@ -147,6 +147,9 @@ const _bodyColor = Color(0xFF37474F);
 const _lcdBackground = Color(0xFF1B3A2A);
 const _lcdDigits = Color(0xFFB9F6CA); // ~11:1 on _lcdBackground (WCAG AA)
 const _bodyText = Color(0xFFECEFF1); // ~9:1 on _bodyColor
+// The count button: the light theme's primary for the teal seed, fixed so the
+// device looks the same in every theme (spec 0004, AC-4).
+const _buttonColor = Color(0xFF006A60);
 
 final _thousands = NumberFormat.decimalPattern('tr');
 
@@ -322,7 +325,7 @@ class _CountButton extends StatelessWidget {
       excludeSemantics: true,
       onTap: onTap,
       child: Material(
-        color: Theme.of(context).colorScheme.primary,
+        color: _buttonColor,
         shape: const CircleBorder(),
         elevation: 6,
         child: InkWell(

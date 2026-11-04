@@ -14,3 +14,8 @@ final hapticsProvider = Provider<Haptics>(
     'hapticsProvider must be overridden in the composition root.',
   ),
 );
+
+/// Whether a completed round vibrates (BR-4; spec 0004, AC-2). Defaults to on;
+/// the composition root binds it to the user's setting, so features that
+/// vibrate need not import the settings feature (docs/architecture.md, FD-2).
+final vibrationEnabledProvider = Provider<bool>((ref) => true);

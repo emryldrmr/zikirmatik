@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../features/counter/counter.dart';
+import '../features/settings/settings.dart';
 import '../l10n/app_localizations.dart';
 import 'app_section.dart';
 import 'coming_soon_screen.dart';
@@ -53,6 +54,7 @@ class _ShellState extends State<Shell> {
       ),
       body: switch (_section) {
         AppSection.myDhikrs => const CounterScreen(),
+        AppSection.settings => const SettingsScreen(),
         _ => const ComingSoonScreen(),
       },
     );

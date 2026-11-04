@@ -1,0 +1,148 @@
+import 'dart:io';
+
+import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:zikirmatik/app/database/app_database.dart';
+import 'package:zikirmatik/core/result.dart';
+import 'package:zikirmatik/features/counter/data/drift_counter_repository.dart';
+import 'package:zikirmatik/features/counter/data/drift_dhikr_list_repository.dart';
+import 'package:zikirmatik/features/counter/domain/counter_state.dart';
+import 'package:zikirmatik/features/counter/domain/dhikr_count.dart';
+import 'package:zikirmatik/features/counter/domain/target.dart';
+import 'package:zikirmatik/features/settings/data/drift_settings_repository.dart';
+import 'package:zikirmatik/features/settings/domain/app_settings.dart';
+
+// Spec 0004 — Ayarlar, storage.
+
+T _ok<T>(Result<T> r) => switch (r) {
+  Ok(:final value) => value,
+  Err(:final failure) => fail('expected Ok, got $failure'),
+};
+
+void main() {
+  // Several AppDatabase instances on purpose, each on its own executor.
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
+  test('a new database has the default settings', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+
+    expect(_ok(await DriftSettingsRepository(db).load()), AppSettings.defaults);
+  });
+
+  test('settings survive reopening', () async {
+    final dir = Directory.systemTemp.createTempSync('zikirmatik_test_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}${Platform.pathSeparator}db.sqlite');
+
+    final first = AppDatabase(NativeDatabase(file));
+    const saved = AppSettings(vibration: false, theme: ThemeChoice.dark);
+    expect(await DriftSettingsRepository(first).save(saved), isA<Ok<void>>());
+    await first.close();
+
+    final second = AppDatabase(NativeDatabase(file));
+    addTearDown(second.close);
+    expect(_ok(await DriftSettingsRepository(second).load()), saved);
+  });
+
+  test('saving again replaces the previous settings', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = DriftSettingsRepository(db);
+
+    await repo.save(
+      const AppSettings(vibration: false, theme: ThemeChoice.dark),
+    );
+    await repo.save(
+      const AppSettings(vibration: true, theme: ThemeChoice.light),
+    );
+    expect(
+      _ok(await repo.load()),
+      const AppSettings(vibration: true, theme: ThemeChoice.light),
+    );
+  });
+
+  test('migrates a v3 database and keeps the dhikrs', () async {
+    // A database as spec 0003 left it: schema v3, two dhikrs, the second selected.
+    final v3 = NativeDatabase.memory(
+      setup: (raw) {
+        if (raw.userVersion != 0) return;
+        raw
+          ..execute(
+            'CREATE TABLE counters (id INTEGER NOT NULL, '
+            'count INTEGER NOT NULL CHECK (count >= 0), '
+            'rounds INTEGER NOT NULL DEFAULT 0, total INTEGER NOT NULL DEFAULT 0, '
+            'target INTEGER NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE dhikrs (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+            'name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 50))',
+          )
+          ..execute(
+            'CREATE TABLE dhikr_selections (id INTEGER NOT NULL CHECK (id = 1), '
+            'dhikr_id INTEGER NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            "INSERT INTO dhikrs (id, name) VALUES (1, 'Zikir'), (2, 'Sabah')",
+          )
+          ..execute(
+            'INSERT INTO counters (id, count, rounds, total, target) '
+            'VALUES (1, 4, 0, 4, NULL), (2, 7, 2, 73, 33)',
+          )
+          ..execute('INSERT INTO dhikr_selections (id, dhikr_id) VALUES (1, 2)')
+          ..userVersion = 3;
+      },
+    );
+    final migrated = AppDatabase(v3);
+    addTearDown(migrated.close);
+
+    final list = _ok(await DriftDhikrListRepository(migrated).load());
+    expect(list.entries.map((e) => e.name.value), ['Zikir', 'Sabah']);
+    expect(list.selectedId, 2);
+    expect(
+      _ok(await DriftCounterRepository(migrated, dhikrId: 2).load()),
+      CounterState(
+        count: const DhikrCount(7),
+        rounds: 2,
+        total: 73,
+        target: Target.of(33),
+      ),
+    );
+    final settings = DriftSettingsRepository(migrated);
+    expect(_ok(await settings.load()), AppSettings.defaults);
+    const changed = AppSettings(vibration: false, theme: ThemeChoice.light);
+    await settings.save(changed);
+    expect(_ok(await settings.load()), changed);
+  });
+
+  test('the database refuses an unknown theme', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+
+    await expectLater(
+      db.customStatement(
+        "INSERT INTO settings (id, vibration, theme) VALUES (1, 1, 'sepia')",
+      ),
+      throwsA(isA<SqliteException>()),
+    );
+  });
+
+  test('a storage error becomes a StorageFailure', () async {
+    final dir = Directory.systemTemp.createTempSync('zikirmatik_test_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final garbage = File('${dir.path}${Platform.pathSeparator}db.sqlite')
+      ..writeAsBytesSync(List<int>.filled(4096, 0x5A));
+    final broken = AppDatabase(NativeDatabase(garbage));
+    addTearDown(broken.close);
+
+    expect(
+      await DriftSettingsRepository(broken).load(),
+      isA<Err<AppSettings>>().having(
+        (e) => e.failure,
+        'failure',
+        isA<StorageFailure>(),
+      ),
+    );
+  });
+}

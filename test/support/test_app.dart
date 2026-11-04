@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/app.dart';
+import 'package:zikirmatik/app/composition.dart';
 import 'package:zikirmatik/core/haptics.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
+import 'package:zikirmatik/features/settings/settings.dart';
 
 /// The app under test in its deterministic mode (docs/testing.md, Determinism):
 /// animations off, Turkish locale (fixed in the app), vibration by [haptics].
@@ -14,11 +16,14 @@ import 'package:zikirmatik/features/counter/counter.dart';
 ///
 /// Storage: [store] when given (several dhikrs, spec 0003); otherwise a single
 /// dhikr "Zikir" (id 1) whose counter is [repo] — the setup of specs 0001/0002.
+/// Settings: [settings] when given (spec 0004); otherwise the defaults. The
+/// cross-feature wiring is the app's own (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
   CounterRepository? repo,
   FakeDhikrStore? store,
   FakeHaptics? haptics,
+  FakeSettingsRepository? settings,
 }) {
   final dhikrs =
       store ?? FakeDhikrStore.single(repo ?? FakeCounterRepository());
@@ -26,13 +31,22 @@ Widget testApp(
     overrides: [
       counterRepositoryForProvider.overrideWithValue(dhikrs.counterFor),
       dhikrListRepositoryProvider.overrideWithValue(dhikrs),
+      settingsRepositoryProvider.overrideWithValue(
+        settings ?? FakeSettingsRepository(),
+      ),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
+      ...featureWiring(),
     ],
-    child: MediaQuery(
-      data: MediaQueryData.fromView(
-        tester.view,
-      ).copyWith(disableAnimations: true),
-      child: const ZikirmatikApp(),
+    // Live view metrics (spec 0004: the phone's light/dark setting can change
+    // while the app runs), with animations off on top.
+    child: MediaQuery.fromView(
+      view: tester.view,
+      child: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: const ZikirmatikApp(),
+        ),
+      ),
     ),
   );
 }
@@ -73,6 +87,39 @@ class FakeCounterRepository implements CounterRepository {
     saves.add(state);
     stored = state;
     await holdSave?.future;
+    return const Ok(null);
+  }
+}
+
+/// In-memory [SettingsRepository] (spec 0004) whose load can be held open or
+/// made to fail. Survives a "restart" when the same instance is reused.
+class FakeSettingsRepository implements SettingsRepository {
+  FakeSettingsRepository({
+    this.stored = AppSettings.defaults,
+    this.failLoad = false,
+  });
+
+  AppSettings stored;
+  final bool failLoad;
+
+  /// When set, [load] waits for it, so the loading state stays visible.
+  Completer<void>? holdLoad;
+
+  final List<AppSettings> saves = [];
+
+  @override
+  Future<Result<AppSettings>> load() async {
+    await holdLoad?.future;
+    if (failLoad) {
+      return const Err(StorageFailure('settings unreadable'));
+    }
+    return Ok(stored);
+  }
+
+  @override
+  Future<Result<void>> save(AppSettings settings) async {
+    saves.add(settings);
+    stored = settings;
     return const Ok(null);
   }
 }

@@ -74,5 +74,12 @@
     }
   },
   "noDhikrs": "Henüz zikir yok.",
-  "addDhikr": "Zikir ekle"
+  "addDhikr": "Zikir ekle",
+  "settingsVibration": "Titreşim",
+  "settingsVibrationSubtitle": "Tur tamamlanınca titreşir",
+  "settingsTheme": "Tema",
+  "themeLight": "Açık",
+  "themeDark": "Koyu",
+  "themeSystem": "Sistem",
+  "appLoading": "Yükleniyor"
 }

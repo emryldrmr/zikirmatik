@@ -54,8 +54,10 @@ class CounterController extends FamilyAsyncNotifier<CounterState, int> {
     await saved;
   }
 
-  /// A failed vibration never affects counting.
+  /// A failed vibration never affects counting. With vibration off (spec 0004,
+  /// AC-2) the round still completes; only the vibration is skipped.
   Future<void> _vibrate() async {
+    if (!ref.read(vibrationEnabledProvider)) return;
     try {
       await ref.read(hapticsProvider).roundCompleted();
     } on Object catch (_) {

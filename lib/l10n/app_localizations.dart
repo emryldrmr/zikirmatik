@@ -327,6 +327,48 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Zikir ekle'**
   String get addDhikr;
+
+  /// No description provided for @settingsVibration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Titreşim'**
+  String get settingsVibration;
+
+  /// No description provided for @settingsVibrationSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tur tamamlanınca titreşir'**
+  String get settingsVibrationSubtitle;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tema'**
+  String get settingsTheme;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koyu'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sistem'**
+  String get themeSystem;
+
+  /// No description provided for @appLoading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yükleniyor'**
+  String get appLoading;
 }
 
 class _AppLocalizationsDelegate
