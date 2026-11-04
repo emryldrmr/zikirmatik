@@ -1,11 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/counter_repository.dart';
+import '../domain/dhikr_list_repository.dart';
 
-/// The counter's storage. Has no default: the composition root (`lib/app/`)
-/// overrides it with the on-device implementation, tests with a fake.
-final counterRepositoryProvider = Provider<CounterRepository>(
+/// Builds the storage of one dhikr's counter (spec 0003). Has no default: the
+/// composition root (`lib/app/`) overrides it with the on-device
+/// implementation, tests with a fake.
+final counterRepositoryForProvider = Provider<CounterRepository Function(int)>(
   (ref) => throw UnimplementedError(
-    'counterRepositoryProvider must be overridden in the composition root.',
+    'counterRepositoryForProvider must be overridden in the composition root.',
+  ),
+);
+
+/// Storage of the user's dhikrs and the selection (spec 0003). Overridden like
+/// [counterRepositoryForProvider].
+final dhikrListRepositoryProvider = Provider<DhikrListRepository>(
+  (ref) => throw UnimplementedError(
+    'dhikrListRepositoryProvider must be overridden in the composition root.',
   ),
 );

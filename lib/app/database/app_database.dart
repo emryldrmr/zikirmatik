@@ -2,12 +2,13 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
 import '../../features/counter/data/counter_table.dart';
+import '../../features/counter/data/dhikr_tables.dart';
 
 part 'app_database.g.dart';
 
 /// The app's single on-device database. Lives in the composition root so that
 /// every feature's tables register here without features importing each other.
-@DriftDatabase(tables: [Counters])
+@DriftDatabase(tables: [Counters, Dhikrs, DhikrSelections])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
@@ -16,10 +17,14 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'zikirmatik'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      await m.createAll();
+      await _seedFirstDhikr();
+    },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         // Spec 0002: rounds, total and target. The count kept from spec 0001
@@ -29,6 +34,25 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(counters, counters.target);
         await customStatement('UPDATE counters SET total = count');
       }
+      if (from < 3) {
+        // Spec 0003: named dhikrs. The existing counter (id 1) becomes the
+        // first dhikr with all its values (spec 0003, AC-1).
+        await m.createTable(dhikrs);
+        await m.createTable(dhikrSelections);
+        await _seedFirstDhikr();
+      }
     },
   );
+
+  /// The first dhikr "Zikir" (spec 0003, G1/G2): id 1, its counter row (kept
+  /// if it already exists), selected.
+  Future<void> _seedFirstDhikr() async {
+    await customStatement("INSERT INTO dhikrs (id, name) VALUES (1, 'Zikir')");
+    await customStatement(
+      'INSERT OR IGNORE INTO counters (id, count) VALUES (1, 0)',
+    );
+    await customStatement(
+      'INSERT INTO dhikr_selections (id, dhikr_id) VALUES (1, 1)',
+    );
+  }
 }

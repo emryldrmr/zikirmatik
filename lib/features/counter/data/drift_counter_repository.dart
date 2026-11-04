@@ -11,9 +11,11 @@ import '../domain/target.dart';
 /// Takes any [GeneratedDatabase] that registers that table, so the feature does
 /// not depend on the app's database class (docs/architecture.md, FD-2).
 final class DriftCounterRepository implements CounterRepository {
-  DriftCounterRepository(this._db);
+  /// [dhikrId] is the dhikr whose counter this is (spec 0003); 1 is the first
+  /// dhikr, the single counter of specs 0001 and 0002.
+  DriftCounterRepository(this._db, {this.dhikrId = 1});
 
-  static const int _singleCounterId = 1;
+  final int dhikrId;
 
   final GeneratedDatabase _db;
 
@@ -23,7 +25,7 @@ final class DriftCounterRepository implements CounterRepository {
       final row = await _db
           .customSelect(
             'SELECT count, rounds, total, target FROM counters WHERE id = ?',
-            variables: [Variable.withInt(_singleCounterId)],
+            variables: [Variable.withInt(dhikrId)],
           )
           .getSingleOrNull();
       if (row == null) return const Ok(CounterState.initial);
@@ -51,7 +53,7 @@ final class DriftCounterRepository implements CounterRepository {
         'rounds = excluded.rounds, total = excluded.total, '
         'target = excluded.target',
         [
-          _singleCounterId,
+          dhikrId,
           state.count.value,
           state.rounds,
           state.total,

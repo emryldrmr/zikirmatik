@@ -4,22 +4,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/haptics.dart';
 import '../../../core/result.dart';
+import '../domain/counter_repository.dart';
 import '../domain/counter_state.dart';
 import '../domain/target.dart';
 import 'counter_providers.dart';
 
-/// Holds the counter's state: loading, error, or the current [CounterState].
+/// Holds one dhikr's counter state (by dhikr id): loading, error, or the
+/// current [CounterState].
 ///
-/// Kept alive for the app's lifetime, so switching sections does not reset it.
+/// Kept alive for the app's lifetime, so switching sections or dhikrs does not
+/// reset it.
 final counterControllerProvider =
-    AsyncNotifierProvider<CounterController, CounterState>(
+    AsyncNotifierProvider.family<CounterController, CounterState, int>(
       CounterController.new,
     );
 
-class CounterController extends AsyncNotifier<CounterState> {
+class CounterController extends FamilyAsyncNotifier<CounterState, int> {
+  late CounterRepository _repo;
+
   @override
-  Future<CounterState> build() async {
-    final result = await ref.read(counterRepositoryProvider).load();
+  Future<CounterState> build(int dhikrId) async {
+    _repo = ref.read(counterRepositoryForProvider)(dhikrId);
+    final result = await _repo.load();
     return switch (result) {
       Ok(:final value) => value,
       Err(:final failure) => throw failure,
@@ -77,6 +83,5 @@ class CounterController extends AsyncNotifier<CounterState> {
   }
 
   // Behaviour on a failed save is out of scope (specs 0001, 0002).
-  Future<void> _save(CounterState next) =>
-      ref.read(counterRepositoryProvider).save(next);
+  Future<void> _save(CounterState next) => _repo.save(next);
 }

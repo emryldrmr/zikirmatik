@@ -255,6 +255,78 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Değiştir'**
   String get targetChangeConfirm;
+
+  /// No description provided for @dhikrPickerSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir: {name}. Değiştirmek için dokunun.'**
+  String dhikrPickerSemantics(String name);
+
+  /// No description provided for @dhikrEditSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{name} zikrini düzenle'**
+  String dhikrEditSemantics(String name);
+
+  /// No description provided for @dhikrPickerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir seç'**
+  String get dhikrPickerTitle;
+
+  /// No description provided for @newDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni zikir'**
+  String get newDhikr;
+
+  /// No description provided for @editDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikri düzenle'**
+  String get editDhikr;
+
+  /// No description provided for @dhikrNameLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ad'**
+  String get dhikrNameLabel;
+
+  /// No description provided for @dhikrTargetLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef (isteğe bağlı)'**
+  String get dhikrTargetLabel;
+
+  /// No description provided for @dhikrNameInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ad 1–50 karakter olmalı.'**
+  String get dhikrNameInvalid;
+
+  /// No description provided for @delete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get delete;
+
+  /// No description provided for @deleteDhikrConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{name}” silinsin mi? Sayımı ve toplamı da silinir.'**
+  String deleteDhikrConfirmMessage(String name);
+
+  /// No description provided for @noDhikrs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz zikir yok.'**
+  String get noDhikrs;
+
+  /// No description provided for @addDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir ekle'**
+  String get addDhikr;
 }
 
 class _AppLocalizationsDelegate

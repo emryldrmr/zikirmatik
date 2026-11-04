@@ -97,4 +97,46 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get targetChangeConfirm => 'Değiştir';
+
+  @override
+  String dhikrPickerSemantics(String name) {
+    return 'Zikir: $name. Değiştirmek için dokunun.';
+  }
+
+  @override
+  String dhikrEditSemantics(String name) {
+    return '$name zikrini düzenle';
+  }
+
+  @override
+  String get dhikrPickerTitle => 'Zikir seç';
+
+  @override
+  String get newDhikr => 'Yeni zikir';
+
+  @override
+  String get editDhikr => 'Zikri düzenle';
+
+  @override
+  String get dhikrNameLabel => 'Ad';
+
+  @override
+  String get dhikrTargetLabel => 'Hedef (isteğe bağlı)';
+
+  @override
+  String get dhikrNameInvalid => 'Ad 1–50 karakter olmalı.';
+
+  @override
+  String get delete => 'Sil';
+
+  @override
+  String deleteDhikrConfirmMessage(String name) {
+    return '“$name” silinsin mi? Sayımı ve toplamı da silinir.';
+  }
+
+  @override
+  String get noDhikrs => 'Henüz zikir yok.';
+
+  @override
+  String get addDhikr => 'Zikir ekle';
 }
