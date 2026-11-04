@@ -1,6 +1,6 @@
 # Spec 0004 — Ayarlar
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0004-plan.md`
 - Self-critique: done
@@ -63,27 +63,45 @@ dışındadır.
   tesbihat titreşimi (BR-13 kendi spec'inde bu ayara uyar).
 
 ## Acceptance criteria
-- [ ] AC-1 — Yan menüden "Ayarlar"a dokununca başlığı "Ayarlar" olan ekran açılır; "Titreşim" anahtarı ve "Açık", "Koyu", "Sistem" tema seçenekleri görünür, "Bu bölüm yakında." görünmez. Yeni kurulumda Titreşim açık, Tema "Sistem" seçilidir.
-- [ ] AC-2 — Titreşim kapalıyken hedefli zikirde sayım hedefe ulaşınca titreşim tetiklenmez; tur 1 artar ve sayım 0 olur. Tekrar açılınca bir sonraki tur tamamlanmasında titreşim tetiklenir.
-- [ ] AC-3 — "Koyu" seçilince uygulama hemen koyu temaya, "Açık" seçilince açık temaya geçer; "Sistem" seçiliyken uygulama telefonun açık/koyu ayarını izler ve telefon ayarı değişince uygulama da değişir.
-- [ ] AC-4 — Zikirmatik cihazının gövde, ekran ve buton renkleri Açık ve Koyu temada aynıdır.
-- [ ] AC-5 — Titreşim ve tema seçimi uygulama yeniden başlatılınca (aynı kalıcı depoyla) aynen görünür; uygulama içeriği kaydedilen temayla açılır.
-- [ ] AC-6 — Ayarlar okunamazsa hata gösterilmez; titreşim açık ve tema Sistem olarak çalışılır ve Ayarlar ekranı bu değerleri gösterir.
-- [ ] AC-7 — Ayarlar ekranından yan menüyle Zikirlerim'e dönülünce seçili zikir ve değerleri değişmemiştir; Önerilen Zikirler, Esmaü'l-Hüsna ve Kur'an hâlâ "Bu bölüm yakında." gösterir.
-- [ ] AC-8 — Erişilebilirlik: Titreşim anahtarının etiketi "Titreşim" ve açık/kapalı durumu bildirilir; seçili tema seçeneği ekran okuyucuya seçili olarak bildirilir; Ayarlar ekranındaki tüm dokunma hedefleri en az 48×48 dp; Açık ve Koyu temada Ayarlar ekranı ve Zikirlerim'deki metinlerin kontrastı en az 4.5:1.
+- [x] AC-1 — Yan menüden "Ayarlar"a dokununca başlığı "Ayarlar" olan ekran açılır; "Titreşim" anahtarı ve "Açık", "Koyu", "Sistem" tema seçenekleri görünür, "Bu bölüm yakında." görünmez. Yeni kurulumda Titreşim açık, Tema "Sistem" seçilidir.
+- [x] AC-2 — Titreşim kapalıyken hedefli zikirde sayım hedefe ulaşınca titreşim tetiklenmez; tur 1 artar ve sayım 0 olur. Tekrar açılınca bir sonraki tur tamamlanmasında titreşim tetiklenir.
+- [x] AC-3 — "Koyu" seçilince uygulama hemen koyu temaya, "Açık" seçilince açık temaya geçer; "Sistem" seçiliyken uygulama telefonun açık/koyu ayarını izler ve telefon ayarı değişince uygulama da değişir.
+- [x] AC-4 — Zikirmatik cihazının gövde, ekran ve buton renkleri Açık ve Koyu temada aynıdır.
+- [x] AC-5 — Titreşim ve tema seçimi uygulama yeniden başlatılınca (aynı kalıcı depoyla) aynen görünür; uygulama içeriği kaydedilen temayla açılır.
+- [x] AC-6 — Ayarlar okunamazsa hata gösterilmez; titreşim açık ve tema Sistem olarak çalışılır ve Ayarlar ekranı bu değerleri gösterir.
+- [x] AC-7 — Ayarlar ekranından yan menüyle Zikirlerim'e dönülünce seçili zikir ve değerleri değişmemiştir; Önerilen Zikirler, Esmaü'l-Hüsna ve Kur'an hâlâ "Bu bölüm yakında." gösterir.
+- [x] AC-8 — Erişilebilirlik: Titreşim anahtarının etiketi "Titreşim" ve açık/kapalı durumu bildirilir; seçili tema seçeneği ekran okuyucuya seçili olarak bildirilir; Ayarlar ekranındaki tüm dokunma hedefleri en az 48×48 dp; Açık ve Koyu temada Ayarlar ekranı ve Zikirlerim'deki metinlerin kontrastı en az 4.5:1.
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 0 |
+| Fix rounds | 0 |
+| Review findings: real / noise / deferred | 0 / 2 / 0 (one-pass review clean; 2 notes closed as noise at triage) |
+| Regressions introduced | 0 (26 shipped tests went red mid-build from the settings load frame; fixed in the app before commit, no test changed) |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+One-pass review (independent reviewer subagent, REVIEW + VERIFY), 2026-11-04, @af3d79a; triage confirmed the clean verdict.
+Full green: CHECK GREEN (full, 6 steps, 286 s) @af3d79a — https://github.com/emryldrmr/zikirmatik/actions/runs/41871700099
+(127 tests). No deliberate breaks required (outside the sensitive area; no concurrency, money, authorization or boundary criterion).
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `settings_test.dart` — `settings shows vibration and theme with defaults`; `drift_settings_repository_test.dart` — `a new database has the default settings`; S-1 | PASS |
+| AC-2 | `settings_test.dart` — `vibration off completes the round without vibrating`, `vibration back on vibrates again` | PASS |
+| AC-3 | `settings_test.dart` — `choosing dark or light applies at once`, `system follows the phone and its changes`; S-2, S-13 | PASS |
+| AC-4 | `settings_test.dart` — `the device looks the same in light and dark`; S-3, S-4 | PASS |
+| AC-5 | `drift_settings_repository_test.dart` — `settings survive reopening`, `migrates a v3 database and keeps the dhikrs`; `settings_test.dart` — `restart opens in the saved theme with the saved vibration`; S-9, S-10 | PASS |
+| AC-6 | `settings_test.dart` — `unreadable settings fall back to defaults silently`; `drift_settings_repository_test.dart` — `a storage error becomes a StorageFailure`; S-11, S-12 | PASS |
+| AC-7 | `settings_test.dart` — `returning to Zikirlerim keeps the selected dhikr and values`; `shell_test.dart` — `each section shows coming soon and counter keeps its value`; S-7, S-8 | PASS |
+| AC-8 | `settings_test.dart` — `settings semantics and touch targets`, `text contrast is at least 4.5 in light and dark`; S-1, S-2, S-5, S-6 | PASS |
+
+UI: S-1…S-13 agent-captured (headless widget render, Roboto + Material icons), judged by emryldrmr at SHIP, 2026-11-04 (images outside the repo, deleted after ship). Manual run on a phone (Android 16) also passed, vibration included (emryldrmr, 2026-11-04).
