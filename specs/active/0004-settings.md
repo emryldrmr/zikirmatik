@@ -1,6 +1,6 @@
 # Spec 0004 — Ayarlar
 
-- Status: Approved
+- Status: In progress
 - Mode: lite
 - Plan: `specs/plans/0004-plan.md`
 - Self-critique: done
