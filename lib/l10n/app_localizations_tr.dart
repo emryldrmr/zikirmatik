@@ -160,4 +160,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get appLoading => 'Yükleniyor';
+
+  @override
+  String get pressBackAgainToExit => 'Çıkmak için tekrar basın.';
 }

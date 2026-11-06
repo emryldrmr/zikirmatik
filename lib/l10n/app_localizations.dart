@@ -369,6 +369,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Yükleniyor'**
   String get appLoading;
+
+  /// No description provided for @pressBackAgainToExit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çıkmak için tekrar basın.'**
+  String get pressBackAgainToExit;
 }
 
 class _AppLocalizationsDelegate
