@@ -112,9 +112,18 @@ class _NameRow extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: 32,
-                      child: Text('$n', style: theme.textTheme.titleMedium),
+                    // Grows with the text size: the number never breaks
+                    // (review round 1, F-2).
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minWidth: 32),
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.only(end: 8),
+                        child: Text(
+                          '$n',
+                          key: Key('esma-number-$n'),
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Column(

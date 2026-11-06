@@ -83,7 +83,7 @@ Future<void> _scrollTo(WidgetTester tester, Finder target) async {
   await tester.scrollUntilVisible(
     target,
     500,
-    maxScrolls: 200,
+    maxScrolls: 1000,
     scrollable: find.descendant(of: _list, matching: find.byType(Scrollable)),
   );
   await tester.pumpAndSettle();
@@ -166,6 +166,19 @@ void main() {
           tester.getSize(_field('meaning', n)).height,
           greaterThan(2 * 14 * 2),
           reason: 'meaning $n wraps',
+        );
+        // The number stays on one line: laid out as wide as its unbroken
+        // text (review round 1, F-2).
+        final number = tester.renderObject<RenderParagraph>(
+          find.descendant(
+            of: find.byKey(Key('esma-number-$n')),
+            matching: find.byType(RichText),
+          ),
+        );
+        expect(
+          number.size.width,
+          moreOrLessEquals(number.getMaxIntrinsicWidth(double.infinity)),
+          reason: 'number $n',
         );
       }
       expect(tester.takeException(), isNull);
