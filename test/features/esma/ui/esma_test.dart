@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/esma/esma.dart';
+import 'package:zikirmatik/features/esma/ui/esma_screen.dart'
+    show arabicFontFamily;
 
 import '../../../support/test_app.dart';
 
@@ -176,8 +180,27 @@ void main() {
       await _scrollTo(tester, _row(n));
       final arabic = tester.widget<Text>(_field('arabic', n));
       expect(arabic.textDirection, TextDirection.rtl);
-      expect(arabic.style?.fontFamily, 'AmiriQuran');
+      expect(arabic.style?.fontFamily, arabicFontFamily);
     }
+
+    // The bundle binds that family to the embedded Amiri Quran file, so the
+    // device draws it instead of a fallback font (review round 1, F-1).
+    final manifest = await tester.runAsync(
+      () => rootBundle.loadString('FontManifest.json'),
+    );
+    final families = [
+      for (final f in jsonDecode(manifest!) as List<Object?>)
+        f! as Map<String, Object?>,
+    ];
+    final amiri = families.where((f) => f['family'] == arabicFontFamily);
+    expect(amiri, hasLength(1));
+    expect(
+      [
+        for (final a in amiri.single['fonts']! as List<Object?>)
+          (a! as Map<String, Object?>)['asset'],
+      ],
+      ['assets/fonts/AmiriQuran-Regular.ttf'],
+    );
   });
 
   testWidgets(

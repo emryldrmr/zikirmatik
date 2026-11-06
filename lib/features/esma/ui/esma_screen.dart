@@ -6,6 +6,10 @@ import '../../counter/counter.dart';
 import '../domain/asma_name.dart';
 import 'esma_providers.dart';
 
+/// The font family of the Arabic text; `pubspec.yaml` binds it to
+/// `assets/fonts/AmiriQuran-Regular.ttf` (spec 0007, AC-3).
+const String arabicFontFamily = 'AmiriQuran';
+
 /// "Esmaü'l-Hüsna" body (spec 0007): the 99 names in order, each with an
 /// "Ekle" button that adds it to the user's dhikrs, and the source line.
 ///
@@ -123,7 +127,7 @@ class _NameRow extends StatelessWidget {
                             textDirection: TextDirection.rtl,
                             textAlign: TextAlign.right,
                             style: const TextStyle(
-                              fontFamily: 'AmiriQuran',
+                              fontFamily: arabicFontFamily,
                               fontSize: 26,
                               height: 1.8,
                             ),
