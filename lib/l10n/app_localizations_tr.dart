@@ -163,4 +163,50 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pressBackAgainToExit => 'Çıkmak için tekrar basın.';
+
+  @override
+  String get tesbihatName => 'Namaz sonrası tesbihat';
+
+  @override
+  String tesbihatStep(int step, int steps) {
+    return 'Adım $step/$steps';
+  }
+
+  @override
+  String tesbihatTarget(String target) {
+    return 'Hedef $target';
+  }
+
+  @override
+  String tesbihatCompletions(String completions) {
+    return 'Tamamlanan $completions';
+  }
+
+  @override
+  String get tesbihatFinished => 'Tesbihat tamamlandı';
+
+  @override
+  String get tesbihatRestart => 'Baştan başla';
+
+  @override
+  String get tesbihatOpen => 'Tesbihat çek';
+
+  @override
+  String get tesbihatResetConfirmMessage => 'Tesbihat baştan başlasın mı?';
+
+  @override
+  String tesbihatStepSemantics(
+    String text,
+    int step,
+    int steps,
+    int count,
+    int target,
+  ) {
+    return '$text, adım $step/$steps, $count / $target';
+  }
+
+  @override
+  String tesbihatStepAnnouncement(String text, int step, int steps) {
+    return '$text, adım $step/$steps';
+  }
 }

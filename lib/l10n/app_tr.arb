@@ -82,5 +82,47 @@
   "themeDark": "Koyu",
   "themeSystem": "Sistem",
   "appLoading": "Yükleniyor",
-  "pressBackAgainToExit": "Çıkmak için tekrar basın."
+  "pressBackAgainToExit": "Çıkmak için tekrar basın.",
+  "tesbihatName": "Namaz sonrası tesbihat",
+  "tesbihatStep": "Adım {step}/{steps}",
+  "@tesbihatStep": {
+    "placeholders": {
+      "step": {"type": "int"},
+      "steps": {"type": "int"}
+    }
+  },
+  "tesbihatTarget": "Hedef {target}",
+  "@tesbihatTarget": {
+    "placeholders": {
+      "target": {"type": "String"}
+    }
+  },
+  "tesbihatCompletions": "Tamamlanan {completions}",
+  "@tesbihatCompletions": {
+    "placeholders": {
+      "completions": {"type": "String"}
+    }
+  },
+  "tesbihatFinished": "Tesbihat tamamlandı",
+  "tesbihatRestart": "Baştan başla",
+  "tesbihatOpen": "Tesbihat çek",
+  "tesbihatResetConfirmMessage": "Tesbihat baştan başlasın mı?",
+  "tesbihatStepSemantics": "{text}, adım {step}/{steps}, {count} / {target}",
+  "@tesbihatStepSemantics": {
+    "placeholders": {
+      "text": {"type": "String"},
+      "step": {"type": "int"},
+      "steps": {"type": "int"},
+      "count": {"type": "int"},
+      "target": {"type": "int"}
+    }
+  },
+  "tesbihatStepAnnouncement": "{text}, adım {step}/{steps}",
+  "@tesbihatStepAnnouncement": {
+    "placeholders": {
+      "text": {"type": "String"},
+      "step": {"type": "int"},
+      "steps": {"type": "int"}
+    }
+  }
 }
