@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
@@ -187,6 +189,43 @@ void main() {
     expect(_text(tester, _stepText), 'Allâhu ekber');
     expect(_text(tester, _step), 'Adım 3/3');
     expect(repo.stored, const TesbihatState(step: 2, selected: true));
+  });
+
+  testWidgets('a tap during a slow vibration is stored in order', (
+    tester,
+  ) async {
+    // Review round 1, F-2 (Known traps): the step change's save must not wait
+    // for the vibration.
+    final haptics = FakeHaptics()..hold = Completer<void>();
+    final repo = _at(const TesbihatState(count: DhikrCount(32)));
+    await _start(tester, tesbihat: repo, haptics: haptics);
+
+    await tester.tap(_button); // moves to step 2; vibration still running
+    await tester.tap(_button); // the next tap, no pump in between
+    await tester.pump();
+    haptics.hold!.complete();
+    await tester.pump();
+
+    expect(_text(tester, _stepText), 'Elhamdülillâh');
+    expect(_text(tester, _value), '1');
+    expect(
+      repo.stored,
+      const TesbihatState(step: 1, count: DhikrCount(1), selected: true),
+    );
+    expect(repo.saves.map((s) => (s.step, s.count.value)), [(1, 0), (1, 1)]);
+  });
+
+  testWidgets('a failing vibration does not stop the step change', (
+    tester,
+  ) async {
+    final haptics = FakeHaptics()..fail = true;
+    final repo = _at(const TesbihatState(count: DhikrCount(32)));
+    await _start(tester, tesbihat: repo, haptics: haptics);
+
+    await _taps(tester, 1);
+    expect(haptics.roundsCompleted, 1);
+    expect(_text(tester, _stepText), 'Elhamdülillâh');
+    expect(repo.stored, const TesbihatState(step: 1, selected: true));
   });
 
   testWidgets('with vibration off the step still changes', (tester) async {
