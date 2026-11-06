@@ -974,6 +974,414 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   }
 }
 
+class $TesbihatProgressTable extends TesbihatProgress
+    with TableInfo<$TesbihatProgressTable, TesbihatProgressData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TesbihatProgressTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('id = 1'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stepMeta = const VerificationMeta('step');
+  @override
+  late final GeneratedColumn<int> step = GeneratedColumn<int>(
+    'step',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('step >= 0'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('count >= 0'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _finishedMeta = const VerificationMeta(
+    'finished',
+  );
+  @override
+  late final GeneratedColumn<bool> finished = GeneratedColumn<bool>(
+    'finished',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("finished" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _completionsMeta = const VerificationMeta(
+    'completions',
+  );
+  @override
+  late final GeneratedColumn<int> completions = GeneratedColumn<int>(
+    'completions',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('completions >= 0'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _selectedMeta = const VerificationMeta(
+    'selected',
+  );
+  @override
+  late final GeneratedColumn<bool> selected = GeneratedColumn<bool>(
+    'selected',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("selected" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    step,
+    count,
+    finished,
+    completions,
+    selected,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tesbihat_progress';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TesbihatProgressData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('step')) {
+      context.handle(
+        _stepMeta,
+        step.isAcceptableOrUnknown(data['step']!, _stepMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stepMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    if (data.containsKey('finished')) {
+      context.handle(
+        _finishedMeta,
+        finished.isAcceptableOrUnknown(data['finished']!, _finishedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_finishedMeta);
+    }
+    if (data.containsKey('completions')) {
+      context.handle(
+        _completionsMeta,
+        completions.isAcceptableOrUnknown(
+          data['completions']!,
+          _completionsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_completionsMeta);
+    }
+    if (data.containsKey('selected')) {
+      context.handle(
+        _selectedMeta,
+        selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_selectedMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TesbihatProgressData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TesbihatProgressData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      step: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}step'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+      finished: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}finished'],
+      )!,
+      completions: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}completions'],
+      )!,
+      selected: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}selected'],
+      )!,
+    );
+  }
+
+  @override
+  $TesbihatProgressTable createAlias(String alias) {
+    return $TesbihatProgressTable(attachedDatabase, alias);
+  }
+}
+
+class TesbihatProgressData extends DataClass
+    implements Insertable<TesbihatProgressData> {
+  final int id;
+  final int step;
+  final int count;
+  final bool finished;
+  final int completions;
+  final bool selected;
+  const TesbihatProgressData({
+    required this.id,
+    required this.step,
+    required this.count,
+    required this.finished,
+    required this.completions,
+    required this.selected,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['step'] = Variable<int>(step);
+    map['count'] = Variable<int>(count);
+    map['finished'] = Variable<bool>(finished);
+    map['completions'] = Variable<int>(completions);
+    map['selected'] = Variable<bool>(selected);
+    return map;
+  }
+
+  TesbihatProgressCompanion toCompanion(bool nullToAbsent) {
+    return TesbihatProgressCompanion(
+      id: Value(id),
+      step: Value(step),
+      count: Value(count),
+      finished: Value(finished),
+      completions: Value(completions),
+      selected: Value(selected),
+    );
+  }
+
+  factory TesbihatProgressData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TesbihatProgressData(
+      id: serializer.fromJson<int>(json['id']),
+      step: serializer.fromJson<int>(json['step']),
+      count: serializer.fromJson<int>(json['count']),
+      finished: serializer.fromJson<bool>(json['finished']),
+      completions: serializer.fromJson<int>(json['completions']),
+      selected: serializer.fromJson<bool>(json['selected']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'step': serializer.toJson<int>(step),
+      'count': serializer.toJson<int>(count),
+      'finished': serializer.toJson<bool>(finished),
+      'completions': serializer.toJson<int>(completions),
+      'selected': serializer.toJson<bool>(selected),
+    };
+  }
+
+  TesbihatProgressData copyWith({
+    int? id,
+    int? step,
+    int? count,
+    bool? finished,
+    int? completions,
+    bool? selected,
+  }) => TesbihatProgressData(
+    id: id ?? this.id,
+    step: step ?? this.step,
+    count: count ?? this.count,
+    finished: finished ?? this.finished,
+    completions: completions ?? this.completions,
+    selected: selected ?? this.selected,
+  );
+  TesbihatProgressData copyWithCompanion(TesbihatProgressCompanion data) {
+    return TesbihatProgressData(
+      id: data.id.present ? data.id.value : this.id,
+      step: data.step.present ? data.step.value : this.step,
+      count: data.count.present ? data.count.value : this.count,
+      finished: data.finished.present ? data.finished.value : this.finished,
+      completions: data.completions.present
+          ? data.completions.value
+          : this.completions,
+      selected: data.selected.present ? data.selected.value : this.selected,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TesbihatProgressData(')
+          ..write('id: $id, ')
+          ..write('step: $step, ')
+          ..write('count: $count, ')
+          ..write('finished: $finished, ')
+          ..write('completions: $completions, ')
+          ..write('selected: $selected')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, step, count, finished, completions, selected);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TesbihatProgressData &&
+          other.id == this.id &&
+          other.step == this.step &&
+          other.count == this.count &&
+          other.finished == this.finished &&
+          other.completions == this.completions &&
+          other.selected == this.selected);
+}
+
+class TesbihatProgressCompanion extends UpdateCompanion<TesbihatProgressData> {
+  final Value<int> id;
+  final Value<int> step;
+  final Value<int> count;
+  final Value<bool> finished;
+  final Value<int> completions;
+  final Value<bool> selected;
+  const TesbihatProgressCompanion({
+    this.id = const Value.absent(),
+    this.step = const Value.absent(),
+    this.count = const Value.absent(),
+    this.finished = const Value.absent(),
+    this.completions = const Value.absent(),
+    this.selected = const Value.absent(),
+  });
+  TesbihatProgressCompanion.insert({
+    this.id = const Value.absent(),
+    required int step,
+    required int count,
+    required bool finished,
+    required int completions,
+    required bool selected,
+  }) : step = Value(step),
+       count = Value(count),
+       finished = Value(finished),
+       completions = Value(completions),
+       selected = Value(selected);
+  static Insertable<TesbihatProgressData> custom({
+    Expression<int>? id,
+    Expression<int>? step,
+    Expression<int>? count,
+    Expression<bool>? finished,
+    Expression<int>? completions,
+    Expression<bool>? selected,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (step != null) 'step': step,
+      if (count != null) 'count': count,
+      if (finished != null) 'finished': finished,
+      if (completions != null) 'completions': completions,
+      if (selected != null) 'selected': selected,
+    });
+  }
+
+  TesbihatProgressCompanion copyWith({
+    Value<int>? id,
+    Value<int>? step,
+    Value<int>? count,
+    Value<bool>? finished,
+    Value<int>? completions,
+    Value<bool>? selected,
+  }) {
+    return TesbihatProgressCompanion(
+      id: id ?? this.id,
+      step: step ?? this.step,
+      count: count ?? this.count,
+      finished: finished ?? this.finished,
+      completions: completions ?? this.completions,
+      selected: selected ?? this.selected,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (step.present) {
+      map['step'] = Variable<int>(step.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (finished.present) {
+      map['finished'] = Variable<bool>(finished.value);
+    }
+    if (completions.present) {
+      map['completions'] = Variable<int>(completions.value);
+    }
+    if (selected.present) {
+      map['selected'] = Variable<bool>(selected.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TesbihatProgressCompanion(')
+          ..write('id: $id, ')
+          ..write('step: $step, ')
+          ..write('count: $count, ')
+          ..write('finished: $finished, ')
+          ..write('completions: $completions, ')
+          ..write('selected: $selected')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -983,6 +1391,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $SettingsTable settings = $SettingsTable(this);
+  late final $TesbihatProgressTable tesbihatProgress = $TesbihatProgressTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -992,6 +1403,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dhikrs,
     dhikrSelections,
     settings,
+    tesbihatProgress,
   ];
 }
 
@@ -1578,6 +1990,231 @@ typedef $$SettingsTableProcessedTableManager =
       Setting,
       PrefetchHooks Function()
     >;
+typedef $$TesbihatProgressTableCreateCompanionBuilder =
+    TesbihatProgressCompanion Function({
+      Value<int> id,
+      required int step,
+      required int count,
+      required bool finished,
+      required int completions,
+      required bool selected,
+    });
+typedef $$TesbihatProgressTableUpdateCompanionBuilder =
+    TesbihatProgressCompanion Function({
+      Value<int> id,
+      Value<int> step,
+      Value<int> count,
+      Value<bool> finished,
+      Value<int> completions,
+      Value<bool> selected,
+    });
+
+class $$TesbihatProgressTableFilterComposer
+    extends Composer<_$AppDatabase, $TesbihatProgressTable> {
+  $$TesbihatProgressTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get step => $composableBuilder(
+    column: $table.step,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get finished => $composableBuilder(
+    column: $table.finished,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get completions => $composableBuilder(
+    column: $table.completions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get selected => $composableBuilder(
+    column: $table.selected,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TesbihatProgressTableOrderingComposer
+    extends Composer<_$AppDatabase, $TesbihatProgressTable> {
+  $$TesbihatProgressTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get step => $composableBuilder(
+    column: $table.step,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get finished => $composableBuilder(
+    column: $table.finished,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get completions => $composableBuilder(
+    column: $table.completions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get selected => $composableBuilder(
+    column: $table.selected,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TesbihatProgressTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TesbihatProgressTable> {
+  $$TesbihatProgressTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get step =>
+      $composableBuilder(column: $table.step, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<bool> get finished =>
+      $composableBuilder(column: $table.finished, builder: (column) => column);
+
+  GeneratedColumn<int> get completions => $composableBuilder(
+    column: $table.completions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get selected =>
+      $composableBuilder(column: $table.selected, builder: (column) => column);
+}
+
+class $$TesbihatProgressTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TesbihatProgressTable,
+          TesbihatProgressData,
+          $$TesbihatProgressTableFilterComposer,
+          $$TesbihatProgressTableOrderingComposer,
+          $$TesbihatProgressTableAnnotationComposer,
+          $$TesbihatProgressTableCreateCompanionBuilder,
+          $$TesbihatProgressTableUpdateCompanionBuilder,
+          (
+            TesbihatProgressData,
+            BaseReferences<
+              _$AppDatabase,
+              $TesbihatProgressTable,
+              TesbihatProgressData
+            >,
+          ),
+          TesbihatProgressData,
+          PrefetchHooks Function()
+        > {
+  $$TesbihatProgressTableTableManager(
+    _$AppDatabase db,
+    $TesbihatProgressTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TesbihatProgressTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TesbihatProgressTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TesbihatProgressTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> step = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<bool> finished = const Value.absent(),
+                Value<int> completions = const Value.absent(),
+                Value<bool> selected = const Value.absent(),
+              }) => TesbihatProgressCompanion(
+                id: id,
+                step: step,
+                count: count,
+                finished: finished,
+                completions: completions,
+                selected: selected,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int step,
+                required int count,
+                required bool finished,
+                required int completions,
+                required bool selected,
+              }) => TesbihatProgressCompanion.insert(
+                id: id,
+                step: step,
+                count: count,
+                finished: finished,
+                completions: completions,
+                selected: selected,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TesbihatProgressTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TesbihatProgressTable,
+      TesbihatProgressData,
+      $$TesbihatProgressTableFilterComposer,
+      $$TesbihatProgressTableOrderingComposer,
+      $$TesbihatProgressTableAnnotationComposer,
+      $$TesbihatProgressTableCreateCompanionBuilder,
+      $$TesbihatProgressTableUpdateCompanionBuilder,
+      (
+        TesbihatProgressData,
+        BaseReferences<
+          _$AppDatabase,
+          $TesbihatProgressTable,
+          TesbihatProgressData
+        >,
+      ),
+      TesbihatProgressData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1590,4 +2227,6 @@ class $AppDatabaseManager {
       $$DhikrSelectionsTableTableManager(_db, _db.dhikrSelections);
   $$SettingsTableTableManager get settings =>
       $$SettingsTableTableManager(_db, _db.settings);
+  $$TesbihatProgressTableTableManager get tesbihatProgress =>
+      $$TesbihatProgressTableTableManager(_db, _db.tesbihatProgress);
 }
