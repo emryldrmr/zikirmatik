@@ -467,6 +467,16 @@ void main() {
       findsOneWidget,
     );
 
+    expect(
+      tester.getSemantics(_button),
+      isSemantics(
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        hasTapAction: true,
+      ),
+    );
+
     await _taps(tester, 2);
     expect(
       tester.getSemantics(_stepText),
@@ -494,6 +504,16 @@ void main() {
     expect(
       tester.getSemantics(_finished),
       isSemantics(label: 'Tesbihat tamamlandı', isLiveRegion: true),
+    );
+    // Review round 1, F-3: the count button is announced as disabled.
+    expect(
+      tester.getSemantics(_button),
+      isSemantics(
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: false,
+        hasTapAction: false,
+      ),
     );
     final restart = tester.getSize(_restart);
     expect(restart.width, greaterThanOrEqualTo(48));

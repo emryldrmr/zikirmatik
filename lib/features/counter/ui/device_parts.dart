@@ -72,19 +72,25 @@ class DeviceCountButton extends StatelessWidget {
     super.key,
     required this.semanticsLabel,
     required this.onTap,
+    this.enabled = true,
   });
 
   final String semanticsLabel;
   final VoidCallback onTap;
+
+  /// False when a tap would change nothing (a finished tesbihat, spec 0006):
+  /// a screen reader then hears a disabled button (review round 1, F-3).
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
       button: true,
+      enabled: enabled,
       label: semanticsLabel,
       excludeSemantics: true,
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       child: Material(
         color: _buttonColor,
         shape: const CircleBorder(),

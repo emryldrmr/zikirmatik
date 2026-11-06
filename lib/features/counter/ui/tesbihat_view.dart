@@ -174,6 +174,7 @@ class _TesbihatDevice extends ConsumerWidget {
                     step.target.value,
                   ),
             onTap: controller.tap,
+            enabled: !state.finished,
           ),
         ],
       ),
