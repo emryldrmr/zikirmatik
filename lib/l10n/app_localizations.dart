@@ -375,6 +375,72 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Çıkmak için tekrar basın.'**
   String get pressBackAgainToExit;
+
+  /// No description provided for @tesbihatName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz sonrası tesbihat'**
+  String get tesbihatName;
+
+  /// No description provided for @tesbihatStep.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adım {step}/{steps}'**
+  String tesbihatStep(int step, int steps);
+
+  /// No description provided for @tesbihatTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef {target}'**
+  String tesbihatTarget(String target);
+
+  /// No description provided for @tesbihatCompletions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamamlanan {completions}'**
+  String tesbihatCompletions(String completions);
+
+  /// No description provided for @tesbihatFinished.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat tamamlandı'**
+  String get tesbihatFinished;
+
+  /// No description provided for @tesbihatRestart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Baştan başla'**
+  String get tesbihatRestart;
+
+  /// No description provided for @tesbihatOpen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat çek'**
+  String get tesbihatOpen;
+
+  /// No description provided for @tesbihatResetConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat baştan başlasın mı?'**
+  String get tesbihatResetConfirmMessage;
+
+  /// No description provided for @tesbihatStepSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{text}, adım {step}/{steps}, {count} / {target}'**
+  String tesbihatStepSemantics(
+    String text,
+    int step,
+    int steps,
+    int count,
+    int target,
+  );
+
+  /// No description provided for @tesbihatStepAnnouncement.
+  ///
+  /// In tr, this message translates to:
+  /// **'{text}, adım {step}/{steps}'**
+  String tesbihatStepAnnouncement(String text, int step, int steps);
 }
 
 class _AppLocalizationsDelegate

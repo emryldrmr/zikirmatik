@@ -16,7 +16,8 @@ import 'package:zikirmatik/features/settings/settings.dart';
 ///
 /// Storage: [store] when given (several dhikrs, spec 0003); otherwise a single
 /// dhikr "Zikir" (id 1) whose counter is [repo] — the setup of specs 0001/0002.
-/// Settings: [settings] when given (spec 0004); otherwise the defaults. The
+/// Settings: [settings] when given (spec 0004); otherwise the defaults.
+/// Tesbihat: [tesbihat] when given (spec 0006); otherwise not started. The
 /// cross-feature wiring is the app's own (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
@@ -24,6 +25,7 @@ Widget testApp(
   FakeDhikrStore? store,
   FakeHaptics? haptics,
   FakeSettingsRepository? settings,
+  FakeTesbihatRepository? tesbihat,
 }) {
   final dhikrs =
       store ?? FakeDhikrStore.single(repo ?? FakeCounterRepository());
@@ -33,6 +35,9 @@ Widget testApp(
       dhikrListRepositoryProvider.overrideWithValue(dhikrs),
       settingsRepositoryProvider.overrideWithValue(
         settings ?? FakeSettingsRepository(),
+      ),
+      tesbihatRepositoryProvider.overrideWithValue(
+        tesbihat ?? FakeTesbihatRepository(),
       ),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
       ...featureWiring(),
@@ -120,6 +125,27 @@ class FakeSettingsRepository implements SettingsRepository {
   Future<Result<void>> save(AppSettings settings) async {
     saves.add(settings);
     stored = settings;
+    return const Ok(null);
+  }
+}
+
+/// In-memory [TesbihatRepository] (spec 0006); not started and not selected
+/// unless [stored] says otherwise. Survives a "restart" when the same instance
+/// is reused.
+class FakeTesbihatRepository implements TesbihatRepository {
+  FakeTesbihatRepository({this.stored = TesbihatState.initial});
+
+  TesbihatState stored;
+
+  final List<TesbihatState> saves = [];
+
+  @override
+  Future<Result<TesbihatState>> load() async => Ok(stored);
+
+  @override
+  Future<Result<void>> save(TesbihatState state) async {
+    saves.add(state);
+    stored = state;
     return const Ok(null);
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../domain/counter_state.dart';
@@ -8,17 +7,29 @@ import '../domain/dhikr_list.dart';
 import 'confirm_dialog.dart';
 import 'counter_controller.dart';
 import 'dhikr_list_controller.dart';
+import 'device_parts.dart';
 import 'dhikr_picker.dart';
 import 'target_picker.dart';
+import 'tesbihat_controller.dart';
+import 'tesbihat_view.dart';
 
 /// "Zikirlerim" body: the selected dhikr's name and its hand-held digital
-/// counter (specs 0002, 0003), or the empty state.
+/// counter (specs 0002, 0003), the tesbihat when it is selected (spec 0006),
+/// or the empty state.
 class CounterScreen extends ConsumerWidget {
   const CounterScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final list = ref.watch(dhikrListControllerProvider);
+    final tesbihat = ref.watch(tesbihatControllerProvider);
+
+    // A tesbihat that cannot be read is treated as not selected, so the
+    // dhikrs stay usable (behaviour on storage errors: B-2).
+    if (tesbihat case AsyncData(:final value) when value.selected) {
+      return TesbihatView(state: value);
+    }
+    if (tesbihat.isLoading) return const Center(child: _Loading());
 
     return switch (list) {
       AsyncData(:final value) => switch (value.selected) {
@@ -74,6 +85,15 @@ class _NoDhikrs extends ConsumerWidget {
             icon: const Icon(Icons.add),
             label: Text(l10n.addDhikr),
             onPressed: () => addDhikr(context, ref),
+          ),
+          const SizedBox(height: 8),
+          // Spec 0006, AC-9.
+          OutlinedButton(
+            key: const Key('tesbihat-empty-open'),
+            style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () =>
+                ref.read(tesbihatControllerProvider.notifier).select(true),
+            child: Text(l10n.tesbihatOpen),
           ),
         ],
       ),
@@ -142,17 +162,6 @@ class _SelectedDhikr extends ConsumerWidget {
   }
 }
 
-// Original drawing of a generic counter; no brand's device is copied.
-const _bodyColor = Color(0xFF37474F);
-const _lcdBackground = Color(0xFF1B3A2A);
-const _lcdDigits = Color(0xFFB9F6CA); // ~11:1 on _lcdBackground (WCAG AA)
-const _bodyText = Color(0xFFECEFF1); // ~9:1 on _bodyColor
-// The count button: the light theme's primary for the teal seed, fixed so the
-// device looks the same in every theme (spec 0004, AC-4).
-const _buttonColor = Color(0xFF006A60);
-
-final _thousands = NumberFormat.decimalPattern('tr');
-
 class _Device extends ConsumerWidget {
   const _Device({required this.dhikrId, required this.state});
 
@@ -197,143 +206,69 @@ class _Device extends ConsumerWidget {
     final targetText = target == null
         ? l10n.targetNone
         : l10n.targetAndRound(
-            _thousands.format(target.value),
-            _thousands.format(state.rounds),
+            thousands.format(target.value),
+            thousands.format(state.rounds),
           );
     final targetLabel = target == null
         ? l10n.targetSemanticsNone
-        : l10n.targetSemantics(_thousands.format(target.value));
+        : l10n.targetSemantics(thousands.format(target.value));
 
     // Centering, scrolling and width come from _SelectedDhikr.
-    return DecoratedBox(
-      key: const Key('counter-device'),
-      decoration: BoxDecoration(
-        color: _bodyColor,
-        borderRadius: BorderRadius.circular(48),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 16,
-            offset: Offset(0, 8),
-            color: Colors.black26,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(28, 32, 28, 36),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _Lcd(count: state.count.value),
-            const SizedBox(height: 12),
-            Semantics(
-              button: true,
-              label: targetLabel,
-              excludeSemantics: true,
-              child: TextButton(
-                key: const Key('counter-target'),
-                style: TextButton.styleFrom(
-                  foregroundColor: _bodyText,
-                  minimumSize: const Size(48, 48),
-                ),
-                onPressed: () => _pickTarget(context, ref),
-                child: Text(
-                  targetText,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: _bodyText,
-                  ),
+    return DeviceBody(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DeviceLcd(count: state.count.value),
+          const SizedBox(height: 12),
+          Semantics(
+            button: true,
+            label: targetLabel,
+            excludeSemantics: true,
+            child: TextButton(
+              key: const Key('counter-target'),
+              style: TextButton.styleFrom(
+                foregroundColor: deviceBodyText,
+                minimumSize: const Size(48, 48),
+              ),
+              onPressed: () => _pickTarget(context, ref),
+              child: Text(
+                targetText,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: deviceBodyText,
                 ),
               ),
             ),
-            Text(
-              l10n.totalLabel(_thousands.format(state.total)),
-              key: const Key('counter-total'),
-              style: theme.textTheme.bodyLarge?.copyWith(color: _bodyText),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  key: const Key('counter-undo'),
-                  color: _bodyText,
-                  disabledColor: _bodyText.withValues(alpha: 0.38),
-                  icon: Icon(Icons.undo, semanticLabel: l10n.undo),
-                  onPressed: state.count.value == 0 ? null : controller.undo,
-                ),
-                IconButton(
-                  key: const Key('counter-reset'),
-                  color: _bodyText,
-                  icon: Icon(Icons.restart_alt, semanticLabel: l10n.reset),
-                  onPressed: () => _reset(context, ref),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _CountButton(
-              semanticsLabel: l10n.counterSemantics(state.count.value),
-              onTap: controller.tap,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Lcd extends StatelessWidget {
-  const _Lcd({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: const Key('counter-lcd'),
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: BoxDecoration(
-        color: _lcdBackground,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black54, width: 3),
-      ),
-      child: Text(
-        '$count',
-        key: const Key('counter-value'),
-        textAlign: TextAlign.right,
-        maxLines: 1,
-        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-          color: _lcdDigits,
-          fontFeatures: const [FontFeature.tabularFigures()],
-        ),
-      ),
-    );
-  }
-}
-
-class _CountButton extends StatelessWidget {
-  const _CountButton({required this.semanticsLabel, required this.onTap});
-
-  final String semanticsLabel;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      container: true,
-      button: true,
-      label: semanticsLabel,
-      excludeSemantics: true,
-      onTap: onTap,
-      child: Material(
-        color: _buttonColor,
-        shape: const CircleBorder(),
-        elevation: 6,
-        child: InkWell(
-          key: const Key('counter-tap-area'),
-          customBorder: const CircleBorder(),
-          onTap: onTap,
-          child: const SizedBox.square(dimension: 140),
-        ),
+          ),
+          Text(
+            l10n.totalLabel(thousands.format(state.total)),
+            key: const Key('counter-total'),
+            style: theme.textTheme.bodyLarge?.copyWith(color: deviceBodyText),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                key: const Key('counter-undo'),
+                color: deviceBodyText,
+                disabledColor: deviceBodyText.withValues(alpha: 0.38),
+                icon: Icon(Icons.undo, semanticLabel: l10n.undo),
+                onPressed: state.count.value == 0 ? null : controller.undo,
+              ),
+              IconButton(
+                key: const Key('counter-reset'),
+                color: deviceBodyText,
+                icon: Icon(Icons.restart_alt, semanticLabel: l10n.reset),
+                onPressed: () => _reset(context, ref),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          DeviceCountButton(
+            semanticsLabel: l10n.counterSemantics(state.count.value),
+            onTap: controller.tap,
+          ),
+        ],
       ),
     );
   }

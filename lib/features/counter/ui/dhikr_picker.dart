@@ -6,15 +6,19 @@ import '../domain/dhikr_list.dart';
 import 'confirm_dialog.dart';
 import 'dhikr_form.dart';
 import 'dhikr_list_controller.dart';
+import 'tesbihat_controller.dart';
 
 /// Opens the add form and stores the new dhikr (AC-3, AC-7). True when a
-/// dhikr was added (it is then selected).
+/// dhikr was added (it is then selected, also over the tesbihat: spec 0006,
+/// AC-9).
 Future<bool> addDhikr(BuildContext context, WidgetRef ref) async {
   final created = await showAddDhikrForm(context);
   if (created == null) return false;
-  return ref
+  final added = await ref
       .read(dhikrListControllerProvider.notifier)
       .add(created.name, created.target);
+  if (added) await ref.read(tesbihatControllerProvider.notifier).select(false);
+  return added;
 }
 
 /// Opens the edit form; renames, or asks and deletes (AC-5, AC-6).
@@ -40,8 +44,8 @@ Future<void> editDhikr(
   }
 }
 
-/// Bottom sheet with every dhikr in creation order (AC-2), an edit button per
-/// row and "Yeni zikir". Follows the list live while open.
+/// Bottom sheet with the tesbihat first (spec 0006, AC-1), then every dhikr in
+/// creation order (AC-2) with an edit button per row, and "Yeni zikir". Follows the list live while open.
 Future<void> showDhikrPicker(BuildContext context) =>
     showModalBottomSheet<void>(
       context: context,
@@ -57,6 +61,10 @@ class _DhikrPickerSheet extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final list = ref.watch(dhikrListControllerProvider).valueOrNull;
     final entries = list?.entries ?? const <DhikrEntry>[];
+    final tesbihatSelected =
+        ref.watch(tesbihatControllerProvider).valueOrNull?.selected ?? false;
+    bool isSelected(DhikrEntry e) =>
+        !tesbihatSelected && e.id == list?.selectedId;
 
     return SafeArea(
       child: ConstrainedBox(
@@ -68,12 +76,29 @@ class _DhikrPickerSheet extends ConsumerWidget {
           shrinkWrap: true,
           children: [
             ListTile(title: Text(l10n.dhikrPickerTitle)),
+            ListTile(
+              key: const Key('tesbihat-row'),
+              selected: tesbihatSelected,
+              leading: Icon(
+                tesbihatSelected
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked,
+              ),
+              title: Text(l10n.tesbihatName),
+              onTap: () async {
+                await ref
+                    .read(tesbihatControllerProvider.notifier)
+                    .select(true);
+                if (context.mounted) Navigator.of(context).pop();
+              },
+            ),
+            const Divider(),
             for (final entry in entries)
               ListTile(
                 key: Key('dhikr-row-${entry.id}'),
-                selected: entry.id == list?.selectedId,
+                selected: isSelected(entry),
                 leading: Icon(
-                  entry.id == list?.selectedId
+                  isSelected(entry)
                       ? Icons.radio_button_checked
                       : Icons.radio_button_unchecked,
                 ),
@@ -82,6 +107,9 @@ class _DhikrPickerSheet extends ConsumerWidget {
                   await ref
                       .read(dhikrListControllerProvider.notifier)
                       .select(entry.id);
+                  await ref
+                      .read(tesbihatControllerProvider.notifier)
+                      .select(false);
                   if (context.mounted) Navigator.of(context).pop();
                 },
                 trailing: IconButton(

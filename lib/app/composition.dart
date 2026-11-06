@@ -14,6 +14,7 @@ List<Override> appOverrides(AppDatabase db) => [
     (dhikrId) => DriftCounterRepository(db, dhikrId: dhikrId),
   ),
   dhikrListRepositoryProvider.overrideWithValue(DriftDhikrListRepository(db)),
+  tesbihatRepositoryProvider.overrideWithValue(DriftTesbihatRepository(db)),
   settingsRepositoryProvider.overrideWithValue(DriftSettingsRepository(db)),
   hapticsProvider.overrideWithValue(const SystemHaptics()),
   ...featureWiring(),
