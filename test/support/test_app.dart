@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/app.dart';
@@ -8,6 +9,7 @@ import 'package:zikirmatik/app/composition.dart';
 import 'package:zikirmatik/core/haptics.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
+import 'package:zikirmatik/features/esma/esma.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
 
 /// The app under test in its deterministic mode (docs/testing.md, Determinism):
@@ -39,6 +41,8 @@ Widget testApp(
       tesbihatRepositoryProvider.overrideWithValue(
         tesbihat ?? FakeTesbihatRepository(),
       ),
+      // Spec 0007: the real bundled content (plan 0007, A-1).
+      esmaRepositoryProvider.overrideWithValue(AssetEsmaRepository(rootBundle)),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
       ...featureWiring(),
     ],
