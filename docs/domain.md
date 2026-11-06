@@ -15,7 +15,7 @@
 | Toplam (`total`) | Zikrin tüm zamanlardaki toplam sayımı. | Sıfırlama sayımı ve turu sıfırlar; toplamın davranışı BR-7'de. |
 | Geri al (`undo`) | Sayımı 1 azaltan işlem. | Turu geri almaz (BR-5). |
 | Önerilen zikir (`SuggestedDhikr`) | Uygulamaya gömülü, anlamı ve önerilen hedefiyle hazır zikir. | Salt okunur içerik; hassas alan. |
-| Esma (`AsmaName`) | Esmaü'l-Hüsna'daki 99 isimden biri: sıra no, Arapça, okunuş, anlam. | Gömülü içerik; hassas alan. Zikir olarak eklenebilir. |
+| Esma (`AsmaName`) | Esmaü'l-Hüsna'daki 99 isimden biri: sıra no, Arapça, okunuş, anlam. | Gömülü içerik; hassas alan. Zikir olarak eklenebilir: adı okunuşudur, hedefsizdir, seçimi değiştirmez (spec 0007). |
 | Sure (`Surah`) | Kur'an'ın 114 bölümünden biri (1–114). | |
 | Ayet (`Ayah`) | Bir surenin ayeti; kimliği **(sure no, ayet no)** çiftidir. | Global ayet indeksiyle (1–6236) karıştırılmaz; o yalnızca API adaptörünün içinde kalır. |
 | Meal (`Translation`) | Bir ayetin Türkçe çevirisi; kaynağı (çevirmen/yayıncı) ile birlikte. | Tefsir değildir. Ayetle birebir hizalanır. |

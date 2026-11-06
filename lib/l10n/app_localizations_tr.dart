@@ -209,4 +209,33 @@ class AppLocalizationsTr extends AppLocalizations {
   String tesbihatStepAnnouncement(String text, int step, int steps) {
     return '$text, adım $step/$steps';
   }
+
+  @override
+  String get esmaLoading => 'Esmaü\'l-Hüsna yükleniyor';
+
+  @override
+  String get esmaLoadFailed => 'Esmaü\'l-Hüsna yüklenemedi.';
+
+  @override
+  String get esmaAdd => 'Ekle';
+
+  @override
+  String esmaAddSemantics(String reading) {
+    return '$reading Zikirlerim\'e ekle';
+  }
+
+  @override
+  String esmaRowSemantics(int number, String reading, String meaning) {
+    return '$number. $reading, $meaning';
+  }
+
+  @override
+  String get esmaAdded => 'Zikirlerim\'e eklendi';
+
+  @override
+  String get esmaCount => 'Say';
+
+  @override
+  String get esmaSource =>
+      'Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu';
 }

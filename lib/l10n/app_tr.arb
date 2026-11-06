@@ -124,5 +124,25 @@
       "step": {"type": "int"},
       "steps": {"type": "int"}
     }
-  }
+  },
+  "esmaLoading": "Esmaü'l-Hüsna yükleniyor",
+  "esmaLoadFailed": "Esmaü'l-Hüsna yüklenemedi.",
+  "esmaAdd": "Ekle",
+  "esmaAddSemantics": "{reading} Zikirlerim'e ekle",
+  "@esmaAddSemantics": {
+    "placeholders": {
+      "reading": {"type": "String"}
+    }
+  },
+  "esmaRowSemantics": "{number}. {reading}, {meaning}",
+  "@esmaRowSemantics": {
+    "placeholders": {
+      "number": {"type": "int"},
+      "reading": {"type": "String"},
+      "meaning": {"type": "String"}
+    }
+  },
+  "esmaAdded": "Zikirlerim'e eklendi",
+  "esmaCount": "Say",
+  "esmaSource": "Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu"
 }

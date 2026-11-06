@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../features/counter/counter.dart';
+import '../features/esma/esma.dart';
 import '../features/settings/settings.dart';
 import '../l10n/app_localizations.dart';
 import 'app_section.dart';
@@ -114,6 +115,10 @@ class _ShellState extends State<Shell> {
       body: switch (_section) {
         AppSection.myDhikrs => const CounterScreen(),
         AppSection.settings => const SettingsScreen(),
+        // Spec 0007, AC-5: "Say" opens Zikirlerim with the added dhikr.
+        AppSection.asma => EsmaScreen(
+          onCount: () => setState(() => _section = AppSection.myDhikrs),
+        ),
         _ => const ComingSoonScreen(),
       },
     );

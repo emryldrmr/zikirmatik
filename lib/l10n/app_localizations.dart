@@ -441,6 +441,54 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{text}, adım {step}/{steps}'**
   String tesbihatStepAnnouncement(String text, int step, int steps);
+
+  /// No description provided for @esmaLoading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Esmaü\'l-Hüsna yükleniyor'**
+  String get esmaLoading;
+
+  /// No description provided for @esmaLoadFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Esmaü\'l-Hüsna yüklenemedi.'**
+  String get esmaLoadFailed;
+
+  /// No description provided for @esmaAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekle'**
+  String get esmaAdd;
+
+  /// No description provided for @esmaAddSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{reading} Zikirlerim\'e ekle'**
+  String esmaAddSemantics(String reading);
+
+  /// No description provided for @esmaRowSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{number}. {reading}, {meaning}'**
+  String esmaRowSemantics(int number, String reading, String meaning);
+
+  /// No description provided for @esmaAdded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikirlerim\'e eklendi'**
+  String get esmaAdded;
+
+  /// No description provided for @esmaCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Say'**
+  String get esmaCount;
+
+  /// No description provided for @esmaSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu'**
+  String get esmaSource;
 }
 
 class _AppLocalizationsDelegate
