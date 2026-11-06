@@ -1,0 +1,599 @@
+{
+  "source": "https://yasin.suresi.gen.tr/dualar/esmaul-husna/ (erişim 2026-11-07); liste: Tirmizî, Daavât 82 — Diyanet'in kullandığı sıra (Diyanet İşleri Başkanlığı, Hadislerle İslâm, c. 1, s. 219). Metin spec 0007 tablosundan bayt bayt alınmıştır; değiştirilmez (BR-12).",
+  "names": [
+    {
+      "number": 1,
+      "arabic": "اللّٰهُ",
+      "reading": "Allah",
+      "meaning": "Bütün güzel isimlerin sahibi, eşi ve benzeri olmayan, ibadete layık tek ilahın özel adı."
+    },
+    {
+      "number": 2,
+      "arabic": "الرَّحْمٰنُ",
+      "reading": "er-Rahmân",
+      "meaning": "Dünyada ayırt etmeden bütün yaratılmışlara merhamet eden."
+    },
+    {
+      "number": 3,
+      "arabic": "الرَّحِيمُ",
+      "reading": "er-Rahîm",
+      "meaning": "Ahirette müminlere rahmetiyle muamele eden, çok merhametli."
+    },
+    {
+      "number": 4,
+      "arabic": "الْمَلِكُ",
+      "reading": "el-Melik",
+      "meaning": "Bütün varlıkların gerçek sahibi ve hükümdarı."
+    },
+    {
+      "number": 5,
+      "arabic": "الْقُدُّوسُ",
+      "reading": "el-Kuddûs",
+      "meaning": "Her türlü eksiklikten ve kusurdan uzak, tertemiz."
+    },
+    {
+      "number": 6,
+      "arabic": "السَّلَامُ",
+      "reading": "es-Selâm",
+      "meaning": "Her türlü kusurdan uzak, kullarına esenlik veren."
+    },
+    {
+      "number": 7,
+      "arabic": "الْمُؤْمِنُ",
+      "reading": "el-Mü'min",
+      "meaning": "Güven veren, kalplere iman nuru veren."
+    },
+    {
+      "number": 8,
+      "arabic": "الْمُهَيْمِنُ",
+      "reading": "el-Müheymin",
+      "meaning": "Her şeyi gözetip koruyan."
+    },
+    {
+      "number": 9,
+      "arabic": "الْعَزِيزُ",
+      "reading": "el-Azîz",
+      "meaning": "İzzet sahibi, mağlup edilmesi imkânsız olan."
+    },
+    {
+      "number": 10,
+      "arabic": "الْجَبَّارُ",
+      "reading": "el-Cebbâr",
+      "meaning": "İradesini her durumda yürüten, kırılanı onarıp eksiği gideren."
+    },
+    {
+      "number": 11,
+      "arabic": "الْمُتَكَبِّرُ",
+      "reading": "el-Mütekebbir",
+      "meaning": "Büyüklükte eşi olmayan, büyüklüğü yalnız kendisine yakışan."
+    },
+    {
+      "number": 12,
+      "arabic": "الْخَالِقُ",
+      "reading": "el-Hâlık",
+      "meaning": "Her şeyi yoktan var eden."
+    },
+    {
+      "number": 13,
+      "arabic": "الْبَارِئُ",
+      "reading": "el-Bâri'",
+      "meaning": "Her şeyi kusursuz ve birbirine uygun yaratan."
+    },
+    {
+      "number": 14,
+      "arabic": "الْمُصَوِّرُ",
+      "reading": "el-Musavvir",
+      "meaning": "Her varlığa ayrı bir şekil ve suret veren."
+    },
+    {
+      "number": 15,
+      "arabic": "الْغَفَّارُ",
+      "reading": "el-Gaffâr",
+      "meaning": "Günahları çokça bağışlayan ve örten."
+    },
+    {
+      "number": 16,
+      "arabic": "الْقَهَّارُ",
+      "reading": "el-Kahhâr",
+      "meaning": "Her şeye galip gelen, karşısında hiçbir gücün duramadığı."
+    },
+    {
+      "number": 17,
+      "arabic": "الْوَهَّابُ",
+      "reading": "el-Vehhâb",
+      "meaning": "Hiçbir karşılık beklemeden nimetlerini bolca bağışlayan."
+    },
+    {
+      "number": 18,
+      "arabic": "الرَّزَّاقُ",
+      "reading": "er-Rezzâk",
+      "meaning": "Bütün canlıların rızkını veren."
+    },
+    {
+      "number": 19,
+      "arabic": "الْفَتَّاحُ",
+      "reading": "el-Fettâh",
+      "meaning": "Her türlü hayır kapısını açan, kulları arasında hükmeden."
+    },
+    {
+      "number": 20,
+      "arabic": "الْعَلِيمُ",
+      "reading": "el-Alîm",
+      "meaning": "Her şeyi en ince ayrıntısıyla bilen."
+    },
+    {
+      "number": 21,
+      "arabic": "الْقَابِضُ",
+      "reading": "el-Kâbıd",
+      "meaning": "Dilediğine rızkı daraltan, ruhları alan."
+    },
+    {
+      "number": 22,
+      "arabic": "الْبَاسِطُ",
+      "reading": "el-Bâsıt",
+      "meaning": "Dilediğine rızkı genişleten, gönüllere ferahlık veren."
+    },
+    {
+      "number": 23,
+      "arabic": "الْخَافِضُ",
+      "reading": "el-Hâfıd",
+      "meaning": "Hikmet ve adaletiyle dilediğini alçaltan."
+    },
+    {
+      "number": 24,
+      "arabic": "الرَّافِعُ",
+      "reading": "er-Râfi'",
+      "meaning": "Dilediğini yükselten."
+    },
+    {
+      "number": 25,
+      "arabic": "الْمُعِزُّ",
+      "reading": "el-Muiz",
+      "meaning": "Dilediğini aziz kılan, şeref veren."
+    },
+    {
+      "number": 26,
+      "arabic": "الْمُذِلُّ",
+      "reading": "el-Müzil",
+      "meaning": "Hikmet ve adaletiyle dilediğini zillete düşüren."
+    },
+    {
+      "number": 27,
+      "arabic": "السَّمِيعُ",
+      "reading": "es-Semî'",
+      "meaning": "Her şeyi işiten."
+    },
+    {
+      "number": 28,
+      "arabic": "الْبَصِيرُ",
+      "reading": "el-Basîr",
+      "meaning": "Her şeyi gören."
+    },
+    {
+      "number": 29,
+      "arabic": "الْحَكَمُ",
+      "reading": "el-Hakem",
+      "meaning": "Hakkı batıldan ayıran, son hükmü veren."
+    },
+    {
+      "number": 30,
+      "arabic": "الْعَدْلُ",
+      "reading": "el-Adl",
+      "meaning": "Mutlak adalet sahibi."
+    },
+    {
+      "number": 31,
+      "arabic": "اللَّطِيفُ",
+      "reading": "el-Latîf",
+      "meaning": "Her şeyin inceliğini bilen, kullarına lütufla davranan."
+    },
+    {
+      "number": 32,
+      "arabic": "الْخَبِيرُ",
+      "reading": "el-Habîr",
+      "meaning": "Gizli açık her şeyin iç yüzünü bilen."
+    },
+    {
+      "number": 33,
+      "arabic": "الْحَلِيمُ",
+      "reading": "el-Halîm",
+      "meaning": "Cezalandırmada acele etmeyen, yumuşak davranan."
+    },
+    {
+      "number": 34,
+      "arabic": "الْعَظِيمُ",
+      "reading": "el-Azîm",
+      "meaning": "Azamet sahibi, pek büyük."
+    },
+    {
+      "number": 35,
+      "arabic": "الْغَفُورُ",
+      "reading": "el-Gafûr",
+      "meaning": "Affı ve bağışlaması bol olan."
+    },
+    {
+      "number": 36,
+      "arabic": "الشَّكُورُ",
+      "reading": "eş-Şekûr",
+      "meaning": "Kulunun az amelini kabul edip ona bol karşılık veren."
+    },
+    {
+      "number": 37,
+      "arabic": "الْعَلِيُّ",
+      "reading": "el-Alî",
+      "meaning": "Yüceler yücesi."
+    },
+    {
+      "number": 38,
+      "arabic": "الْكَبِيرُ",
+      "reading": "el-Kebîr",
+      "meaning": "Her bakımdan büyük olan, büyüklüğü akla sığmayan."
+    },
+    {
+      "number": 39,
+      "arabic": "الْحَفِيظُ",
+      "reading": "el-Hafîz",
+      "meaning": "Her şeyi koruyup gözeten."
+    },
+    {
+      "number": 40,
+      "arabic": "الْمُقِيتُ",
+      "reading": "el-Mukît",
+      "meaning": "Her canlının gıdasını ve ihtiyacını veren."
+    },
+    {
+      "number": 41,
+      "arabic": "الْحَسِيبُ",
+      "reading": "el-Hasîb",
+      "meaning": "Herkesin hesabını gören, kullarına yeten."
+    },
+    {
+      "number": 42,
+      "arabic": "الْجَلِيلُ",
+      "reading": "el-Celîl",
+      "meaning": "Celal ve ululuk sahibi."
+    },
+    {
+      "number": 43,
+      "arabic": "الْكَرِيمُ",
+      "reading": "el-Kerîm",
+      "meaning": "Cömertliği sonsuz, ikramı bol olan."
+    },
+    {
+      "number": 44,
+      "arabic": "الرَّقِيبُ",
+      "reading": "er-Rakîb",
+      "meaning": "Her şeyi gözetleyen, her an kontrolünde tutan."
+    },
+    {
+      "number": 45,
+      "arabic": "الْمُجِيبُ",
+      "reading": "el-Mücîb",
+      "meaning": "Dualara karşılık veren."
+    },
+    {
+      "number": 46,
+      "arabic": "الْوَاسِعُ",
+      "reading": "el-Vâsi'",
+      "meaning": "İlmi, rahmeti ve kudreti her şeyi kuşatan, ihsanı geniş olan."
+    },
+    {
+      "number": 47,
+      "arabic": "الْحَكِيمُ",
+      "reading": "el-Hakîm",
+      "meaning": "Her işi hikmetli olan."
+    },
+    {
+      "number": 48,
+      "arabic": "الْوَدُودُ",
+      "reading": "el-Vedûd",
+      "meaning": "Kullarını seven, sevilmeye layık olan."
+    },
+    {
+      "number": 49,
+      "arabic": "الْمَجِيدُ",
+      "reading": "el-Mecîd",
+      "meaning": "Şanı yüce, şerefi büyük olan."
+    },
+    {
+      "number": 50,
+      "arabic": "الْبَاعِثُ",
+      "reading": "el-Bâis",
+      "meaning": "Ölüleri dirilten, peygamberler gönderen."
+    },
+    {
+      "number": 51,
+      "arabic": "الشَّهِيدُ",
+      "reading": "eş-Şehîd",
+      "meaning": "Her şeye şahit olan."
+    },
+    {
+      "number": 52,
+      "arabic": "الْحَقُّ",
+      "reading": "el-Hak",
+      "meaning": "Varlığı hiç değişmeden duran, gerçeğin ta kendisi."
+    },
+    {
+      "number": 53,
+      "arabic": "الْوَكِيلُ",
+      "reading": "el-Vekîl",
+      "meaning": "Kendisine güvenilip dayanılan, işleri yoluna koyan."
+    },
+    {
+      "number": 54,
+      "arabic": "الْقَوِيُّ",
+      "reading": "el-Kavî",
+      "meaning": "Kudreti sonsuz olan."
+    },
+    {
+      "number": 55,
+      "arabic": "الْمَتِينُ",
+      "reading": "el-Metîn",
+      "meaning": "Gücü hiç tükenmeyen, sarsılmaz."
+    },
+    {
+      "number": 56,
+      "arabic": "الْوَلِيُّ",
+      "reading": "el-Velî",
+      "meaning": "Müminlerin dostu ve yardımcısı."
+    },
+    {
+      "number": 57,
+      "arabic": "الْحَمِيدُ",
+      "reading": "el-Hamîd",
+      "meaning": "Her türlü övgüye layık olan."
+    },
+    {
+      "number": 58,
+      "arabic": "الْمُحْصِي",
+      "reading": "el-Muhsî",
+      "meaning": "Her şeyin sayısını tek tek bilen."
+    },
+    {
+      "number": 59,
+      "arabic": "الْمُبْدِئُ",
+      "reading": "el-Mübdi'",
+      "meaning": "Varlıkları örneksiz olarak ilk defa yaratan."
+    },
+    {
+      "number": 60,
+      "arabic": "الْمُعِيدُ",
+      "reading": "el-Muîd",
+      "meaning": "Yarattıklarını öldükten sonra yeniden dirilten."
+    },
+    {
+      "number": 61,
+      "arabic": "الْمُحْيِي",
+      "reading": "el-Muhyî",
+      "meaning": "Hayat veren."
+    },
+    {
+      "number": 62,
+      "arabic": "الْمُمِيتُ",
+      "reading": "el-Mümît",
+      "meaning": "Ölümü yaratan."
+    },
+    {
+      "number": 63,
+      "arabic": "الْحَيُّ",
+      "reading": "el-Hayy",
+      "meaning": "Ezelî ve ebedî diri olan."
+    },
+    {
+      "number": 64,
+      "arabic": "الْقَيُّومُ",
+      "reading": "el-Kayyûm",
+      "meaning": "Kendi zatıyla var olan, her şeyi ayakta tutan."
+    },
+    {
+      "number": 65,
+      "arabic": "الْوَاجِدُ",
+      "reading": "el-Vâcid",
+      "meaning": "Dilediği her şeyi dilediği anda bulan, hiçbir eksiği olmayan."
+    },
+    {
+      "number": 66,
+      "arabic": "الْمَاجِدُ",
+      "reading": "el-Mâcid",
+      "meaning": "Şanı ve keremi pek yüce olan."
+    },
+    {
+      "number": 67,
+      "arabic": "الْوَاحِدُ",
+      "reading": "el-Vâhid",
+      "meaning": "Zatında, sıfatlarında ve fiillerinde tek olan."
+    },
+    {
+      "number": 68,
+      "arabic": "الصَّمَدُ",
+      "reading": "es-Samed",
+      "meaning": "Hiçbir şeye muhtaç olmayan, her şeyin kendisine muhtaç olduğu."
+    },
+    {
+      "number": 69,
+      "arabic": "الْقَادِرُ",
+      "reading": "el-Kâdir",
+      "meaning": "Her şeye gücü yeten."
+    },
+    {
+      "number": 70,
+      "arabic": "الْمُقْتَدِرُ",
+      "reading": "el-Muktedir",
+      "meaning": "Kudret sahiplerinin üstünde kudreti olan."
+    },
+    {
+      "number": 71,
+      "arabic": "الْمُقَدِّمُ",
+      "reading": "el-Mukaddim",
+      "meaning": "Dilediğini öne alan."
+    },
+    {
+      "number": 72,
+      "arabic": "الْمُؤَخِّرُ",
+      "reading": "el-Muahhir",
+      "meaning": "Dilediğini geri bırakan."
+    },
+    {
+      "number": 73,
+      "arabic": "الْأَوَّلُ",
+      "reading": "el-Evvel",
+      "meaning": "Her şeyden önce var olan, varlığının bir başlangıcı bulunmayan."
+    },
+    {
+      "number": 74,
+      "arabic": "الْآخِرُ",
+      "reading": "el-Âhir",
+      "meaning": "Her şeyden sonra var olan, varlığının sonu bulunmayan."
+    },
+    {
+      "number": 75,
+      "arabic": "الظَّاهِرُ",
+      "reading": "ez-Zâhir",
+      "meaning": "Varlığı delilleriyle apaçık olan."
+    },
+    {
+      "number": 76,
+      "arabic": "الْبَاطِنُ",
+      "reading": "el-Bâtın",
+      "meaning": "Zatının hakikati akıllarca kavranamayan, her şeyin iç yüzünü bilen."
+    },
+    {
+      "number": 77,
+      "arabic": "الْوَالِي",
+      "reading": "el-Vâlî",
+      "meaning": "Bütün kâinatı idare eden."
+    },
+    {
+      "number": 78,
+      "arabic": "الْمُتَعَالِي",
+      "reading": "el-Müteâlî",
+      "meaning": "Yarattıklarının hiçbir sıfatına benzemeyen, pek yüce olan."
+    },
+    {
+      "number": 79,
+      "arabic": "الْبَرُّ",
+      "reading": "el-Berr",
+      "meaning": "İyiliği ve ihsanı bol olan."
+    },
+    {
+      "number": 80,
+      "arabic": "التَّوَّابُ",
+      "reading": "et-Tevvâb",
+      "meaning": "Kullarına tövbeyi nasip eden ve tövbeleri çokça kabul eden."
+    },
+    {
+      "number": 81,
+      "arabic": "الْمُنْتَقِمُ",
+      "reading": "el-Müntakım",
+      "meaning": "Suçluları hak ettikleri şekilde cezalandıran."
+    },
+    {
+      "number": 82,
+      "arabic": "الْعَفُوُّ",
+      "reading": "el-Afüv",
+      "meaning": "Affı çok olan, günahları silen."
+    },
+    {
+      "number": 83,
+      "arabic": "الرَّؤُوفُ",
+      "reading": "er-Raûf",
+      "meaning": "Çok şefkatli olan."
+    },
+    {
+      "number": 84,
+      "arabic": "مَالِكُ الْمُلْكِ",
+      "reading": "Mâlikü'l-Mülk",
+      "meaning": "Mülkün ebedî sahibi."
+    },
+    {
+      "number": 85,
+      "arabic": "ذُو الْجَلَالِ وَالْإِكْرَامِ",
+      "reading": "Zü'l-Celâli ve'l-İkrâm",
+      "meaning": "Celal ve ikram sahibi."
+    },
+    {
+      "number": 86,
+      "arabic": "الْمُقْسِطُ",
+      "reading": "el-Muksit",
+      "meaning": "Her işinde adaleti yerine getiren, mazlumun hakkını zalimden alan."
+    },
+    {
+      "number": 87,
+      "arabic": "الْجَامِعُ",
+      "reading": "el-Câmi'",
+      "meaning": "İstediğini istediği yerde toplayan, kıyamette herkesi bir araya getiren."
+    },
+    {
+      "number": 88,
+      "arabic": "الْغَنِيُّ",
+      "reading": "el-Ganî",
+      "meaning": "Hiçbir şeye ihtiyacı olmayan."
+    },
+    {
+      "number": 89,
+      "arabic": "الْمُغْنِي",
+      "reading": "el-Muğnî",
+      "meaning": "Dilediğini zengin eden."
+    },
+    {
+      "number": 90,
+      "arabic": "الْمَانِعُ",
+      "reading": "el-Mâni'",
+      "meaning": "Dilemediği şeye engel olan."
+    },
+    {
+      "number": 91,
+      "arabic": "الضَّارُّ",
+      "reading": "ed-Dârr",
+      "meaning": "Hikmeti gereği zararı ve sıkıntıyı da yaratan; O dilemedikçe hiçbir şey zarar veremez."
+    },
+    {
+      "number": 92,
+      "arabic": "النَّافِعُ",
+      "reading": "en-Nâfi'",
+      "meaning": "Fayda veren, her hayrı ve faydayı yaratan."
+    },
+    {
+      "number": 93,
+      "arabic": "النُّورُ",
+      "reading": "en-Nûr",
+      "meaning": "Âlemleri nurlandıran, dilediğine hidayet nuru veren."
+    },
+    {
+      "number": 94,
+      "arabic": "الْهَادِي",
+      "reading": "el-Hâdî",
+      "meaning": "Doğru yola ileten."
+    },
+    {
+      "number": 95,
+      "arabic": "الْبَدِيعُ",
+      "reading": "el-Bedî'",
+      "meaning": "Eşi benzeri olmayan güzellikte yaratan."
+    },
+    {
+      "number": 96,
+      "arabic": "الْبَاقِي",
+      "reading": "el-Bâkî",
+      "meaning": "Varlığı hiç sona ermeden süren, ebedî olan."
+    },
+    {
+      "number": 97,
+      "arabic": "الْوَارِثُ",
+      "reading": "el-Vâris",
+      "meaning": "Bütün varlıklar yok olunca her şeyin tek sahibi olarak kalan."
+    },
+    {
+      "number": 98,
+      "arabic": "الرَّشِيدُ",
+      "reading": "er-Reşîd",
+      "meaning": "Bütün işleri isabetli olan, doğru yolu gösteren."
+    },
+    {
+      "number": 99,
+      "arabic": "الصَّبُورُ",
+      "reading": "es-Sabûr",
+      "meaning": "Çok sabırlı, cezalandırmada acele etmeyen."
+    }
+  ]
+}

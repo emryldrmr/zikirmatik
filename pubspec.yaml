@@ -27,3 +27,10 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  assets:
+    - assets/data/esma.json
+  fonts:
+    # Amiri Quran 1.003 (SIL OFL, assets/fonts/OFL.txt) — Arabic text (plan 0007, R3).
+    - family: AmiriQuran
+      fonts:
+        - asset: assets/fonts/AmiriQuran-Regular.ttf

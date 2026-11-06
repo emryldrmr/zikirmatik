@@ -41,8 +41,12 @@ void main() {
     await tester.tap(find.byKey(const Key('counter-tap-area')));
     await tester.pump();
 
-    // Spec 0004: Ayarlar is no longer "coming soon" (settings_test.dart, AC-1).
-    for (final section in _sections.skip(1).where((s) => s != 'Ayarlar')) {
+    // Spec 0004: Ayarlar is no longer "coming soon" (settings_test.dart, AC-1);
+    // spec 0007: nor is Esmaü'l-Hüsna (esma_test.dart, AC-1).
+    for (final section
+        in _sections
+            .skip(1)
+            .where((s) => s != 'Ayarlar' && s != "Esmaü'l-Hüsna")) {
       await _openMenu(tester);
       await tester.tap(
         find.descendant(of: find.byType(Drawer), matching: find.text(section)),

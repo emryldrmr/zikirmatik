@@ -20,3 +20,5 @@ export 'ui/counter_providers.dart'
         dhikrListRepositoryProvider,
         tesbihatRepositoryProvider;
 export 'ui/counter_screen.dart' show CounterScreen;
+export 'ui/dhikr_list_controller.dart'
+    show DhikrListController, dhikrListControllerProvider;

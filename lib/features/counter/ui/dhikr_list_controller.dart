@@ -6,6 +6,7 @@ import '../domain/dhikr_name.dart';
 import '../domain/target.dart';
 import 'counter_controller.dart';
 import 'counter_providers.dart';
+import 'tesbihat_controller.dart';
 
 /// The user's dhikrs and the selection (spec 0003): loading, error, or the
 /// current [DhikrList].
@@ -57,6 +58,28 @@ class DhikrListController extends AsyncNotifier<DhikrList> {
       return true;
     }
     return false;
+  }
+
+  /// Spec 0007, AC-4: adds a dhikr without a target at the end, keeping the
+  /// selection. Returns its id, or null when it was not stored.
+  Future<int?> append(DhikrName name) async {
+    final current = _current;
+    if (current == null) return null;
+    final result = await ref
+        .read(dhikrListRepositoryProvider)
+        .add(name, null, select: false);
+    if (result case Ok(:final value)) {
+      state = AsyncData((_current ?? current).appended(value));
+      return value.id;
+    }
+    return null;
+  }
+
+  /// Spec 0007, AC-5: opens a dhikr from another section — selects it and
+  /// leaves the tesbihat (its progress is kept, spec 0006 Req 8).
+  Future<void> show(int id) async {
+    await select(id);
+    await ref.read(tesbihatControllerProvider.notifier).select(false);
   }
 
   /// AC-4.

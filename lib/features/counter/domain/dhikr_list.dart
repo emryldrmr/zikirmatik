@@ -50,6 +50,11 @@ final class DhikrList {
   DhikrList added(DhikrEntry entry) =>
       DhikrList([...entries, entry], selectedId: entry.id);
 
+  /// Spec 0007: a new dhikr goes to the end; the selection stays (an empty
+  /// list selects it, as the invariant demands).
+  DhikrList appended(DhikrEntry entry) =>
+      DhikrList([...entries, entry], selectedId: selectedId);
+
   /// AC-5: only the name changes.
   DhikrList renamed(int id, DhikrName name) => DhikrList([
     for (final e in entries) e.id == id ? DhikrEntry(id, name) : e,

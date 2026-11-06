@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/haptics.dart';
 import '../features/counter/counter.dart';
+import '../features/esma/esma.dart';
 import '../features/settings/settings.dart';
 import 'database/app_database.dart';
 
@@ -16,6 +17,7 @@ List<Override> appOverrides(AppDatabase db) => [
   dhikrListRepositoryProvider.overrideWithValue(DriftDhikrListRepository(db)),
   tesbihatRepositoryProvider.overrideWithValue(DriftTesbihatRepository(db)),
   settingsRepositoryProvider.overrideWithValue(DriftSettingsRepository(db)),
+  esmaRepositoryProvider.overrideWithValue(AssetEsmaRepository(rootBundle)),
   hapticsProvider.overrideWithValue(const SystemHaptics()),
   ...featureWiring(),
 ];
