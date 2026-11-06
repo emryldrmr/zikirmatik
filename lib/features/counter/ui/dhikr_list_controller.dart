@@ -60,14 +60,15 @@ class DhikrListController extends AsyncNotifier<DhikrList> {
     return false;
   }
 
-  /// Spec 0007, AC-4: adds a dhikr without a target at the end, keeping the
-  /// selection. Returns its id, or null when it was not stored.
-  Future<int?> append(DhikrName name) async {
+  /// Spec 0007, AC-4: adds a dhikr at the end, keeping the selection; with
+  /// [target] when given (spec 0008, AC-4), otherwise without one. Returns its
+  /// id, or null when it was not stored.
+  Future<int?> append(DhikrName name, {Target? target}) async {
     final current = _current;
     if (current == null) return null;
     final result = await ref
         .read(dhikrListRepositoryProvider)
-        .add(name, null, select: false);
+        .add(name, target, select: false);
     if (result case Ok(:final value)) {
       state = AsyncData((_current ?? current).appended(value));
       return value.id;
