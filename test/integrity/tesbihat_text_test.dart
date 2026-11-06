@@ -6,23 +6,29 @@ import 'package:zikirmatik/features/counter/domain/tesbihat.dart';
 // their order and targets, byte for byte as in the spec's source table
 // (Müslim, Mesâcid 146; spelling: Diyanet İşleri Başkanlığı).
 //
-// The expected text uses ASCII escapes for every non-ASCII letter (precomposed
-// U+00FC ü, U+00E2 â), so an editor's normalization (e.g. "â" as "a" + U+0302)
-// cannot slip past the test.
+// The expected text is written as Unicode code point numbers (0xFC is the
+// precomposed "ü", 0xE2 the precomposed "â"), never as letters or string
+// escapes, so no editor or tool normalization (e.g. "â" as "a" + U+0302) can
+// change both sides at once and slip past the test (review round 1, F-1).
 
-const _expected = <(String, int)>[
-  ('Sübhânallah', 33), // Sübhânallah
-  ('Elhamdülillâh', 33), // Elhamdülillâh
-  ('Allâhu ekber', 33), // Allâhu ekber
+// dart format off
+const _expected = <(List<int>, int)>[
+  // Sübhânallah
+  ([0x53, 0xFC, 0x62, 0x68, 0xE2, 0x6E, 0x61, 0x6C, 0x6C, 0x61, 0x68], 33),
+  // Elhamdülillâh
+  ([0x45, 0x6C, 0x68, 0x61, 0x6D, 0x64, 0xFC, 0x6C, 0x69, 0x6C, 0x6C, 0xE2, 0x68], 33),
+  // Allâhu ekber
+  ([0x41, 0x6C, 0x6C, 0xE2, 0x68, 0x75, 0x20, 0x65, 0x6B, 0x62, 0x65, 0x72], 33),
 ];
+// dart format on
 
 void main() {
   test('the steps match the source table byte for byte', () {
     final steps = namazSonrasiTesbihat.steps;
     expect(steps.length, _expected.length);
     for (var i = 0; i < steps.length; i++) {
-      final (text, target) = _expected[i];
-      expect(steps[i].text.codeUnits, text.codeUnits, reason: 'step ${i + 1}');
+      final (codePoints, target) = _expected[i];
+      expect(steps[i].text.runes.toList(), codePoints, reason: 'step ${i + 1}');
       expect(steps[i].target.value, target, reason: 'step ${i + 1}');
     }
   });
