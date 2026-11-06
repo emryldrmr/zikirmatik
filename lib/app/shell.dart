@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
 import '../features/settings/settings.dart';
+import '../features/suggested/suggested.dart';
 import '../l10n/app_localizations.dart';
 import 'app_section.dart';
 import 'coming_soon_screen.dart';
@@ -115,6 +116,10 @@ class _ShellState extends State<Shell> {
       body: switch (_section) {
         AppSection.myDhikrs => const CounterScreen(),
         AppSection.settings => const SettingsScreen(),
+        // Spec 0008, AC-6: "Say" opens Zikirlerim with the added dhikr.
+        AppSection.suggested => SuggestedScreen(
+          onCount: () => setState(() => _section = AppSection.myDhikrs),
+        ),
         // Spec 0007, AC-5: "Say" opens Zikirlerim with the added dhikr.
         AppSection.asma => EsmaScreen(
           onCount: () => setState(() => _section = AppSection.myDhikrs),

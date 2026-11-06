@@ -11,6 +11,7 @@ import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/esma/esma.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
+import 'package:zikirmatik/features/suggested/suggested.dart';
 
 /// The app under test in its deterministic mode (docs/testing.md, Determinism):
 /// animations off, Turkish locale (fixed in the app), vibration by [haptics].
@@ -43,6 +44,10 @@ Widget testApp(
       ),
       // Spec 0007: the real bundled content (plan 0007, A-1).
       esmaRepositoryProvider.overrideWithValue(AssetEsmaRepository(rootBundle)),
+      // Spec 0008: the real bundled content (as plan 0007, A-1).
+      suggestedRepositoryProvider.overrideWithValue(
+        AssetSuggestedRepository(rootBundle),
+      ),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
       ...featureWiring(),
     ],

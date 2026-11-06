@@ -144,5 +144,32 @@
   },
   "esmaAdded": "Zikirlerim'e eklendi",
   "esmaCount": "Say",
-  "esmaSource": "Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu"
+  "esmaSource": "Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu",
+  "suggestedLoading": "Önerilen Zikirler yükleniyor",
+  "suggestedLoadFailed": "Önerilen Zikirler yüklenemedi.",
+  "suggestedTarget": "Hedef: {target}",
+  "@suggestedTarget": {
+    "placeholders": {
+      "target": {"type": "String"}
+    }
+  },
+  "suggestedNoTarget": "Hedefsiz",
+  "suggestedRowSemantics": "{reading}, {meaning}, {target}",
+  "@suggestedRowSemantics": {
+    "placeholders": {
+      "reading": {"type": "String"},
+      "meaning": {"type": "String"},
+      "target": {"type": "String"}
+    }
+  },
+  "suggestedAdd": "Ekle",
+  "suggestedAddSemantics": "{reading} Zikirlerim'e ekle",
+  "@suggestedAddSemantics": {
+    "placeholders": {
+      "reading": {"type": "String"}
+    }
+  },
+  "suggestedAdded": "Zikirlerim'e eklendi",
+  "suggestedCount": "Say",
+  "suggestedSource": "Okunuş, anlam ve sayılar: Diyanet, Hadislerle İslâm (c. 2) · Diyanet Aylık Dergi (Kasım 2024) · TDV İslâm Ansiklopedisi"
 }

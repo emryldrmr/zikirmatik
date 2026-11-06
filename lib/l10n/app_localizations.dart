@@ -489,6 +489,66 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu'**
   String get esmaSource;
+
+  /// No description provided for @suggestedLoading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önerilen Zikirler yükleniyor'**
+  String get suggestedLoading;
+
+  /// No description provided for @suggestedLoadFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önerilen Zikirler yüklenemedi.'**
+  String get suggestedLoadFailed;
+
+  /// No description provided for @suggestedTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef: {target}'**
+  String suggestedTarget(String target);
+
+  /// No description provided for @suggestedNoTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefsiz'**
+  String get suggestedNoTarget;
+
+  /// No description provided for @suggestedRowSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{reading}, {meaning}, {target}'**
+  String suggestedRowSemantics(String reading, String meaning, String target);
+
+  /// No description provided for @suggestedAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekle'**
+  String get suggestedAdd;
+
+  /// No description provided for @suggestedAddSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{reading} Zikirlerim\'e ekle'**
+  String suggestedAddSemantics(String reading);
+
+  /// No description provided for @suggestedAdded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikirlerim\'e eklendi'**
+  String get suggestedAdded;
+
+  /// No description provided for @suggestedCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Say'**
+  String get suggestedCount;
+
+  /// No description provided for @suggestedSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okunuş, anlam ve sayılar: Diyanet, Hadislerle İslâm (c. 2) · Diyanet Aylık Dergi (Kasım 2024) · TDV İslâm Ansiklopedisi'**
+  String get suggestedSource;
 }
 
 class _AppLocalizationsDelegate

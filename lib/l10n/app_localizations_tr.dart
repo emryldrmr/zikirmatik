@@ -238,4 +238,41 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get esmaSource =>
       'Liste: Tirmizî, Daavât 82 — Diyanet sırası (Hadislerle İslâm, c. 1, s. 219) · Okunuş ve anlam: yasin.suresi.gen.tr · Arapça yazı: Amiri fontu';
+
+  @override
+  String get suggestedLoading => 'Önerilen Zikirler yükleniyor';
+
+  @override
+  String get suggestedLoadFailed => 'Önerilen Zikirler yüklenemedi.';
+
+  @override
+  String suggestedTarget(String target) {
+    return 'Hedef: $target';
+  }
+
+  @override
+  String get suggestedNoTarget => 'Hedefsiz';
+
+  @override
+  String suggestedRowSemantics(String reading, String meaning, String target) {
+    return '$reading, $meaning, $target';
+  }
+
+  @override
+  String get suggestedAdd => 'Ekle';
+
+  @override
+  String suggestedAddSemantics(String reading) {
+    return '$reading Zikirlerim\'e ekle';
+  }
+
+  @override
+  String get suggestedAdded => 'Zikirlerim\'e eklendi';
+
+  @override
+  String get suggestedCount => 'Say';
+
+  @override
+  String get suggestedSource =>
+      'Okunuş, anlam ve sayılar: Diyanet, Hadislerle İslâm (c. 2) · Diyanet Aylık Dergi (Kasım 2024) · TDV İslâm Ansiklopedisi';
 }
