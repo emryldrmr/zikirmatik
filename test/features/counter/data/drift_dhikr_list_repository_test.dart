@@ -169,6 +169,33 @@ void main() {
     );
   });
 
+  test(
+    'add without selecting keeps the selection and survives reopening',
+    () async {
+      final dir = Directory.systemTemp.createTempSync('zikirmatik_test_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final file = File('${dir.path}${Platform.pathSeparator}db.sqlite');
+
+      final first = AppDatabase(NativeDatabase(file));
+      final added = _ok(
+        await DriftDhikrListRepository(
+          first,
+        ).add(_n('er-Rahmân'), null, select: false),
+      );
+      await first.close();
+
+      final second = AppDatabase(NativeDatabase(file));
+      addTearDown(second.close);
+      final list = _ok(await DriftDhikrListRepository(second).load());
+      expect(list.entries, [DhikrEntry(1, _n('Zikir')), added]);
+      expect(list.selectedId, 1);
+      expect(
+        await counterOf(second, added.id),
+        const CounterState(count: DhikrCount.zero),
+      );
+    },
+  );
+
   test('the database refuses an empty or 51-character name', () async {
     for (final bad in ['', 'x' * 51]) {
       await expectLater(

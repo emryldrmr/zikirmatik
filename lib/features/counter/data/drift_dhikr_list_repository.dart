@@ -31,7 +31,11 @@ final class DriftDhikrListRepository implements DhikrListRepository {
   });
 
   @override
-  Future<Result<DhikrEntry>> add(DhikrName name, Target? target) => _guard(
+  Future<Result<DhikrEntry>> add(
+    DhikrName name,
+    Target? target, {
+    bool select = true,
+  }) => _guard(
     () => _db.transaction(() async {
       final id = await _db.customInsert(
         'INSERT INTO dhikrs (name) VALUES (?)',
@@ -42,7 +46,7 @@ final class DriftDhikrListRepository implements DhikrListRepository {
         'VALUES (?, 0, 0, 0, ?)',
         [id, target?.value],
       );
-      await _writeSelection(id);
+      if (select) await _writeSelection(id);
       return DhikrEntry(id, name);
     }),
   );

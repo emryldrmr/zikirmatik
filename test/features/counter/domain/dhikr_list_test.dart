@@ -53,6 +53,14 @@ void main() {
     expect(list.selecting(1).selected, a);
   });
 
+  test('appended keeps the selection', () {
+    final list = DhikrList([a, b], selectedId: 1).appended(c);
+    expect(list.entries, [a, b, c]);
+    expect(list.selected, a);
+    // The invariant still holds: a first entry is selected.
+    expect(DhikrList(const []).appended(a).selected, a);
+  });
+
   test('same names are separate entries', () {
     final list = DhikrList([a, _e(2, 'Zikir')]).added(_e(3, 'Zikir'));
     expect(list.entries.map((e) => e.id), [1, 2, 3]);

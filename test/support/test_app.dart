@@ -204,13 +204,17 @@ class FakeDhikrStore implements DhikrListRepository {
       Ok(DhikrList(List.of(entries), selectedId: selectedId));
 
   @override
-  Future<Result<DhikrEntry>> add(DhikrName name, Target? target) async {
+  Future<Result<DhikrEntry>> add(
+    DhikrName name,
+    Target? target, {
+    bool select = true,
+  }) async {
     final entry = DhikrEntry(_nextId++, name);
     entries.add(entry);
     counters[entry.id] = FakeCounterRepository(
       state: CounterState(count: DhikrCount.zero, target: target),
     );
-    selectedId = entry.id;
+    if (select) selectedId = entry.id;
     return Ok(entry);
   }
 

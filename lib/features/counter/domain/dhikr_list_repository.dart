@@ -9,8 +9,13 @@ abstract interface class DhikrListRepository {
   Future<Result<DhikrList>> load();
 
   /// Creates a dhikr with a fresh counter (count, rounds and total 0) and the
-  /// optional [target], selects it, and returns it.
-  Future<Result<DhikrEntry>> add(DhikrName name, Target? target);
+  /// optional [target], and returns it. It is selected unless [select] is
+  /// false (spec 0007: adding a name of the Esma keeps the selection).
+  Future<Result<DhikrEntry>> add(
+    DhikrName name,
+    Target? target, {
+    bool select = true,
+  });
 
   Future<Result<void>> rename(int id, DhikrName name);
 
