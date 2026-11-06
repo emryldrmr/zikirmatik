@@ -50,7 +50,9 @@
 - Dini metin (Kur'an, meal, Esma, önerilen zikir) **asla değiştirilmez, kırpılmaz, normalleştirilmez**;
   kaynağından geldiği gibi saklanır ve gösterilir (BR-12).
 - Gömülü içerik (`assets/data/`) kaynağıyla birlikte saklanır; dosyanın başında ya da yanında kaynak
-  notu bulunur.
+  notu bulunur. Birkaç adımlık sabit dini metin (ör. tesbihat adımları) domain'de `const` olarak,
+  dosyanın başında kaynak notuyla durabilir; `test/integrity/` altında bayt düzeyinde bütünlük testi
+  zorunludur (plan 0006, R1).
 
 ## Known traps
 - drift kod üretimi bayatlar: şema değişince `*.g.dart` güncel değilse derleme/davranış sessizce
