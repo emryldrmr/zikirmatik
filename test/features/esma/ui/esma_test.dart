@@ -271,6 +271,11 @@ void main() {
     await _tapAdd(tester, 2);
     expect(_added, findsOneWidget);
     expect(find.text("Zikirlerim'e eklendi"), findsOneWidget);
+    // The action reads "Say" (VERIFY round 1, V-2).
+    expect(
+      find.descendant(of: _countAction, matching: find.text('Say')),
+      findsOneWidget,
+    );
     await tester.tap(_countAction);
     await tester.pumpAndSettle();
 
