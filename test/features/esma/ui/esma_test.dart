@@ -159,6 +159,20 @@ void main() {
             find.descendant(of: _field(f, n), matching: find.byType(RichText)),
           );
           expect(paragraph.didExceedMaxLines, isFalse, reason: '$f $n');
+          // Nothing is clipped: the box is as tall as the whole text wrapped
+          // at its width (VERIFY round 1, V-1 — catches softWrap off + clip).
+          final whole = TextPainter(
+            text: paragraph.text,
+            textDirection: paragraph.textDirection,
+            textScaler: paragraph.textScaler,
+          )..layout(maxWidth: paragraph.size.width);
+          addTearDown(whole.dispose);
+          expect(
+            paragraph.size.height,
+            greaterThanOrEqualTo(whole.height - 0.5),
+            reason: '$f $n unclipped',
+          );
+          expect(whole.width, lessThanOrEqualTo(paragraph.size.width + 0.5));
         }
         // Wrapped onto more than one line: taller than two lines of the
         // scaled body font (14 px × 2), all of it laid out.
