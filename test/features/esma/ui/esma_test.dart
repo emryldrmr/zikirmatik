@@ -343,7 +343,13 @@ void main() {
 
   testWidgets('adding changes no dhikr and not the tesbihat', (tester) async {
     final store = _two();
-    final tesbihat = FakeTesbihatRepository();
+    // A tesbihat with progress, so a reset would show (VERIFY round 1, V-3).
+    final progress = TesbihatState(
+      step: 2,
+      count: const DhikrCount(11),
+      completions: 3,
+    );
+    final tesbihat = FakeTesbihatRepository(stored: progress);
     await _start(tester, store: store, tesbihat: tesbihat);
     final before = [store.stateOf(1), store.stateOf(2)];
     await _openEsma(tester);
@@ -354,7 +360,7 @@ void main() {
     expect([store.stateOf(1), store.stateOf(2)], before);
     expect(store.entries.take(2).map((e) => e.name.value), ['Zikir', 'Sabah']);
     expect(tesbihat.saves, isEmpty);
-    expect(tesbihat.stored, TesbihatState.initial);
+    expect(tesbihat.stored, progress);
   });
 
   testWidgets('the source line is shown at the end of the list', (
