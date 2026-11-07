@@ -1,6 +1,6 @@
 # Spec 0011 — Görünüm seçenekleri: büyük rakam ve el yerleşimi
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0011-plan.md`
 - Self-critique: done
@@ -107,29 +107,51 @@ Kur'an/Esma ekranlarında yazı boyutu; ses tuşuyla sayma (vazgeçildi, emryldr
   ekranlarının görünümü; ses tuşuyla sayma (vazgeçildi); ayar kaydetme hatasının bildirilmesi (B-2).
 
 ## Acceptance criteria
-- [ ] AC-1 — Ayarlar'da "Ekranı açık tut"un altında "Büyük rakam" anahtarı ve "El yerleşimi" seçenekleri (Ortada, Sağ el, Sol el) görünür; yeni kurulumda Büyük rakam kapalı, El yerleşimi Ortada'dır; önceki sürümden güncellenen veritabanında mevcut ayarlar korunur, yeni ayarlar varsayılandır; ayarlar yeniden başlatınca korunur; ayarlar okunamazsa hata gösterilmez ve varsayılanlar uygulanır.
-- [ ] AC-2 — Varsayılan seçeneklerde Zikirlerim (zikir ve tesbihat, normal ve tam ekran) bugünkü sürümle aynı görünür: sayım boyutu, cihazın konumu ve tam ekran düğme köşeleri değişmez.
-- [ ] AC-3 — Büyük rakam açıkken LCD'deki sayım, tam ekrandaki sayım ve tesbihat adım sayımı (normal ve tam ekran), yer olduğunda kapalıyken olduğunun en az 1,5 katı büyüklüktedir; hedef, tur, toplam, "Adım x/y", zikir adı ve adım metni boyutu değişmez.
-- [ ] AC-4 — Sayım rakamı (ör. 0, 99.999 ve 1.000.000) her seçenek bileşiminde, dikey ve yan çevrilmiş ekranda ve büyük sistem yazısında tam görünür: kesilmez, "…" içermez, tek satırdır.
-- [ ] AC-5 — Normal ekranda (dikey ve yan) Sağ el'de cihaz (ve tesbihat görünümü) sağ kenara, Sol el'de sol kenara bugünkü kenar boşluğu kadar mesafeyle yaslanır; cihazın iç düzeni aynıdır ve cihaz ekrandan taşmaz; dar ekranda kayacak yer yoksa ortada kalır.
-- [ ] AC-6 — Tam ekranda "Geri al" ve "Kapat" köşeleri: Ortada sol üst / sağ üst, Sağ el sağ alt / sol üst, Sol el sol alt / sağ üst; bilgiler düğmelerle çakışmaz; alt köşedeki "Geri al" sistemin alt kenar hareket alanının üstündedir ve alttan çekme ne sayar ne geri alır; düğmelere dokunuş saymaz, köşe yakınları dahil geri kalan her yer sayar.
-- [ ] AC-7 — Her seçenek bileşiminde sayma, geri al, sıfırla, hedef/tur, tesbihat adım geçişi ve titreşim bugünkü gibi çalışır ve değerler yeniden başlatınca korunur.
-- [ ] AC-8 — Tesbihat adım metni her seçenek bileşiminde (normal ve tam ekran, dikey ve yan, büyük sistem yazısı) spec 0006'daki metinle birebir aynı ve kırpılmadan görünür; "…" içermez.
-- [ ] AC-9 — Bir seçeneği değiştirip Zikirlerim'e dönünce yeni görünüm yeniden başlatmadan uygulanmıştır; seçili zikir ve değerleri değişmemiştir.
-- [ ] AC-10 — Erişilebilirlik: "Büyük rakam" anahtarı etiketiyle ve açık/kapalı durumuyla, El yerleşimi seçenekleri etiketleriyle ve seçili olan seçili olarak bildirilir; dokunma hedefleri en az 48×48 dp; Zikirlerim'deki ekran okuyucu etiketleri seçeneklerden bağımsız olarak aynıdır; yeni metinlerin kontrastı Açık ve Koyu temada en az 4.5:1.
+- [x] AC-1 — Ayarlar'da "Ekranı açık tut"un altında "Büyük rakam" anahtarı ve "El yerleşimi" seçenekleri (Ortada, Sağ el, Sol el) görünür; yeni kurulumda Büyük rakam kapalı, El yerleşimi Ortada'dır; önceki sürümden güncellenen veritabanında mevcut ayarlar korunur, yeni ayarlar varsayılandır; ayarlar yeniden başlatınca korunur; ayarlar okunamazsa hata gösterilmez ve varsayılanlar uygulanır.
+- [x] AC-2 — Varsayılan seçeneklerde Zikirlerim (zikir ve tesbihat, normal ve tam ekran) bugünkü sürümle aynı görünür: sayım boyutu, cihazın konumu ve tam ekran düğme köşeleri değişmez.
+- [x] AC-3 — Büyük rakam açıkken LCD'deki sayım, tam ekrandaki sayım ve tesbihat adım sayımı (normal ve tam ekran), yer olduğunda kapalıyken olduğunun en az 1,5 katı büyüklüktedir; hedef, tur, toplam, "Adım x/y", zikir adı ve adım metni boyutu değişmez.
+- [x] AC-4 — Sayım rakamı (ör. 0, 99.999 ve 1.000.000) her seçenek bileşiminde, dikey ve yan çevrilmiş ekranda ve büyük sistem yazısında tam görünür: kesilmez, "…" içermez, tek satırdır.
+- [x] AC-5 — Normal ekranda (dikey ve yan) Sağ el'de cihaz (ve tesbihat görünümü) sağ kenara, Sol el'de sol kenara bugünkü kenar boşluğu kadar mesafeyle yaslanır; cihazın iç düzeni aynıdır ve cihaz ekrandan taşmaz; dar ekranda kayacak yer yoksa ortada kalır.
+- [x] AC-6 — Tam ekranda "Geri al" ve "Kapat" köşeleri: Ortada sol üst / sağ üst, Sağ el sağ alt / sol üst, Sol el sol alt / sağ üst; bilgiler düğmelerle çakışmaz; alt köşedeki "Geri al" sistemin alt kenar hareket alanının üstündedir ve alttan çekme ne sayar ne geri alır; düğmelere dokunuş saymaz, köşe yakınları dahil geri kalan her yer sayar.
+- [x] AC-7 — Her seçenek bileşiminde sayma, geri al, sıfırla, hedef/tur, tesbihat adım geçişi ve titreşim bugünkü gibi çalışır ve değerler yeniden başlatınca korunur.
+- [x] AC-8 — Tesbihat adım metni her seçenek bileşiminde (normal ve tam ekran, dikey ve yan, büyük sistem yazısı) spec 0006'daki metinle birebir aynı ve kırpılmadan görünür; "…" içermez.
+- [x] AC-9 — Bir seçeneği değiştirip Zikirlerim'e dönünce yeni görünüm yeniden başlatmadan uygulanmıştır; seçili zikir ve değerleri değişmemiştir.
+- [x] AC-10 — Erişilebilirlik: "Büyük rakam" anahtarı etiketiyle ve açık/kapalı durumuyla, El yerleşimi seçenekleri etiketleriyle ve seçili olan seçili olarak bildirilir; dokunma hedefleri en az 48×48 dp; Zikirlerim'deki ekran okuyucu etiketleri seçeneklerden bağımsız olarak aynıdır; yeni metinlerin kontrastı Açık ve Koyu temada en az 4.5:1.
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 0 |
+| Fix rounds | 0 |
+| Review findings: real / noise / deferred | 0 / 1 / 1 (F-1 round 1 noise; G-5 verify → B-5) |
+| Regressions introduced | 0 |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+Independent QA session, 2026-11-08 @820bc07. Review: one independent reviewer round (plain — sensitive area), verdict Info only; triage in `specs/plans/0011-plan.md` `## Triage`.
+Full green: local CHECK GREEN (full, 6 steps, 148 s) @820bc07, 293 tests; build CHECK GREEN (full, 6 steps, 129 s) @01d1401 (later commits touch `specs/` only).
+Deliberate breaks (temporary clone outside the repo, all red): B1a step text maxLines+ellipsis, B1b step text char change `â`→`a` (AC-8); B2 LCD count not scaled down (AC-4); B3 large scale 1.4 (AC-3); B4 gesture inset ignored (AC-6); B5 v8 migration without `hand_layout` (AC-1); B6 right hand centred (AC-5).
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `display_settings_test.dart` — `display options sit under keep screen on`, `display options default to normal digits and centre`, `unreadable settings mean the display defaults`; `drift_settings_repository_test.dart` — `migrates a v7 database and keeps the settings`, `display options survive reopening`, `the database refuses an unknown hand layout`; `app_settings_test.dart` — `defaults have normal digits and centre`; break B5; S-01…S-04 | PASS |
+| AC-2 | `display_options_test.dart` — `defaults keep the count size`, `defaults keep the device centred`, `defaults keep the full screen corners`; S-05, S-09, S-11 | PASS |
+| AC-3 | `display_options_test.dart` — `large digits grow the counts one and a half times`, `large digits leave the other texts as they are`; break B3; S-06, S-10, S-12 | PASS |
+| AC-4 | `display_options_test.dart` — `the count is never cut` (0, 99999, 1000000 × options × upright/sideways × 1×/2× text); break B2; S-19, S-20 | PASS |
+| AC-5 | `display_options_test.dart` — `right and left hand move the device to the edge`, `hand layout keeps the device inside sideways`, `a narrow screen keeps the device centred`; break B6; S-07, S-08, S-16, S-17 | PASS |
+| AC-6 | `display_options_test.dart` — `full screen corners follow the hand`, `full screen info never meets the buttons`, `bottom undo sits above the gesture area`, `a pull from the bottom neither counts nor undoes`, `buttons do not count, the rest counts in every layout`; break B4; S-11…S-14, S-18 | PASS |
+| AC-7 | `display_options_test.dart` — `counting works the same in every combination` | PASS |
+| AC-8 | `tesbihat_text_test.dart` — `step text unchanged in every display combination`; breaks B1a, B1b; S-10, S-14, S-17, S-18 | PASS |
+| AC-9 | `display_settings_test.dart` — `a changed option applies on return without restart` | PASS |
+| AC-10 | `display_settings_test.dart` — `display options semantics, targets and contrast`; `display_options_test.dart` — `screen reader labels do not depend on the options` | PASS |
+
+UI: S-01…S-20 (S-03a/b) agent-captured (headless widget render, Roboto + Material icons + Amiri Quran), judged by emryldrmr at SHIP, 2026-11-08 (images outside the repo, deleted after ship).
+Phone (Xiaomi, Android 16) by emryldrmr: sideways the screens break, though the widget tests are green sideways — deferred as B-5 (the app becomes portrait only, CHANGE after this ship). The bottom-edge pull on the phone (plan R4) was not recorded separately; AC-6 rests on the widget tests.
+Accepted at SHIP: the step count of the tesbihat is not in `the count is never cut` (at most 2 digits); the loading and load-failed states were not captured (unchanged, spec 0003 tests).
