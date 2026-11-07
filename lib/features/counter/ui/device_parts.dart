@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/display.dart';
+import '../../../core/hand_layout.dart';
 
 // The hand-held counter's parts (spec 0002), shared by a dhikr's device and
 // the tesbihat's (spec 0006). Original drawing of a generic counter; no
@@ -123,4 +124,24 @@ class DeviceCountButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Places a dhikr's or the tesbihat's view as a whole (spec 0011, Req. 4):
+/// in the middle, or near the chosen hand's edge. The child keeps its own
+/// padding, so the distance to the edge is today's margin; a child as wide as
+/// the screen stays where it is (plan 0011, R3).
+class HandAlign extends ConsumerWidget {
+  const HandAlign({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Align(
+    alignment: switch (ref.watch(handLayoutProvider)) {
+      HandLayout.center => Alignment.center,
+      HandLayout.right => Alignment.centerRight,
+      HandLayout.left => Alignment.centerLeft,
+    },
+    child: child,
+  );
 }

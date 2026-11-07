@@ -20,7 +20,8 @@ class TesbihatView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    return Center(
+    // Spec 0011, Req. 4: near the chosen hand's edge.
+    return HandAlign(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(

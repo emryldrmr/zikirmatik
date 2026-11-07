@@ -123,7 +123,8 @@ class _SelectedDhikr extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final counter = ref.watch(counterControllerProvider(entry.id));
 
-    return Center(
+    // Spec 0011, Req. 4: near the chosen hand's edge.
+    return HandAlign(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(

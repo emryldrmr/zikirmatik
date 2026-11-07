@@ -14,6 +14,35 @@ final _lcd = find.byKey(const Key('counter-lcd'));
 final _value = find.byKey(const Key('counter-value'));
 final _bigCount = find.byKey(const Key('full-screen-count'));
 
+final _device = find.byKey(const Key('counter-device'));
+
+/// Today's margin around Zikirlerim's view (plan 0011, R3).
+const _margin = 24.0;
+
+/// The device's own parts, relative to its top left: must not change with
+/// the hand (AC-5).
+Map<String, Rect> _layout(WidgetTester tester, bool tesbihat) {
+  final origin = tester.getTopLeft(_device);
+  return {
+    for (final key in [
+      'counter-lcd',
+      'counter-tap-area',
+      if (tesbihat) ...[
+        'tesbihat-text',
+        'tesbihat-step',
+        'tesbihat-undo',
+        'tesbihat-reset',
+      ] else ...[
+        'counter-target',
+        'counter-total',
+        'counter-undo',
+        'counter-reset',
+      ],
+    ])
+      key: _rounded(_rect(tester, find.byKey(Key(key))).shift(-origin)),
+  };
+}
+
 /// Every combination of the two options.
 final _combinations = [
   for (final large in [false, true])
@@ -214,6 +243,101 @@ void main() {
     expect(after, before);
   });
 
+  // AC-2: with the defaults the device is in the middle, as today.
+  testWidgets('defaults keep the device centred', (tester) async {
+    for (final size in const [_upright, _sideways]) {
+      for (final tesbihat in [null, _tesbihat]) {
+        final why = '$size ${tesbihat == null ? 'dhikr' : 'tesbihat'}';
+        _screen(tester, size);
+        await _start(tester, tesbihat: tesbihat?.call());
+        expect(
+          tester.getCenter(_device).dx,
+          moreOrLessEquals(size.width / 2, epsilon: 0.5),
+          reason: why,
+        );
+      }
+    }
+  });
+
+  // AC-5.
+  testWidgets('right and left hand move the device to the edge', (
+    tester,
+  ) async {
+    for (final size in const [_upright, _sideways]) {
+      for (final tesbihat in [null, _tesbihat]) {
+        final why = '$size ${tesbihat == null ? 'dhikr' : 'tesbihat'}';
+        _screen(tester, size);
+        await _start(tester, tesbihat: tesbihat?.call());
+        final centre = _layout(tester, tesbihat != null);
+
+        await _start(
+          tester,
+          settings: _settings(hand: HandLayout.right),
+          tesbihat: tesbihat?.call(),
+        );
+        final right = _rect(tester, _device);
+        expect(
+          right.right,
+          moreOrLessEquals(size.width - _margin, epsilon: 0.5),
+          reason: why,
+        );
+        expect(_layout(tester, tesbihat != null), centre, reason: why);
+
+        await _start(
+          tester,
+          settings: _settings(hand: HandLayout.left),
+          tesbihat: tesbihat?.call(),
+        );
+        final left = _rect(tester, _device);
+        expect(left.left, moreOrLessEquals(_margin, epsilon: 0.5), reason: why);
+        expect(_layout(tester, tesbihat != null), centre, reason: why);
+        // The name and "Tam ekran" go with it, as a whole.
+        expect(
+          tester.getCenter(_open).dx,
+          moreOrLessEquals(left.center.dx, epsilon: 0.5),
+          reason: why,
+        );
+      }
+    }
+  });
+
+  // AC-5: never off the screen, upright or sideways, with large digits and
+  // the phone's large text too.
+  testWidgets('hand layout keeps the device inside sideways', (tester) async {
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    for (final size in const [_upright, _sideways]) {
+      for (final scale in const [1.0, 2.0]) {
+        for (final (large, hand) in _combinations) {
+          final why = '$size ×$scale large:$large $hand';
+          _screen(tester, size);
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          await _start(
+            tester,
+            settings: _settings(large: large, hand: hand),
+          );
+          final device = _rect(tester, _device);
+          expect(device.left, greaterThanOrEqualTo(0), reason: why);
+          expect(device.right, lessThanOrEqualTo(size.width), reason: why);
+          expect(tester.takeException(), isNull, reason: why);
+        }
+      }
+    }
+  });
+
+  // AC-5: no room to move, the device stays in the middle.
+  testWidgets('a narrow screen keeps the device centred', (tester) async {
+    const narrow = Size(360, 760);
+    for (final hand in HandLayout.values) {
+      _screen(tester, narrow);
+      await _start(tester, settings: _settings(hand: hand));
+      expect(
+        tester.getCenter(_device).dx,
+        moreOrLessEquals(narrow.width / 2, epsilon: 0.5),
+        reason: '$hand',
+      );
+    }
+  });
+
   // AC-4: the count is whole in every combination, upright and sideways,
   // with the phone's large text.
   testWidgets('the count is never cut', (tester) async {
@@ -244,4 +368,16 @@ void main() {
       }
     }
   });
+}
+
+/// Positions to 1/100 px, so a sub-pixel difference in where a row of
+/// buttons is spread out does not count as a changed layout.
+Rect _rounded(Rect r) {
+  double round(double v) => (v * 100).roundToDouble() / 100;
+  return Rect.fromLTRB(
+    round(r.left),
+    round(r.top),
+    round(r.right),
+    round(r.bottom),
+  );
 }

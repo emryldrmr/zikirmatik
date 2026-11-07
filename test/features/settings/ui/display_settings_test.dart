@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/core/hand_layout.dart';
+import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
 
 import '../../../support/test_app.dart';
@@ -155,6 +156,49 @@ void main() {
     await _show(tester, _hand(HandLayout.left));
     expect(_selectedHand(tester), HandLayout.center);
     expect(find.byType(SnackBar), findsNothing);
+  });
+
+  // AC-9.
+  testWidgets('a changed option applies on return without restart', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final sabah = CounterState(
+      count: const DhikrCount(7),
+      rounds: 2,
+      total: 73,
+      target: Target.of(33),
+    );
+    final dhikrs = FakeDhikrStore([
+      ('Zikir', CounterState(count: const DhikrCount(1), total: 1)),
+      ('Sabah', sabah),
+    ], selectedId: 2);
+    await _start(tester, dhikrs: dhikrs);
+    final device = find.byKey(const Key('counter-device'));
+    final value = find.byKey(const Key('counter-value'));
+    final size = tester.widget<Text>(value).style!.fontSize!;
+    expect(tester.getCenter(device).dx, moreOrLessEquals(200, epsilon: 0.5));
+
+    await _goTo(tester, 'settings');
+    await _show(tester, _largeCount);
+    await tester.tap(_largeCount);
+    await tester.pumpAndSettle();
+    await _show(tester, _hand(HandLayout.right));
+    await tester.tap(_hand(HandLayout.right));
+    await tester.pumpAndSettle();
+    await _goTo(tester, 'myDhikrs');
+
+    expect(tester.widget<Text>(value).style!.fontSize, size * 1.5);
+    expect(tester.getTopRight(device).dx, moreOrLessEquals(376, epsilon: 0.5));
+    expect(
+      tester.widget<Text>(find.byKey(const Key('dhikr-name'))).data,
+      'Sabah',
+    );
+    expect(tester.widget<Text>(value).data, '7');
+    expect(dhikrs.selectedId, 2);
+    expect(dhikrs.stateOf(2), sabah);
   });
 
   testWidgets('display options semantics, targets and contrast', (
