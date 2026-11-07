@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
+import '../core/app_version.dart';
 import '../core/haptics.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
@@ -23,8 +25,20 @@ List<Override> appOverrides(AppDatabase db) => [
     AssetSuggestedRepository(rootBundle),
   ),
   hapticsProvider.overrideWithValue(const SystemHaptics()),
+  appVersionProvider.overrideWith((ref) => installedVersion()),
   ...featureWiring(),
 ];
+
+/// The installed app's version name (spec 0009, plan R1); null when the
+/// platform cannot tell (AC-8: then no version row).
+Future<String?> installedVersion() async {
+  try {
+    final version = (await PackageInfo.fromPlatform()).version;
+    return version.isEmpty ? null : version;
+  } on Object catch (_) {
+    return null;
+  }
+}
 
 /// Connections between features that the features themselves may not make
 /// (docs/architecture.md, FD-2). The app and the tests use the same list.

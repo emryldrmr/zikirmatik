@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/app_version.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
 import '../features/settings/settings.dart';
@@ -100,15 +102,28 @@ class _ShellState extends State<Shell> {
       ),
       drawer: Drawer(
         child: SafeArea(
-          child: ListView(
-            children: [
-              for (final section in AppSection.values)
-                ListTile(
-                  key: Key('section-${section.name}'),
-                  title: Text(section.label(l10n)),
-                  selected: section == _section,
-                  onTap: () => _select(context, section),
+          // Spec 0009: the version sits at the bottom when there is room and
+          // scrolls below the entries when there is not — never over them.
+          child: CustomScrollView(
+            slivers: [
+              SliverList.list(
+                children: [
+                  for (final section in AppSection.values)
+                    ListTile(
+                      key: Key('section-${section.name}'),
+                      title: Text(section.label(l10n)),
+                      selected: section == _section,
+                      onTap: () => _select(context, section),
+                    ),
+                ],
+              ),
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: _VersionRow(),
                 ),
+              ),
             ],
           ),
         ),
@@ -126,6 +141,29 @@ class _ShellState extends State<Shell> {
         ),
         _ => const ComingSoonScreen(),
       },
+    );
+  }
+}
+
+/// The installed version at the bottom of the side menu (spec 0009, AC-8):
+/// small, muted, not tappable. Nothing while it loads or when it is unreadable.
+class _VersionRow extends ConsumerWidget {
+  const _VersionRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final version = ref.watch(appVersionProvider).valueOrNull;
+    if (version == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      child: Text(
+        AppLocalizations.of(context).appVersion(version),
+        key: const Key('app-version'),
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
     );
   }
 }
