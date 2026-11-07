@@ -169,9 +169,19 @@ class FakeHaptics implements Haptics {
   /// When true, each vibration fails after being counted.
   bool fail = false;
 
+  /// Short vibrations, one per counted tap (spec 0009).
+  int taps = 0;
+
   @override
   Future<void> roundCompleted() async {
     roundsCompleted++;
+    await hold?.future;
+    if (fail) throw StateError('vibrator unavailable');
+  }
+
+  @override
+  Future<void> tap() async {
+    taps++;
     await hold?.future;
     if (fail) throw StateError('vibrator unavailable');
   }

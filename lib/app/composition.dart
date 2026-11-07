@@ -35,6 +35,12 @@ List<Override> featureWiring() => [
         ref.watch(settingsControllerProvider).valueOrNull?.vibration ??
         AppSettings.defaults.vibration,
   ),
+  // Spec 0009, AC-2/AC-6: vibration per count follows the user's setting.
+  tapVibrationEnabledProvider.overrideWith(
+    (ref) =>
+        ref.watch(settingsControllerProvider).valueOrNull?.tapVibration ??
+        AppSettings.defaults.tapVibration,
+  ),
 ];
 
 /// [Haptics] through the platform's haptic feedback (plan 0002, R1): needs no
@@ -44,4 +50,8 @@ final class SystemHaptics implements Haptics {
 
   @override
   Future<void> roundCompleted() => HapticFeedback.heavyImpact();
+
+  /// Spec 0009 (plan R2): lighter than a round, so the two feel different.
+  @override
+  Future<void> tap() => HapticFeedback.lightImpact();
 }
