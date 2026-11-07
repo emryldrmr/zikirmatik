@@ -236,6 +236,14 @@ void main() {
     await tester.pump();
     expect(_text(tester, _count), '0');
 
+    // Two fingers, one cancelled, the other lifted: still no count (V-1).
+    final c1 = await tester.startGesture(const Offset(100, 400), pointer: 5);
+    final c2 = await tester.startGesture(const Offset(300, 500), pointer: 6);
+    await c1.cancel();
+    await c2.up();
+    await tester.pump();
+    expect(_text(tester, _count), '0');
+
     // A moving finger still counts (holding the phone).
     final m = await tester.startGesture(const Offset(200, 400));
     await m.moveBy(const Offset(30, 40));
