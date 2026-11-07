@@ -1,6 +1,6 @@
 # Spec 0010 — Tam ekran sayma ve ekranı açık tut
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0010-plan.md`
 - Self-critique: done
@@ -85,29 +85,50 @@ sol/sağ el yerleşimi (0012); tam ekranda sıfırlama ve hedef değiştirme.
   hatasının bildirilmesi (B-2).
 
 ## Acceptance criteria
-- [ ] AC-1 — Seçili zikirde ve tesbihatta sayaç ekranında "Tam ekran" düğmesi görünür; boş durumda, yüklenirken ve yükleme hatasında görünmez.
-- [ ] AC-2 — Tam ekranda sistem çubukları gizlidir; zikir için ad, sayım, hedef/tur (hedefsizde "Hedef yok") ve toplam görünür.
-- [ ] AC-3 — Tam ekranda Geri al ve Kapat dışında ekranın herhangi bir noktasına (dört köşe yakını ve orta dahil) dokunuş sayımı ve toplamı 1 artırır; hedefte tur tamamlanır ve sayım 0 olur (BR-4); art arda 10 hızlı dokunuş 10 sayar; aynı anda iki parmak 1 sayar; değerler yeniden başlatınca korunur.
-- [ ] AC-4 — Tam ekrandaki dokunuşlarda titreşim kuralları normal ekrandakiyle aynıdır (tur titreşimi, her sayımda titreşim, tur dokunuşunda tek titreşim — spec 0009 AC-2…AC-4).
-- [ ] AC-5 — Tesbihat tam ekranda adımın zikir metnini spec 0006'daki metinle birebir aynı ve kırpılmadan, "Adım x/y" ve sayım/hedefi gösterir; adım hedefinde sıradaki adıma geçer (BR-13); tamamlanınca "Tesbihat tamamlandı" görünür ve dokunuşlar saymaz.
-- [ ] AC-6 — Tam ekrandaki "Geri al" sayımı ve toplamı 1 azaltır, sayım 0'da pasiftir; "Geri al" ve "Kapat" dokunuşları sayım yapmaz; tam ekranda sıfırla, hedef ve zikir seçici yoktur.
-- [ ] AC-7 — "Kapat" ve sistem geri hareketi tam ekrandan çıkarır: normal sayaç aynı değerlerle görünür, sistem çubukları geri gelir; arka plandan dönünce tam ekran sürer, çubuklar gizlidir.
-- [ ] AC-8 — Ayarlar'da "Her sayımda titreşim"in altında "Ekranı açık tut" anahtarı görünür; yeni kurulumda kapalıdır; önceki sürümden güncellenen veritabanında mevcut ayarlar korunur, yeni ayar kapalıdır; ayar yeniden başlatınca korunur; ayarlar okunamazsa hata gösterilmez ve kapalı kabul edilir.
-- [ ] AC-9 — Ayar açıkken Zikirlerim (normal, tam ekran, boş durum) öndeyken ekranı açık tutma etkindir; başka ekrana geçince ve arka plana alınınca bırakılır, geri dönünce yeniden etkinleşir; ayar kapalıyken hiçbir zaman etkin değildir; ayarı değiştirmek hemen uygulanır.
-- [ ] AC-10 — Erişilebilirlik: "Tam ekran", "Geri al", "Kapat" ve "Ekranı açık tut" bu etiketlerle (anahtar açık/kapalı durumuyla) bildirilir, dokunma hedefleri en az 48×48 dp; tam ekran dokunma alanı normal sayma düğmesinin etiketiyle okunur; yeni metinlerin kontrastı Açık ve Koyu temada en az 4.5:1.
+- [x] AC-1 — Seçili zikirde ve tesbihatta sayaç ekranında "Tam ekran" düğmesi görünür; boş durumda, yüklenirken ve yükleme hatasında görünmez.
+- [x] AC-2 — Tam ekranda sistem çubukları gizlidir; zikir için ad, sayım, hedef/tur (hedefsizde "Hedef yok") ve toplam görünür.
+- [x] AC-3 — Tam ekranda Geri al ve Kapat dışında ekranın herhangi bir noktasına (dört köşe yakını ve orta dahil) dokunuş sayımı ve toplamı 1 artırır; hedefte tur tamamlanır ve sayım 0 olur (BR-4); art arda 10 hızlı dokunuş 10 sayar; aynı anda iki parmak 1 sayar; değerler yeniden başlatınca korunur.
+- [x] AC-4 — Tam ekrandaki dokunuşlarda titreşim kuralları normal ekrandakiyle aynıdır (tur titreşimi, her sayımda titreşim, tur dokunuşunda tek titreşim — spec 0009 AC-2…AC-4).
+- [x] AC-5 — Tesbihat tam ekranda adımın zikir metnini spec 0006'daki metinle birebir aynı ve kırpılmadan, "Adım x/y" ve sayım/hedefi gösterir; adım hedefinde sıradaki adıma geçer (BR-13); tamamlanınca "Tesbihat tamamlandı" görünür ve dokunuşlar saymaz.
+- [x] AC-6 — Tam ekrandaki "Geri al" sayımı ve toplamı 1 azaltır, sayım 0'da pasiftir; "Geri al" ve "Kapat" dokunuşları sayım yapmaz; tam ekranda sıfırla, hedef ve zikir seçici yoktur.
+- [x] AC-7 — "Kapat" ve sistem geri hareketi tam ekrandan çıkarır: normal sayaç aynı değerlerle görünür, sistem çubukları geri gelir; arka plandan dönünce tam ekran sürer, çubuklar gizlidir.
+- [x] AC-8 — Ayarlar'da "Her sayımda titreşim"in altında "Ekranı açık tut" anahtarı görünür; yeni kurulumda kapalıdır; önceki sürümden güncellenen veritabanında mevcut ayarlar korunur, yeni ayar kapalıdır; ayar yeniden başlatınca korunur; ayarlar okunamazsa hata gösterilmez ve kapalı kabul edilir.
+- [x] AC-9 — Ayar açıkken Zikirlerim (normal, tam ekran, boş durum) öndeyken ekranı açık tutma etkindir; başka ekrana geçince ve arka plana alınınca bırakılır, geri dönünce yeniden etkinleşir; ayar kapalıyken hiçbir zaman etkin değildir; ayarı değiştirmek hemen uygulanır.
+- [x] AC-10 — Erişilebilirlik: "Tam ekran", "Geri al", "Kapat" ve "Ekranı açık tut" bu etiketlerle (anahtar açık/kapalı durumuyla) bildirilir, dokunma hedefleri en az 48×48 dp; tam ekran dokunma alanı normal sayma düğmesinin etiketiyle okunur; yeni metinlerin kontrastı Açık ve Koyu temada en az 4.5:1.
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 0 |
+| Fix rounds | 4 (R-06 before the 4th: continue) |
+| Review findings: real / noise / deferred | 4 / 0 / 0 (F-1 round 1, S-1 phone check, F-1 round 3, V-1 verify) |
+| Regressions introduced | 0 |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+Independent QA subagent, three VERIFY rounds; final round 2026-11-07 @a30053b. Reviews: four independent reviewer rounds (plain — sensitive area); triage in `specs/plans/0010-plan.md` `## Triage`.
+Full green: CI https://github.com/emryldrmr/zikirmatik/actions/runs/42408084378 @81cca7c (later commits touch `specs/` only); local CHECK GREEN (full, 6 steps, 113 s) @29838a6.
+Deliberate breaks (temporary clone outside the repo, all red): B1 step text char change, B2/B-AC5 maxLines+ellipsis, B3 F-1 layout (AC-5); B4 two fingers count twice, B5a cancel flag removed, B5b cancel counts, B11–B13 swipe check removed / last position / `>=` (AC-3); B6 undo at 0, B7 tap area over buttons (AC-6); B8 no release in background, B9 no release on dispose (AC-9).
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `full_screen_test.dart` — `full screen button on dhikr and tesbihat`, `no full screen button when empty, loading or failed`; S-01, S-02, S-08, S-09, S-10 | PASS |
+| AC-2 | `full_screen_test.dart` — `full screen hides the bars and shows the dhikr`, `full screen without a target says no target`; S-03; phone T-1 | PASS |
+| AC-3 | `full_screen_test.dart` — `a tap anywhere counts`, `ten fast taps count ten`, `two fingers count once`, `a cancelled touch does not count`, `a swipe does not count`, `full screen reaches the target and keeps it after restart`; breaks B4, B5a, B5b, B11–B13; phone T-2 | PASS |
+| AC-4 | `full_screen_test.dart` — `full screen taps follow the vibration settings` | PASS |
+| AC-5 | `tesbihat_text_test.dart` — `full screen shows the step text unchanged`, `full screen step text stays readable sideways and large`; `full_screen_test.dart` — `tesbihat full screen steps and finishes`, `full screen fits sideways with large text`; breaks B1, B2, B3; S-05, S-06 | PASS |
+| AC-6 | `full_screen_test.dart` — `full screen undo`, `undo and close do not count`, `no reset, target or picker in full screen`; breaks B6, B7; S-04 | PASS |
+| AC-7 | `full_screen_test.dart` — `close and back leave full screen with the same values`, `full screen hides the bars again on resume`; phone T-1, T-2 | PASS |
+| AC-8 | `keep_screen_on_test.dart` — `keep screen on is off by default`, `unreadable settings mean keep screen on off`, `turning it on applies at once and is kept after restart`; `drift_settings_repository_test.dart` — `migrates a v6 database and keeps the settings`, `keep screen on survives reopening`; S-07, S-07b, S-11 | PASS |
+| AC-9 | `keep_screen_on_test.dart` — `keep screen on holds on my dhikrs and full screen`, `keep screen on holds in the empty state`, `released on other sections and in background`, `never on when the setting is off`; breaks B8, B9; phone T-3 | PASS |
+| AC-10 | `full_screen_test.dart` — `full screen semantics, targets and contrast`; `keep_screen_on_test.dart` — `keep screen on semantics, target and contrast` | PASS |
+
+UI: S-1…S-12 agent-captured (S-01…S-11, S-07b), judged by emryldrmr at SHIP, 2026-11-07.
+Phone (Xiaomi, Android 16) by emryldrmr, 2026-11-07: T-1 system bars hide/return/resume and T-3 keep screen on (Zikirlerim stays lit, Ayarlar dims) OK @9b93070; T-2 back gesture closes without counting, bottom-bar pull no longer counts OK @01f8401 (S-1 fixed); update kept dhikrs and settings (v6 → v7).
