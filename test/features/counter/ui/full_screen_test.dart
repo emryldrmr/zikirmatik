@@ -553,6 +553,40 @@ void main() {
       }
     }
   });
+
+  // Review round 1, F-1: sideways and with large text everything stays on
+  // screen; the count is what gives way.
+  testWidgets('full screen fits sideways with large text', (tester) async {
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    for (final size in const [Size(852, 393), Size(640, 360)]) {
+      for (final scale in const [1.0, 1.3, 2.0]) {
+        _phone(tester, size: size);
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        await tester.pumpWidget(const SizedBox());
+        await _start(tester);
+        await _openFullScreen(tester);
+        tester.takeException(); // the normal screen is not under test here
+        await tester.pump();
+
+        final why = '$size × $scale';
+        for (final key in [
+          'full-screen-name',
+          'full-screen-count',
+          'full-screen-target',
+          'full-screen-total',
+        ]) {
+          final f = find.byKey(Key(key));
+          final rect = Rect.fromPoints(
+            tester.getTopLeft(f),
+            tester.getBottomRight(f),
+          );
+          expect(rect.height, greaterThan(0), reason: '$why $key');
+          expect(rect.bottom, lessThanOrEqualTo(size.height), reason: why);
+        }
+        expect(tester.takeException(), isNull, reason: why);
+      }
+    }
+  });
 }
 
 double _contrast(Color a, Color b) {

@@ -89,4 +89,58 @@ void main() {
     }
     semantics.dispose();
   });
+
+  // Spec 0010, AC-5 (BR-12), review round 1 F-1: on a phone held sideways and
+  // with large text, the step's text stays readable — never shrunk away.
+  testWidgets('full screen step text stays readable sideways and large', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    final steps = namazSonrasiTesbihat.steps;
+    for (final size in const [Size(852, 393), Size(640, 360), Size(320, 480)]) {
+      for (final scale in const [1.0, 1.3, 2.0]) {
+        tester.view.physicalSize = size;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        for (var i = 0; i < steps.length; i++) {
+          final why = '$size × $scale, step ${i + 1}';
+          await tester.pumpWidget(const SizedBox());
+          await tester.pumpWidget(
+            testApp(
+              tester,
+              tesbihat: FakeTesbihatRepository(
+                stored: TesbihatState(step: i, selected: true),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          final open = find.byKey(const Key('full-screen-open'));
+          await tester.ensureVisible(open);
+          await tester.pumpAndSettle();
+          tester.takeException(); // the normal screen is not under test here
+          await tester.tap(open);
+          await tester.pumpAndSettle();
+
+          final text = find.byKey(const Key('full-screen-step-text'));
+          expect(
+            tester.widget<Text>(text).data!.runes.toList(),
+            _expected[i].$1,
+            reason: why,
+          );
+          // The painted text: at least a normal body line tall, all on screen.
+          final rect = Rect.fromPoints(
+            tester.getTopLeft(text),
+            tester.getBottomRight(text),
+          );
+          expect(rect.height, greaterThanOrEqualTo(20), reason: why);
+          expect(rect.left, greaterThanOrEqualTo(0), reason: why);
+          expect(rect.right, lessThanOrEqualTo(size.width), reason: why);
+          expect(rect.bottom, lessThanOrEqualTo(size.height), reason: why);
+          expect(tester.takeException(), isNull, reason: why);
+        }
+      }
+    }
+  });
 }

@@ -281,7 +281,8 @@ class _DhikrInfo extends StatelessWidget {
           style: theme.textTheme.headlineSmall?.copyWith(color: deviceBodyText),
         ),
         const SizedBox(height: 16),
-        _BigCount(count: state.count.value),
+        // Review round 1, F-1: on a short screen the count gives way.
+        Flexible(child: _BigCount(count: state.count.value)),
         const SizedBox(height: 16),
         Text(
           target == null
@@ -303,9 +304,9 @@ class _DhikrInfo extends StatelessWidget {
   }
 }
 
-/// AC-5: the step's text (BR-12: exactly as stored, never cut — it wraps and
-/// shrinks to fit, plan R5), "Adım x/y", the count and the target; or the
-/// finish.
+/// AC-5: the step's text (BR-12: exactly as stored, never cut — it shrinks
+/// only to fit the width, plan R5, review round 1 F-1), "Adım x/y", the count
+/// and the target; or the finish.
 class _TesbihatInfo extends StatelessWidget {
   const _TesbihatInfo({required this.state});
 
@@ -333,29 +334,24 @@ class _TesbihatInfo extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.sizeOf(context).width - 48,
-              ),
-              child: Semantics(
-                liveRegion: true,
-                label: l10n.tesbihatStepAnnouncement(
-                  step.text,
-                  state.step + 1,
-                  steps.length,
-                ),
-                excludeSemantics: true,
-                child: Text(
-                  step.text,
-                  key: const Key('full-screen-step-text'),
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: deviceBodyText,
-                  ),
-                ),
+        // Review round 1, F-1: the text keeps its height; it shrinks only to
+        // fit the width. When the screen is short, the count gives way.
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Semantics(
+            liveRegion: true,
+            label: l10n.tesbihatStepAnnouncement(
+              step.text,
+              state.step + 1,
+              steps.length,
+            ),
+            excludeSemantics: true,
+            child: Text(
+              step.text,
+              key: const Key('full-screen-step-text'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: deviceBodyText,
               ),
             ),
           ),
@@ -367,7 +363,7 @@ class _TesbihatInfo extends StatelessWidget {
           style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
         ),
         const SizedBox(height: 16),
-        _BigCount(count: state.count.value),
+        Flexible(child: _BigCount(count: state.count.value)),
         const SizedBox(height: 16),
         Text(
           l10n.tesbihatTarget(thousands.format(step.target.value)),
