@@ -29,6 +29,14 @@ class SettingsScreen extends ConsumerWidget {
           value: settings.vibration,
           onChanged: controller.setVibration,
         ),
+        // Spec 0009.
+        SwitchListTile(
+          key: const Key('settings-tap-vibration'),
+          title: Text(l10n.settingsTapVibration),
+          subtitle: Text(l10n.settingsTapVibrationSubtitle),
+          value: settings.tapVibration,
+          onChanged: controller.setTapVibration,
+        ),
         const Divider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),

@@ -18,7 +18,9 @@ final class DriftSettingsRepository implements SettingsRepository {
   Future<Result<AppSettings>> load() async {
     try {
       final row = await _db
-          .customSelect('SELECT vibration, theme FROM settings WHERE id = 1')
+          .customSelect(
+            'SELECT vibration, theme, tap_vibration FROM settings WHERE id = 1',
+          )
           .getSingleOrNull();
       if (row == null) return const Ok(AppSettings.defaults);
       final theme = ThemeChoice.byName(row.read<String>('theme'));
@@ -28,7 +30,11 @@ final class DriftSettingsRepository implements SettingsRepository {
         );
       }
       return Ok(
-        AppSettings(vibration: row.read<bool>('vibration'), theme: theme),
+        AppSettings(
+          vibration: row.read<bool>('vibration'),
+          theme: theme,
+          tapVibration: row.read<bool>('tap_vibration'),
+        ),
       );
     } on Object catch (e) {
       return Err(StorageFailure(e));
@@ -39,10 +45,15 @@ final class DriftSettingsRepository implements SettingsRepository {
   Future<Result<void>> save(AppSettings settings) async {
     try {
       await _db.customStatement(
-        'INSERT INTO settings (id, vibration, theme) VALUES (1, ?, ?) '
+        'INSERT INTO settings (id, vibration, theme, tap_vibration) '
+        'VALUES (1, ?, ?, ?) '
         'ON CONFLICT(id) DO UPDATE SET vibration = excluded.vibration, '
-        'theme = excluded.theme',
-        [if (settings.vibration) 1 else 0, settings.theme.name],
+        'theme = excluded.theme, tap_vibration = excluded.tap_vibration',
+        [
+          if (settings.vibration) 1 else 0,
+          settings.theme.name,
+          if (settings.tapVibration) 1 else 0,
+        ],
       );
       return const Ok(null);
     } on Object catch (e) {

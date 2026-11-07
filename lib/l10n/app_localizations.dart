@@ -340,6 +340,24 @@ abstract class AppLocalizations {
   /// **'Tur tamamlanınca titreşir'**
   String get settingsVibrationSubtitle;
 
+  /// No description provided for @settingsTapVibration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her sayımda titreşim'**
+  String get settingsTapVibration;
+
+  /// No description provided for @settingsTapVibrationSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her dokunuşta kısa titreşir'**
+  String get settingsTapVibrationSubtitle;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürüm {version}'**
+  String appVersion(String version);
+
   /// No description provided for @settingsTheme.
   ///
   /// In tr, this message translates to:

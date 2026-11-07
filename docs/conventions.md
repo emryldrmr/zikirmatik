@@ -24,6 +24,8 @@
   `drift_flutter` 0.3.1, `sqlite3` 3.5.2 (sqlite'ı derleme kancasıyla paketler — host testleri ek
   kurulum istemez), `intl` 0.20.2, `build_runner` 2.15.1, `flutter_lints` 6. Sürümler `pubspec.lock`
   ile sabitlenir (commit edilir); `pub get --enforce-lockfile`. `http` Kur'an spec'inde eklenir.
+  Spec 0009: `package_info_plus` 10.2.2 (kurulu sürümü okur; izin ve ağ yok — web için `http`'yi
+  dolaylı getirir, Android'de kullanılmaz).
 - Font: Amiri Quran (SIL OFL), `assets/fonts/` altında gömülü.
 
 ## Naming

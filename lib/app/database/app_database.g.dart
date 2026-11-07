@@ -765,8 +765,23 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _tapVibrationMeta = const VerificationMeta(
+    'tapVibration',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, vibration, theme];
+  late final GeneratedColumn<bool> tapVibration = GeneratedColumn<bool>(
+    'tap_vibration',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("tap_vibration" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, vibration, theme, tapVibration];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -798,6 +813,15 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     } else if (isInserting) {
       context.missing(_themeMeta);
     }
+    if (data.containsKey('tap_vibration')) {
+      context.handle(
+        _tapVibrationMeta,
+        tapVibration.isAcceptableOrUnknown(
+          data['tap_vibration']!,
+          _tapVibrationMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -819,6 +843,10 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         DriftSqlType.string,
         data['${effectivePrefix}theme'],
       )!,
+      tapVibration: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}tap_vibration'],
+      )!,
     );
   }
 
@@ -832,10 +860,14 @@ class Setting extends DataClass implements Insertable<Setting> {
   final int id;
   final bool vibration;
   final String theme;
+
+  /// Spec 0009, schema v6. Rows kept from v5 get the default: off (AC-1).
+  final bool tapVibration;
   const Setting({
     required this.id,
     required this.vibration,
     required this.theme,
+    required this.tapVibration,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -843,6 +875,7 @@ class Setting extends DataClass implements Insertable<Setting> {
     map['id'] = Variable<int>(id);
     map['vibration'] = Variable<bool>(vibration);
     map['theme'] = Variable<String>(theme);
+    map['tap_vibration'] = Variable<bool>(tapVibration);
     return map;
   }
 
@@ -851,6 +884,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       id: Value(id),
       vibration: Value(vibration),
       theme: Value(theme),
+      tapVibration: Value(tapVibration),
     );
   }
 
@@ -863,6 +897,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       id: serializer.fromJson<int>(json['id']),
       vibration: serializer.fromJson<bool>(json['vibration']),
       theme: serializer.fromJson<String>(json['theme']),
+      tapVibration: serializer.fromJson<bool>(json['tapVibration']),
     );
   }
   @override
@@ -872,19 +907,29 @@ class Setting extends DataClass implements Insertable<Setting> {
       'id': serializer.toJson<int>(id),
       'vibration': serializer.toJson<bool>(vibration),
       'theme': serializer.toJson<String>(theme),
+      'tapVibration': serializer.toJson<bool>(tapVibration),
     };
   }
 
-  Setting copyWith({int? id, bool? vibration, String? theme}) => Setting(
+  Setting copyWith({
+    int? id,
+    bool? vibration,
+    String? theme,
+    bool? tapVibration,
+  }) => Setting(
     id: id ?? this.id,
     vibration: vibration ?? this.vibration,
     theme: theme ?? this.theme,
+    tapVibration: tapVibration ?? this.tapVibration,
   );
   Setting copyWithCompanion(SettingsCompanion data) {
     return Setting(
       id: data.id.present ? data.id.value : this.id,
       vibration: data.vibration.present ? data.vibration.value : this.vibration,
       theme: data.theme.present ? data.theme.value : this.theme,
+      tapVibration: data.tapVibration.present
+          ? data.tapVibration.value
+          : this.tapVibration,
     );
   }
 
@@ -893,46 +938,53 @@ class Setting extends DataClass implements Insertable<Setting> {
     return (StringBuffer('Setting(')
           ..write('id: $id, ')
           ..write('vibration: $vibration, ')
-          ..write('theme: $theme')
+          ..write('theme: $theme, ')
+          ..write('tapVibration: $tapVibration')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, vibration, theme);
+  int get hashCode => Object.hash(id, vibration, theme, tapVibration);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Setting &&
           other.id == this.id &&
           other.vibration == this.vibration &&
-          other.theme == this.theme);
+          other.theme == this.theme &&
+          other.tapVibration == this.tapVibration);
 }
 
 class SettingsCompanion extends UpdateCompanion<Setting> {
   final Value<int> id;
   final Value<bool> vibration;
   final Value<String> theme;
+  final Value<bool> tapVibration;
   const SettingsCompanion({
     this.id = const Value.absent(),
     this.vibration = const Value.absent(),
     this.theme = const Value.absent(),
+    this.tapVibration = const Value.absent(),
   });
   SettingsCompanion.insert({
     this.id = const Value.absent(),
     required bool vibration,
     required String theme,
+    this.tapVibration = const Value.absent(),
   }) : vibration = Value(vibration),
        theme = Value(theme);
   static Insertable<Setting> custom({
     Expression<int>? id,
     Expression<bool>? vibration,
     Expression<String>? theme,
+    Expression<bool>? tapVibration,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (vibration != null) 'vibration': vibration,
       if (theme != null) 'theme': theme,
+      if (tapVibration != null) 'tap_vibration': tapVibration,
     });
   }
 
@@ -940,11 +992,13 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Value<int>? id,
     Value<bool>? vibration,
     Value<String>? theme,
+    Value<bool>? tapVibration,
   }) {
     return SettingsCompanion(
       id: id ?? this.id,
       vibration: vibration ?? this.vibration,
       theme: theme ?? this.theme,
+      tapVibration: tapVibration ?? this.tapVibration,
     );
   }
 
@@ -960,6 +1014,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     if (theme.present) {
       map['theme'] = Variable<String>(theme.value);
     }
+    if (tapVibration.present) {
+      map['tap_vibration'] = Variable<bool>(tapVibration.value);
+    }
     return map;
   }
 
@@ -968,7 +1025,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     return (StringBuffer('SettingsCompanion(')
           ..write('id: $id, ')
           ..write('vibration: $vibration, ')
-          ..write('theme: $theme')
+          ..write('theme: $theme, ')
+          ..write('tapVibration: $tapVibration')
           ..write(')'))
         .toString();
   }
@@ -1848,12 +1906,14 @@ typedef $$SettingsTableCreateCompanionBuilder =
       Value<int> id,
       required bool vibration,
       required String theme,
+      Value<bool> tapVibration,
     });
 typedef $$SettingsTableUpdateCompanionBuilder =
     SettingsCompanion Function({
       Value<int> id,
       Value<bool> vibration,
       Value<String> theme,
+      Value<bool> tapVibration,
     });
 
 class $$SettingsTableFilterComposer
@@ -1877,6 +1937,11 @@ class $$SettingsTableFilterComposer
 
   ColumnFilters<String> get theme => $composableBuilder(
     column: $table.theme,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get tapVibration => $composableBuilder(
+    column: $table.tapVibration,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1904,6 +1969,11 @@ class $$SettingsTableOrderingComposer
     column: $table.theme,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get tapVibration => $composableBuilder(
+    column: $table.tapVibration,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SettingsTableAnnotationComposer
@@ -1923,6 +1993,11 @@ class $$SettingsTableAnnotationComposer
 
   GeneratedColumn<String> get theme =>
       $composableBuilder(column: $table.theme, builder: (column) => column);
+
+  GeneratedColumn<bool> get tapVibration => $composableBuilder(
+    column: $table.tapVibration,
+    builder: (column) => column,
+  );
 }
 
 class $$SettingsTableTableManager
@@ -1956,17 +2031,24 @@ class $$SettingsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<bool> vibration = const Value.absent(),
                 Value<String> theme = const Value.absent(),
-              }) =>
-                  SettingsCompanion(id: id, vibration: vibration, theme: theme),
+                Value<bool> tapVibration = const Value.absent(),
+              }) => SettingsCompanion(
+                id: id,
+                vibration: vibration,
+                theme: theme,
+                tapVibration: tapVibration,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required bool vibration,
                 required String theme,
+                Value<bool> tapVibration = const Value.absent(),
               }) => SettingsCompanion.insert(
                 id: id,
                 vibration: vibration,
                 theme: theme,
+                tapVibration: tapVibration,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

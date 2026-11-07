@@ -15,12 +15,17 @@ enum ThemeChoice {
   }
 }
 
-/// The user's preferences (spec 0004).
+/// The user's preferences (spec 0004, spec 0009).
 final class AppSettings {
-  const AppSettings({required this.vibration, required this.theme});
+  const AppSettings({
+    required this.vibration,
+    required this.theme,
+    this.tapVibration = false,
+  });
 
   /// A new install, and the fallback when settings cannot be read (AC-1, AC-6):
-  /// vibration on, theme follows the phone.
+  /// vibration on, theme follows the phone, no vibration per count (spec 0009,
+  /// AC-1, AC-6).
   static const AppSettings defaults = AppSettings(
     vibration: true,
     theme: ThemeChoice.system,
@@ -31,20 +36,31 @@ final class AppSettings {
 
   final ThemeChoice theme;
 
-  AppSettings copyWith({bool? vibration, ThemeChoice? theme}) => AppSettings(
+  /// Spec 0009: whether every counted tap gives a short vibration.
+  final bool tapVibration;
+
+  AppSettings copyWith({
+    bool? vibration,
+    ThemeChoice? theme,
+    bool? tapVibration,
+  }) => AppSettings(
     vibration: vibration ?? this.vibration,
     theme: theme ?? this.theme,
+    tapVibration: tapVibration ?? this.tapVibration,
   );
 
   @override
   bool operator ==(Object other) =>
       other is AppSettings &&
       other.vibration == vibration &&
-      other.theme == theme;
+      other.theme == theme &&
+      other.tapVibration == tapVibration;
 
   @override
-  int get hashCode => Object.hash(vibration, theme);
+  int get hashCode => Object.hash(vibration, theme, tapVibration);
 
   @override
-  String toString() => 'AppSettings(vibration: $vibration, theme: $theme)';
+  String toString() =>
+      'AppSettings(vibration: $vibration, theme: $theme, '
+      'tapVibration: $tapVibration)';
 }

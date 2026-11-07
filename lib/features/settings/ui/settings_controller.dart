@@ -32,6 +32,10 @@ class SettingsController extends AsyncNotifier<AppSettings> {
   Future<void> setVibration(bool on) =>
       _update((s) => s.copyWith(vibration: on));
 
+  /// Spec 0009, AC-2.
+  Future<void> setTapVibration(bool on) =>
+      _update((s) => s.copyWith(tapVibration: on));
+
   /// AC-3.
   Future<void> setTheme(ThemeChoice theme) =>
       _update((s) => s.copyWith(theme: theme));

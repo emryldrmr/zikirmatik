@@ -25,4 +25,14 @@ void main() {
     }
     expect(ThemeChoice.byName('sepia'), isNull);
   });
+
+  // Spec 0009, AC-1 / AC-6.
+  test('vibration per count is off by default and changes alone', () {
+    expect(AppSettings.defaults.tapVibration, isFalse);
+    final on = AppSettings.defaults.copyWith(tapVibration: true);
+    expect(on.tapVibration, isTrue);
+    expect(on.vibration, AppSettings.defaults.vibration);
+    expect(on.theme, AppSettings.defaults.theme);
+    expect(on, isNot(AppSettings.defaults));
+  });
 }

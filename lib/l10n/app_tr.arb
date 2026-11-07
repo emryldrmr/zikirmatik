@@ -77,6 +77,14 @@
   "addDhikr": "Zikir ekle",
   "settingsVibration": "Titreşim",
   "settingsVibrationSubtitle": "Tur tamamlanınca titreşir",
+  "settingsTapVibration": "Her sayımda titreşim",
+  "settingsTapVibrationSubtitle": "Her dokunuşta kısa titreşir",
+  "appVersion": "Sürüm {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
   "settingsTheme": "Tema",
   "themeLight": "Açık",
   "themeDark": "Koyu",

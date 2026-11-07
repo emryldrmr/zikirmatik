@@ -35,7 +35,8 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
 
   /// AC-3, AC-4: one tap. Like a dhikr's tap, the state and its save are
   /// issued synchronously in tap order and the vibration is never awaited
-  /// before the save (docs/conventions.md, Known traps).
+  /// before the save (docs/conventions.md, Known traps). A tap on a finished
+  /// tesbihat changes nothing and never vibrates (spec 0009, AC-3).
   Future<void> tap() async {
     final current = _current;
     if (current == null) return;
@@ -43,18 +44,8 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
     if (out.state == current) return;
     state = AsyncData(out.state);
     final saved = _repo.save(out.state);
-    if (out.vibrate) unawaited(_vibrate());
+    unawaited(vibrateAfterTap(ref, roundCompleted: out.vibrate));
     await saved;
-  }
-
-  /// Follows the vibration setting (spec 0004, AC-2); best effort.
-  Future<void> _vibrate() async {
-    if (!ref.read(vibrationEnabledProvider)) return;
-    try {
-      await ref.read(hapticsProvider).roundCompleted();
-    } on Object catch (_) {
-      // Haptics are best effort.
-    }
   }
 
   /// AC-5.

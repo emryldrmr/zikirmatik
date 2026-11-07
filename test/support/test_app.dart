@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/app.dart';
 import 'package:zikirmatik/app/composition.dart';
+import 'package:zikirmatik/core/app_version.dart';
 import 'package:zikirmatik/core/haptics.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
@@ -20,7 +21,8 @@ import 'package:zikirmatik/features/suggested/suggested.dart';
 /// Storage: [store] when given (several dhikrs, spec 0003); otherwise a single
 /// dhikr "Zikir" (id 1) whose counter is [repo] — the setup of specs 0001/0002.
 /// Settings: [settings] when given (spec 0004); otherwise the defaults.
-/// Tesbihat: [tesbihat] when given (spec 0006); otherwise not started. The
+/// Tesbihat: [tesbihat] when given (spec 0006); otherwise not started.
+/// Version: [version] when given (spec 0009); otherwise none is shown. The
 /// cross-feature wiring is the app's own (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
@@ -29,6 +31,7 @@ Widget testApp(
   FakeHaptics? haptics,
   FakeSettingsRepository? settings,
   FakeTesbihatRepository? tesbihat,
+  String? version,
 }) {
   final dhikrs =
       store ?? FakeDhikrStore.single(repo ?? FakeCounterRepository());
@@ -49,6 +52,8 @@ Widget testApp(
         AssetSuggestedRepository(rootBundle),
       ),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
+      // Spec 0009: no version unless given (as when it is unreadable).
+      if (version != null) appVersionProvider.overrideWith((ref) => version),
       ...featureWiring(),
     ],
     // Live view metrics (spec 0004: the phone's light/dark setting can change
@@ -169,9 +174,19 @@ class FakeHaptics implements Haptics {
   /// When true, each vibration fails after being counted.
   bool fail = false;
 
+  /// Short vibrations, one per counted tap (spec 0009).
+  int taps = 0;
+
   @override
   Future<void> roundCompleted() async {
     roundsCompleted++;
+    await hold?.future;
+    if (fail) throw StateError('vibrator unavailable');
+  }
+
+  @override
+  Future<void> tap() async {
+    taps++;
     await hold?.future;
     if (fail) throw StateError('vibrator unavailable');
   }

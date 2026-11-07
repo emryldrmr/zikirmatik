@@ -39,30 +39,21 @@ class CounterController extends FamilyAsyncNotifier<CounterState, int> {
     _ => null,
   };
 
-  /// BR-3, BR-4: one tap; vibrates once when it completes a round.
+  /// BR-3, BR-4: one tap; vibrates once when it completes a round, or briefly
+  /// when vibration per count is on (spec 0009, [vibrateAfterTap]).
   ///
   /// The state is updated and its save is issued synchronously, in tap order,
   /// so rapid taps are all counted and stored in order (BR-8). The vibration
-  /// is never awaited before the save (docs/conventions.md, Known traps).
+  /// is never awaited before the save (docs/conventions.md, Known traps); a
+  /// failed vibration never affects counting.
   Future<void> tap() async {
     final current = _current;
     if (current == null) return;
     final outcome = current.tap();
     state = AsyncData(outcome.state);
     final saved = _save(outcome.state);
-    if (outcome.roundCompleted) unawaited(_vibrate());
+    unawaited(vibrateAfterTap(ref, roundCompleted: outcome.roundCompleted));
     await saved;
-  }
-
-  /// A failed vibration never affects counting. With vibration off (spec 0004,
-  /// AC-2) the round still completes; only the vibration is skipped.
-  Future<void> _vibrate() async {
-    if (!ref.read(vibrationEnabledProvider)) return;
-    try {
-      await ref.read(hapticsProvider).roundCompleted();
-    } on Object catch (_) {
-      // Haptics are best effort.
-    }
   }
 
   /// BR-5.

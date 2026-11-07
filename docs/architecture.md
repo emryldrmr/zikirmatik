@@ -17,7 +17,7 @@ sınırlar, saf Dart'ta hızlı test edilen iş kuralları ve tek dosyada izole 
 
 | Module | Single responsibility | Owns |
 |---|---|---|
-| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`; özelliklerin birbirine kendisi kuramadığı bağları `featureWiring()` kurar — ör. `vibrationEnabledProvider` ← titreşim ayarı — ve uygulama ile testler aynı listeyi kullanır); tema (açık/koyu, ayardan; içerik ayarlar okununca gösterilir); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
+| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`; özelliklerin birbirine kendisi kuramadığı bağları `featureWiring()` kurar — ör. `vibrationEnabledProvider` ve `tapVibrationEnabledProvider` ← titreşim ayarları, `appVersionProvider` ← kurulu sürüm (`package_info_plus`; yan menünün altında, spec 0009) — ve uygulama ile testler aynı listeyi kullanır); tema (açık/koyu, ayardan; içerik ayarlar okununca gösterilir); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
 | `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure` (`StorageFailure`, `ValidationFailure`), `Haptics` arayüzü + `hapticsProvider` + `vibrationEnabledProvider` (varsayılan açık); `Clock` ilk ihtiyaç duyan spec'te eklenir | Ortak tipler |
 | `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8; tesbihat modu (BR-13); tam ekran dokunma alanı, ses tuşuyla sayma, sayaç ekranında ekranı açık tutma | Kullanıcının zikirleri (`dhikrs`) ve seçili zikir (`dhikr_selections`); her zikrin sayım, tur, toplam, hedefi (`counters`, aynı id); tesbihat dizileri ve ilerlemesi |
 | `lib/features/suggested/` | Önerilen Zikirler listesi (gömülü veri), BR-9 | Önerilen zikir içeriği |
@@ -52,14 +52,22 @@ yerleşimi, ara titreşim) → Önerilen Zikirler ve Esmaü'l-Hüsna → Kur'an 
 spec'iyle gelir; sonraki özellikler kendi ayarlarını Ayarlar ekranına ekler. (Ayarlar öne alındı,
 Kaynaklar Kur'an'a bağlandı — emryldrmr, 2026-11-04.)
 
+Kalan sıra (0001–0008 shipped; emryldrmr, 2026-11-07):
+0009 her sayımda titreşim ayarı + yan menüde uygulama sürümü → 0010 sayma kolaylıkları (tam ekran
+dokunma, ses tuşu, ekranı açık tut, büyük rakam, el yerleşimi) → 0011 Günün Esması kartı + kişisel Esma
+notu → 0012 günlük geçmiş + seri (B-2 ile birlikte) → 0013 rozetler (4–6 sabit, seriye dayanır) → 0014
+JSON yedekleme/geri yükleme → 0015 sabah hatırlatma bildirimi (sabit, dini metin içermeyen "Günün
+zikrini çekmeyi unutma"; yeni izin → `docs/security.md`) → 0016 Kur'an + meal + Kaynaklar → 0017 Günün
+Ayeti (0011 kartına ek). Numaralar sıra içindir; her biri spec yazılırken kesinleşir.
+
 ## Deliberately out of scope
 
 Sürüm 1 için bilinçli olarak dışarıda:
 - **Sürüm 2 adayları:** Kur'an'da yer imi / kaldığın yer; yazı boyutu, meal göster/gizle, mealde
-  arama; günlük geçmiş ve seri (istatistik); dosyaya yedekleme/geri yükleme (JSON); Android ana ekran
-  widget'ı.
-- **Sonraki adaylar (her biri ayrı karar ister):** hatırlatıcı bildirimleri (yeni izin, `docs/security.md`);
-  kişisel hatim takibi; okunuş (transliterasyon) ve ayet/Esma görsel paylaşımı (hassas alan); kıraat
+  arama; Android ana ekran widget'ı (Günün Esması); huzurlu hatırlatıcılar (birden çok saat, mesaj
+  yalnızca kaynaklı Esma/zikir metninden — kendi yazdığımız teselli metni yok, BR-12).
+- **Sonraki adaylar (her biri ayrı karar ister):** ruh haline göre zikir önerisi (duygu→zikir
+  eşleştirmesi dini yorumdur; yalnızca Diyanet/TDV kaynağı bulunursa, BR-12); kişisel hatim takibi; okunuş (transliterasyon) ve ayet/Esma görsel paylaşımı (hassas alan); kıraat
   dinleme (ses).
 - **Önerilmiyor:** hesap/giriş, bulut senkronu, toplu hatim ve sosyal özellikler; namaz vakitleri/kıble
   (konum izni); iOS derlemesi ve mağaza süreci (ADR 0001); reklam (`specs/backlog.md` B-1);
