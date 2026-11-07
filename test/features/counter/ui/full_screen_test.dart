@@ -244,6 +244,52 @@ void main() {
     expect(_text(tester, _count), '1');
   });
 
+  // Plan A-1 (SHIP phone check, S-1): a swipe — pulling the system bar up from
+  // the bottom edge — is not a tap and does not count; up to 64 dp it is.
+  testWidgets('a swipe does not count', (tester) async {
+    _phone(tester);
+    await _start(tester, store: _sabah(count: 0, total: 0, target: null));
+    await _openFullScreen(tester);
+
+    // Up from the bottom edge, as when the bar is pulled up.
+    final up = await tester.startGesture(const Offset(200, 798));
+    for (var i = 0; i < 10; i++) {
+      await up.moveBy(const Offset(0, -15));
+    }
+    await up.up();
+    await tester.pump();
+    expect(_text(tester, _count), '0');
+
+    // Just over the threshold, then back: it was a swipe all the same.
+    final away = await tester.startGesture(const Offset(200, 400));
+    await away.moveBy(const Offset(0, -65));
+    await away.moveBy(const Offset(0, 65));
+    await away.up();
+    await tester.pump();
+    expect(_text(tester, _count), '0');
+
+    // Exactly 64 dp still counts.
+    final edge = await tester.startGesture(const Offset(200, 400));
+    await edge.moveBy(const Offset(0, -64));
+    await edge.up();
+    await tester.pump();
+    expect(_text(tester, _count), '1');
+
+    // Two fingers, one of them swipes: no count.
+    final a = await tester.startGesture(const Offset(100, 400), pointer: 7);
+    final b = await tester.startGesture(const Offset(300, 500), pointer: 8);
+    await b.moveBy(const Offset(0, -100));
+    await a.up();
+    await b.up();
+    await tester.pump();
+    expect(_text(tester, _count), '1');
+
+    // A plain tap after a swipe counts again.
+    await tester.tapAt(const Offset(200, 400));
+    await tester.pump();
+    expect(_text(tester, _count), '2');
+  });
+
   testWidgets('full screen reaches the target and keeps it after restart', (
     tester,
   ) async {

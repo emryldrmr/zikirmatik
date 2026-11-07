@@ -205,7 +205,9 @@ class _Frame extends StatelessWidget {
 /// The whole screen as the count button (Req. 3, plan R2): one count when the
 /// last finger lifts, so two fingers count once and fast taps are never lost
 /// (no double-tap wait); nothing when the system cancels the touch (a back
-/// gesture). A screen reader activates it like the normal count button.
+/// gesture) or when a finger moved more than [swipeLimit] — a swipe, such as
+/// pulling the system bar up from the bottom edge (plan A-1). A screen reader
+/// activates it like the normal count button.
 class _CountArea extends StatefulWidget {
   const _CountArea({
     required this.label,
@@ -221,22 +223,34 @@ class _CountArea extends StatefulWidget {
   State<_CountArea> createState() => _CountAreaState();
 }
 
+/// How far a finger may move and still tap (plan A-1): holding the phone
+/// moves it a little; a swipe moves it more.
+const swipeLimit = 64.0;
+
 class _CountAreaState extends State<_CountArea> {
-  final Set<int> _down = {};
+  /// Where each finger now down touched first.
+  final Map<int, Offset> _down = {};
   bool _cancelled = false;
 
   void _onDown(PointerDownEvent e) {
     if (_down.isEmpty) _cancelled = false;
-    _down.add(e.pointer);
+    _down[e.pointer] = e.position;
+  }
+
+  void _onMove(PointerMoveEvent e) {
+    final start = _down[e.pointer];
+    if (start != null && (e.position - start).distance > swipeLimit) {
+      _cancelled = true;
+    }
   }
 
   void _onUp(PointerUpEvent e) {
-    if (!_down.remove(e.pointer)) return;
+    if (_down.remove(e.pointer) == null) return;
     if (_down.isEmpty && !_cancelled && widget.enabled) widget.onCount();
   }
 
   void _onCancel(PointerCancelEvent e) {
-    if (_down.remove(e.pointer)) _cancelled = true;
+    if (_down.remove(e.pointer) != null) _cancelled = true;
   }
 
   @override
@@ -251,6 +265,7 @@ class _CountAreaState extends State<_CountArea> {
       key: const Key('full-screen-tap-area'),
       behavior: HitTestBehavior.opaque,
       onPointerDown: _onDown,
+      onPointerMove: _onMove,
       onPointerUp: _onUp,
       onPointerCancel: _onCancel,
       child: const SizedBox.expand(),
