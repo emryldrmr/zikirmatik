@@ -27,7 +27,8 @@
 
 - **BR-1:** Zikir adı zorunludur; baştaki/sondaki boşluk kırpıldıktan sonra 1–50 karakter.
 - **BR-2:** Hedef isteğe bağlıdır; verilirse 1–100000 arası tam sayıdır.
-- **BR-3:** Her dokunuş sayımı ve toplamı 1 artırır.
+- **BR-3:** Her dokunuş sayımı ve toplamı 1 artırır. "Her sayımda titreşim" ayarı açıksa (varsayılan kapalı)
+  sayımı artıran dokunuş kısa titreşir; turu tamamlayan dokunuşta tur titreşimi açıksa yalnız o olur (spec 0009).
 - **BR-4:** Hedefli zikirde sayım hedefe ulaştığı anda: titreşim tetiklenir, tamamlanan tur sayısı
   1 artar, sayım 0 olur. (Titreşim Ayarlar'dan kapatılabilir; kapalıysa diğer etkiler aynen olur.)
 - **BR-5:** Geri al sayımı ve toplamı 1 azaltır; sayım 0 ise hiçbir şey değişmez (sayım 0'ın altına
