@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
-import 'package:zikirmatik/features/counter/domain/tesbihat.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
 
 import '../../../support/test_app.dart';
@@ -200,4 +200,130 @@ void main() {
     expect(haptics.taps, 0);
     expect(_text(tester, _value), '2');
   });
+
+  // --- Ayarlar ekranı (AC-1, AC-6, AC-9) ---
+
+  final toggle = find.byKey(const Key('settings-tap-vibration'));
+
+  Future<void> goToSettings(WidgetTester tester) async {
+    await tester.tap(find.byKey(const Key('open-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('section-settings')));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('settings shows tap vibration off by default', (tester) async {
+    await _start(tester, settings: AppSettings.defaults);
+    await goToSettings(tester);
+
+    expect(find.text('Her sayımda titreşim'), findsOneWidget);
+    expect(find.text('Her dokunuşta kısa titreşir'), findsOneWidget);
+    expect(find.text('Tur tamamlanınca titreşir'), findsOneWidget);
+    expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+    // Right below "Titreşim".
+    expect(
+      tester.getTopLeft(toggle).dy,
+      greaterThan(
+        tester.getTopLeft(find.byKey(const Key('settings-vibration'))).dy,
+      ),
+    );
+    expect(
+      tester.getTopLeft(toggle).dy,
+      lessThan(tester.getTopLeft(find.text('Tema')).dy),
+    );
+  });
+
+  testWidgets('turning it on applies at once and is kept after restart', (
+    tester,
+  ) async {
+    final haptics = FakeHaptics();
+    final settings = FakeSettingsRepository();
+    await tester.pumpWidget(
+      testApp(tester, settings: settings, haptics: haptics),
+    );
+    await tester.pumpAndSettle();
+    await goToSettings(tester);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    expect(settings.stored.tapVibration, isTrue);
+    expect(settings.stored.vibration, isTrue); // the other setting unchanged
+
+    await tester.tap(find.byKey(const Key('open-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('section-myDhikrs')));
+    await tester.pumpAndSettle();
+    await _taps(tester, 1);
+    expect(haptics.taps, 1);
+
+    // "Restart" with the same store.
+    await tester.pumpWidget(const SizedBox());
+    final after = FakeHaptics();
+    await tester.pumpWidget(
+      testApp(tester, settings: settings, haptics: after),
+    );
+    await tester.pumpAndSettle();
+    await _taps(tester, 1);
+    expect(after.taps, 1);
+    await goToSettings(tester);
+    expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
+  });
+
+  testWidgets('unreadable settings show tap vibration off', (tester) async {
+    await _start(tester, failLoad: true);
+    await goToSettings(tester);
+    expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+  });
+
+  testWidgets('tap vibration semantics, target and contrast', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await _start(tester, settings: AppSettings.defaults);
+    await goToSettings(tester);
+
+    final node = tester.getSemantics(toggle);
+    expect(node.label, startsWith('Her sayımda titreşim'));
+    expect(node, isSemantics(hasToggledState: true, isToggled: false));
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSemantics(toggle),
+      isSemantics(hasToggledState: true, isToggled: true),
+    );
+    final size = tester.getSize(toggle);
+    expect(size.width, greaterThanOrEqualTo(48));
+    expect(size.height, greaterThanOrEqualTo(48));
+    semantics.dispose();
+
+    for (final choice in [ThemeChoice.light, ThemeChoice.dark]) {
+      await tester.pumpWidget(const SizedBox());
+      await _start(
+        tester,
+        settings: AppSettings(vibration: true, theme: choice),
+      );
+      await goToSettings(tester);
+      final bg = Theme.of(tester.element(toggle)).colorScheme.surface;
+      for (final text in [
+        'Her sayımda titreşim',
+        'Her dokunuşta kısa titreşir',
+      ]) {
+        // The colour the text is actually painted with.
+        final color = tester
+            .renderObject<RenderParagraph>(find.text(text))
+            .text
+            .style!
+            .color!;
+        expect(
+          _contrast(color, bg),
+          greaterThanOrEqualTo(4.5),
+          reason: '$choice $text',
+        );
+      }
+    }
+  });
+}
+
+double _contrast(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  final (hi, lo) = la > lb ? (la, lb) : (lb, la);
+  return (hi + 0.05) / (lo + 0.05);
 }

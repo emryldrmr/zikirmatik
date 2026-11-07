@@ -147,6 +147,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsVibrationSubtitle => 'Tur tamamlanınca titreşir';
 
   @override
+  String get settingsTapVibration => 'Her sayımda titreşim';
+
+  @override
+  String get settingsTapVibrationSubtitle => 'Her dokunuşta kısa titreşir';
+
+  @override
+  String appVersion(String version) {
+    return 'Sürüm $version';
+  }
+
+  @override
   String get settingsTheme => 'Tema';
 
   @override
