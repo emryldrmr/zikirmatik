@@ -15,6 +15,10 @@ final _value = find.byKey(const Key('counter-value'));
 final _bigCount = find.byKey(const Key('full-screen-count'));
 
 final _device = find.byKey(const Key('counter-device'));
+final _undo = find.byKey(const Key('full-screen-undo'));
+final _close = find.byKey(const Key('full-screen-close'));
+
+String _text(WidgetTester tester, Finder f) => tester.widget<Text>(f).data!;
 
 /// Today's margin around Zikirlerim's view (plan 0011, R3).
 const _margin = 24.0;
@@ -335,6 +339,221 @@ void main() {
         moreOrLessEquals(narrow.width / 2, epsilon: 0.5),
         reason: '$hand',
       );
+    }
+  });
+
+  // AC-2: with the defaults, spec 0010's corners.
+  testWidgets('defaults keep the full screen corners', (tester) async {
+    _screen(tester, _upright);
+    for (final tesbihat in [null, _tesbihat]) {
+      await _start(tester, tesbihat: tesbihat?.call());
+      await _openFullScreen(tester);
+      expect(tester.getTopLeft(_undo), const Offset(8, 8));
+      expect(tester.getTopRight(_close), Offset(_upright.width - 8, 8));
+    }
+  });
+
+  // AC-6.
+  testWidgets('full screen corners follow the hand', (tester) async {
+    for (final size in const [_upright, _sideways]) {
+      for (final tesbihat in [null, _tesbihat]) {
+        final why = '$size ${tesbihat == null ? 'dhikr' : 'tesbihat'}';
+        _screen(tester, size);
+        final topRight = Offset(size.width - 8, 8);
+        final bottomRight = Offset(size.width - 8, size.height - 8);
+        final bottomLeft = Offset(8, size.height - 8);
+
+        await _start(tester, tesbihat: tesbihat?.call());
+        await _openFullScreen(tester);
+        expect(tester.getTopLeft(_undo), const Offset(8, 8), reason: why);
+        expect(tester.getTopRight(_close), topRight, reason: why);
+
+        await _start(
+          tester,
+          settings: _settings(hand: HandLayout.right),
+          tesbihat: tesbihat?.call(),
+        );
+        await _openFullScreen(tester);
+        expect(tester.getBottomRight(_undo), bottomRight, reason: why);
+        expect(tester.getTopLeft(_close), const Offset(8, 8), reason: why);
+
+        await _start(
+          tester,
+          settings: _settings(hand: HandLayout.left),
+          tesbihat: tesbihat?.call(),
+        );
+        await _openFullScreen(tester);
+        expect(tester.getBottomLeft(_undo), bottomLeft, reason: why);
+        expect(tester.getTopRight(_close), topRight, reason: why);
+      }
+    }
+  });
+
+  // AC-6: the information never under a button, also small, sideways, with
+  // large digits and the phone's large text.
+  testWidgets('full screen info never meets the buttons', (tester) async {
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    const dhikrInfo = [
+      'full-screen-name',
+      'full-screen-count',
+      'full-screen-target',
+      'full-screen-total',
+    ];
+    const tesbihatInfo = [
+      'full-screen-step-text',
+      'full-screen-step',
+      'full-screen-count',
+      'full-screen-target',
+    ];
+    for (final size in const [_upright, _sideways, Size(320, 480)]) {
+      for (final scale in const [1.0, 2.0]) {
+        for (final (large, hand) in _combinations) {
+          for (final tesbihat in [false, true]) {
+            final why =
+                '$size ×$scale large:$large $hand '
+                '${tesbihat ? 'tesbihat' : 'dhikr'}';
+            _screen(tester, size);
+            tester.platformDispatcher.textScaleFactorTestValue = scale;
+            await _start(
+              tester,
+              settings: _settings(large: large, hand: hand),
+              tesbihat: tesbihat ? _tesbihat() : null,
+            );
+            await _openFullScreen(tester);
+            final buttons = [_rect(tester, _undo), _rect(tester, _close)];
+            // Plan 0011, A-2: the count never gives way to nothing.
+            expect(
+              _rect(tester, _bigCount).height,
+              greaterThan(0),
+              reason: why,
+            );
+            for (final key in tesbihat ? tesbihatInfo : dhikrInfo) {
+              final info = _rect(tester, find.byKey(Key(key)));
+              for (final button in buttons) {
+                expect(
+                  info.overlaps(button),
+                  isFalse,
+                  reason: '$why $key $info $button',
+                );
+              }
+            }
+            expect(tester.takeException(), isNull, reason: why);
+          }
+        }
+      }
+    }
+  });
+
+  // AC-6: a bottom "Geri al" stays out of the system's bottom gesture area.
+  testWidgets('bottom undo sits above the gesture area', (tester) async {
+    for (final size in const [_upright, _sideways]) {
+      for (final hand in [HandLayout.right, HandLayout.left]) {
+        final why = '$size $hand';
+        _screen(tester, size);
+        tester.view.systemGestureInsets = const FakeViewPadding(bottom: 48);
+        await _start(tester, settings: _settings(hand: hand));
+        await _openFullScreen(tester);
+        final undo = _rect(tester, _undo);
+        expect(undo.bottom, size.height - 48 - 8, reason: why);
+        for (final key in [
+          'full-screen-name',
+          'full-screen-count',
+          'full-screen-target',
+          'full-screen-total',
+        ]) {
+          expect(
+            _rect(tester, find.byKey(Key(key))).overlaps(undo),
+            isFalse,
+            reason: '$why $key',
+          );
+        }
+      }
+    }
+  });
+
+  // AC-6: pulling up from the bottom edge — through "Geri al" too — neither
+  // counts nor undoes.
+  testWidgets('a pull from the bottom neither counts nor undoes', (
+    tester,
+  ) async {
+    _screen(tester, _upright);
+    for (final hand in HandLayout.values) {
+      final store = _sabah();
+      await _start(
+        tester,
+        settings: _settings(hand: hand),
+        store: store,
+      );
+      await _openFullScreen(tester);
+      final undo = tester.getCenter(_undo);
+      for (final start in [
+        Offset(undo.dx, _upright.height - 2), // the very edge, below it
+        if (hand != HandLayout.center) undo, // on "Geri al" itself
+        Offset(_upright.width / 2, _upright.height - 2),
+      ]) {
+        await tester.dragFrom(start, const Offset(0, -300));
+        await tester.pumpAndSettle();
+        expect(_text(tester, _bigCount), '7', reason: '$hand $start');
+      }
+      expect(store.stateOf(1), _state(), reason: '$hand');
+    }
+  });
+
+  // AC-6: a touch on a button never counts; everywhere else counts, the
+  // corners and the spots next to the buttons included.
+  testWidgets('buttons do not count, the rest counts in every layout', (
+    tester,
+  ) async {
+    for (final size in const [_upright, _sideways]) {
+      for (final hand in HandLayout.values) {
+        final why = '$size $hand';
+        _screen(tester, size);
+        await _start(tester, settings: _settings(hand: hand));
+        await _openFullScreen(tester);
+        var expected = 7;
+
+        await tester.tap(_undo);
+        await tester.pumpAndSettle();
+        expected -= 1; // undone, not counted
+        expect(_text(tester, _bigCount), '$expected', reason: '$why undo');
+
+        final undo = _rect(tester, _undo);
+        final close = _rect(tester, _close);
+        final points =
+            [
+              Offset(size.width / 2, size.height / 2),
+              const Offset(4, 4),
+              Offset(size.width - 4, 4),
+              Offset(4, size.height - 4),
+              Offset(size.width - 4, size.height - 4),
+              // Next to the buttons.
+              for (final button in [undo, close]) ...[
+                button.centerLeft.translate(-8, 0),
+                button.centerRight.translate(8, 0),
+                button.topCenter.translate(0, -6),
+                button.bottomCenter.translate(0, 8),
+              ],
+            ].where(
+              (p) =>
+                  !undo.inflate(1).contains(p) &&
+                  !close.inflate(1).contains(p) &&
+                  p.dx >= 0 &&
+                  p.dy >= 0 &&
+                  p.dx < size.width &&
+                  p.dy < size.height,
+            );
+        for (final p in points) {
+          await tester.tapAt(p);
+          await tester.pump();
+          expected += 1;
+          expect(_text(tester, _bigCount), '$expected', reason: '$why $p');
+        }
+
+        await tester.tap(_close);
+        await tester.pumpAndSettle();
+        expect(_full, findsNothing, reason: why);
+        expect(tester.widget<Text>(_value).data, '$expected', reason: why);
+      }
     }
   });
 

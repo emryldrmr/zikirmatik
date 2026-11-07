@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/display.dart';
+import '../../../core/hand_layout.dart';
 import '../../../core/screen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/counter_state.dart';
@@ -144,7 +145,12 @@ class _FullScreenViewState extends ConsumerState<FullScreenView>
 /// The count area under the information, with "Geri al" and "Kapat" in the
 /// corners above it. The information ignores touches, so a touch on it lands
 /// on the area; a touch on a button never does (AC-6).
-class _Frame extends StatelessWidget {
+///
+/// The corners follow the hand (spec 0011, Req. 5): in the centre layout
+/// "Geri al" is top left and "Kapat" top right, as in spec 0010; for the right
+/// or left hand "Geri al" moves to that hand's bottom corner and "Kapat" to
+/// the opposite top corner.
+class _Frame extends ConsumerWidget {
   const _Frame({this.area, this.info, this.onUndo, this.showUndo = true});
 
   final Widget? area;
@@ -152,9 +158,40 @@ class _Frame extends StatelessWidget {
   final VoidCallback? onUndo;
   final bool showUndo;
 
+  /// Room the information keeps free for a bottom "Geri al" (plan 0011, R4).
+  static const _buttonRoom = 72.0;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final hand = ref.watch(handLayoutProvider);
+    final undoBelow = hand != HandLayout.center;
+    // Plan 0011, R4: above the system's bottom edge gesture area, which stays
+    // when the bars are hidden (the view padding is then 0).
+    final media = MediaQuery.of(context);
+    final bottomInset =
+        media.systemGestureInsets.bottom > media.viewPadding.bottom
+        ? media.systemGestureInsets.bottom
+        : media.viewPadding.bottom;
+
+    final undo = showUndo && area != null
+        ? IconButton(
+            key: const Key('full-screen-undo'),
+            color: deviceBodyText,
+            disabledColor: deviceBodyText.withValues(alpha: 0.38),
+            iconSize: 32,
+            icon: Icon(Icons.undo, semanticLabel: l10n.undo),
+            onPressed: onUndo,
+          )
+        : null;
+    final close = IconButton(
+      key: const Key('full-screen-close'),
+      color: deviceBodyText,
+      iconSize: 32,
+      icon: Icon(Icons.close, semanticLabel: l10n.fullScreenClose),
+      onPressed: () => Navigator.of(context).maybePop(),
+    );
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -162,7 +199,12 @@ class _Frame extends StatelessWidget {
         if (info != null)
           IgnorePointer(
             child: SafeArea(
-              minimum: const EdgeInsets.fromLTRB(24, 72, 24, 24),
+              minimum: EdgeInsets.fromLTRB(
+                24,
+                _buttonRoom,
+                24,
+                undoBelow ? bottomInset + _buttonRoom : 24,
+              ),
               child: Center(child: info),
             ),
           ),
@@ -172,32 +214,28 @@ class _Frame extends StatelessWidget {
             child: Align(
               alignment: Alignment.topCenter,
               child: Row(
-                children: [
-                  if (showUndo && area != null)
-                    IconButton(
-                      key: const Key('full-screen-undo'),
-                      color: deviceBodyText,
-                      disabledColor: deviceBodyText.withValues(alpha: 0.38),
-                      iconSize: 32,
-                      icon: Icon(Icons.undo, semanticLabel: l10n.undo),
-                      onPressed: onUndo,
-                    ),
-                  const Spacer(),
-                  IconButton(
-                    key: const Key('full-screen-close'),
-                    color: deviceBodyText,
-                    iconSize: 32,
-                    icon: Icon(
-                      Icons.close,
-                      semanticLabel: l10n.fullScreenClose,
-                    ),
-                    onPressed: () => Navigator.of(context).maybePop(),
-                  ),
-                ],
+                children: switch (hand) {
+                  HandLayout.center => [?undo, const Spacer(), close],
+                  HandLayout.right => [close, const Spacer()],
+                  HandLayout.left => [const Spacer(), close],
+                },
               ),
             ),
           ),
         ),
+        if (undoBelow && undo != null)
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(8, 8, 8, bottomInset + 8),
+              child: Align(
+                alignment: hand == HandLayout.right
+                    ? Alignment.bottomRight
+                    : Alignment.bottomLeft,
+                child: undo,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -300,20 +338,24 @@ class _DhikrInfo extends StatelessWidget {
         // Review round 1, F-1: on a short screen the count gives way.
         Flexible(child: _BigCount(count: state.count.value)),
         const SizedBox(height: 16),
-        Text(
-          target == null
-              ? l10n.targetNone
-              : l10n.targetAndRound(
-                  thousands.format(target.value),
-                  thousands.format(state.rounds),
-                ),
-          key: const Key('full-screen-target'),
-          style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
+        _OneLine(
+          Text(
+            target == null
+                ? l10n.targetNone
+                : l10n.targetAndRound(
+                    thousands.format(target.value),
+                    thousands.format(state.rounds),
+                  ),
+            key: const Key('full-screen-target'),
+            style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
+          ),
         ),
-        Text(
-          l10n.totalLabel(thousands.format(state.total)),
-          key: const Key('full-screen-total'),
-          style: theme.textTheme.titleMedium?.copyWith(color: deviceBodyText),
+        _OneLine(
+          Text(
+            l10n.totalLabel(thousands.format(state.total)),
+            key: const Key('full-screen-total'),
+            style: theme.textTheme.titleMedium?.copyWith(color: deviceBodyText),
+          ),
         ),
       ],
     );
@@ -373,18 +415,22 @@ class _TesbihatInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Text(
-          l10n.tesbihatStep(state.step + 1, steps.length),
-          key: const Key('full-screen-step'),
-          style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
+        _OneLine(
+          Text(
+            l10n.tesbihatStep(state.step + 1, steps.length),
+            key: const Key('full-screen-step'),
+            style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
+          ),
         ),
         const SizedBox(height: 16),
         Flexible(child: _BigCount(count: state.count.value)),
         const SizedBox(height: 16),
-        Text(
-          l10n.tesbihatTarget(thousands.format(step.target.value)),
-          key: const Key('full-screen-target'),
-          style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
+        _OneLine(
+          Text(
+            l10n.tesbihatTarget(thousands.format(step.target.value)),
+            key: const Key('full-screen-target'),
+            style: theme.textTheme.titleLarge?.copyWith(color: deviceBodyText),
+          ),
         ),
       ],
     );
@@ -414,4 +460,23 @@ class _BigCount extends ConsumerWidget {
       ),
     ),
   );
+}
+
+/// A short information line (target and round, total, "Adım x/y") in the
+/// hand layouts: kept on one line, shrinking only when it does not fit the
+/// width — never cut — so the count keeps its room above the bottom "Geri al"
+/// (plan 0011, A-2). The centre layout shows it as spec 0010 does (AC-2).
+class _OneLine extends ConsumerWidget {
+  const _OneLine(this.text);
+
+  final Text text;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(handLayoutProvider) == HandLayout.center) return text;
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(text.data!, key: text.key, maxLines: 1, style: text.style),
+    );
+  }
 }
