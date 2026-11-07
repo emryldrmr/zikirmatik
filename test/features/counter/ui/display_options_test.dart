@@ -69,9 +69,8 @@ CounterState _state({int count = 7, int? target = 33}) => CounterState(
 FakeDhikrStore _sabah({int count = 7, int? target = 33}) =>
     FakeDhikrStore([('Sabah', _state(count: count, target: target))]);
 
-/// A phone held upright, or sideways.
+/// A phone held upright (the app is portrait only, spec 0012).
 const _upright = Size(400, 800);
-const _sideways = Size(852, 393);
 
 void _screen(WidgetTester tester, Size size) {
   tester.view.physicalSize = size;
@@ -250,7 +249,7 @@ void main() {
 
   // AC-2: with the defaults the device is in the middle, as today.
   testWidgets('defaults keep the device centred', (tester) async {
-    for (final size in const [_upright, _sideways]) {
+    for (final size in const [_upright]) {
       for (final tesbihat in [null, _tesbihat]) {
         final why = '$size ${tesbihat == null ? 'dhikr' : 'tesbihat'}';
         _screen(tester, size);
@@ -268,7 +267,7 @@ void main() {
   testWidgets('right and left hand move the device to the edge', (
     tester,
   ) async {
-    for (final size in const [_upright, _sideways]) {
+    for (final size in const [_upright]) {
       for (final tesbihat in [null, _tesbihat]) {
         final why = '$size ${tesbihat == null ? 'dhikr' : 'tesbihat'}';
         _screen(tester, size);
@@ -306,11 +305,11 @@ void main() {
     }
   });
 
-  // AC-5: never off the screen, upright or sideways, with large digits and
+  // AC-5: never off the screen, upright, with large digits and
   // the phone's large text too.
-  testWidgets('hand layout keeps the device inside sideways', (tester) async {
+  testWidgets('hand layout keeps the device inside', (tester) async {
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    for (final size in const [_upright, _sideways]) {
+    for (final size in const [_upright]) {
       for (final scale in const [1.0, 2.0]) {
         for (final (large, hand) in _combinations) {
           final why = '$size ×$scale large:$large $hand';
@@ -356,7 +355,7 @@ void main() {
 
   // AC-6.
   testWidgets('full screen corners follow the hand', (tester) async {
-    for (final size in const [_upright, _sideways]) {
+    for (final size in const [_upright]) {
       for (final tesbihat in [null, _tesbihat]) {
         final why = '$size ${tesbihat == null ? 'dhikr' : 'tesbihat'}';
         _screen(tester, size);
@@ -390,7 +389,7 @@ void main() {
     }
   });
 
-  // AC-6: the information never under a button, also small, sideways, with
+  // AC-6: the information never under a button, also small, with
   // large digits and the phone's large text.
   testWidgets('full screen info never meets the buttons', (tester) async {
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
@@ -406,7 +405,7 @@ void main() {
       'full-screen-count',
       'full-screen-target',
     ];
-    for (final size in const [_upright, _sideways, Size(320, 480)]) {
+    for (final size in const [_upright, Size(320, 480)]) {
       for (final scale in const [1.0, 2.0]) {
         for (final (large, hand) in _combinations) {
           for (final tesbihat in [false, true]) {
@@ -447,7 +446,7 @@ void main() {
 
   // AC-6: a bottom "Geri al" stays out of the system's bottom gesture area.
   testWidgets('bottom undo sits above the gesture area', (tester) async {
-    for (final size in const [_upright, _sideways]) {
+    for (final size in const [_upright]) {
       for (final hand in [HandLayout.right, HandLayout.left]) {
         final why = '$size $hand';
         _screen(tester, size);
@@ -505,7 +504,7 @@ void main() {
   testWidgets('buttons do not count, the rest counts in every layout', (
     tester,
   ) async {
-    for (final size in const [_upright, _sideways]) {
+    for (final size in const [_upright]) {
       for (final hand in HandLayout.values) {
         final why = '$size $hand';
         _screen(tester, size);
@@ -698,12 +697,12 @@ void main() {
     semantics.dispose();
   });
 
-  // AC-4: the count is whole in every combination, upright and sideways,
+  // AC-4: the count is whole in every combination, upright,
   // with the phone's large text.
   testWidgets('the count is never cut', (tester) async {
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     for (final count in const [0, 99999, 1000000]) {
-      for (final size in const [_upright, _sideways]) {
+      for (final size in const [_upright]) {
         for (final scale in const [1.0, 2.0]) {
           for (final (large, hand) in _combinations) {
             final why = '$count $size ×$scale large:$large $hand';
