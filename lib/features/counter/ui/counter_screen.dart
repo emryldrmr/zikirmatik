@@ -8,7 +8,9 @@ import 'confirm_dialog.dart';
 import 'counter_controller.dart';
 import 'dhikr_list_controller.dart';
 import 'device_parts.dart';
+import 'keep_screen_awake.dart';
 import 'dhikr_picker.dart';
+import 'full_screen_view.dart';
 import 'target_picker.dart';
 import 'tesbihat_controller.dart';
 import 'tesbihat_view.dart';
@@ -18,6 +20,15 @@ import 'tesbihat_view.dart';
 /// or the empty state.
 class CounterScreen extends ConsumerWidget {
   const CounterScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) =>
+      // Spec 0010, AC-9: in every state of Zikirlerim.
+      const KeepScreenAwake(child: _CounterBody());
+}
+
+class _CounterBody extends ConsumerWidget {
+  const _CounterBody();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -154,6 +165,11 @@ class _SelectedDhikr extends ConsumerWidget {
                 AsyncError() => const _LoadFailed(),
                 _ => const _Loading(),
               },
+              // Spec 0010, AC-1: only with a loaded counter.
+              if (counter case AsyncData()) ...[
+                const SizedBox(height: 16),
+                FullScreenButton(entry: entry),
+              ],
             ],
           ),
         ),

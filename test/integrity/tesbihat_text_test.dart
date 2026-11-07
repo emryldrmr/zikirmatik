@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/counter/domain/tesbihat.dart';
+
+import '../support/test_app.dart';
 
 // Sensitive area: Dini metin bütünlüğü (docs/testing.md, "Hassas alan").
 // Spec 0006, Requirements 1 / AC-2: the steps of "Namaz sonrası tesbihat",
@@ -38,5 +42,51 @@ void main() {
       () => namazSonrasiTesbihat.steps.add(namazSonrasiTesbihat.steps.first),
       throwsUnsupportedError,
     );
+  });
+
+  // Spec 0010, AC-5 (BR-12): full screen shows each step's text exactly as
+  // stored — never cut, also on a small screen.
+  testWidgets('full screen shows the step text unchanged', (tester) async {
+    tester.view.physicalSize = const Size(320, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final semantics = tester.ensureSemantics();
+
+    final steps = namazSonrasiTesbihat.steps;
+    for (var i = 0; i < steps.length; i++) {
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(
+        testApp(
+          tester,
+          tesbihat: FakeTesbihatRepository(
+            stored: TesbihatState(step: i, selected: true),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final open = find.byKey(const Key('full-screen-open'));
+      await tester.ensureVisible(open);
+      await tester.tap(open);
+      await tester.pumpAndSettle();
+
+      final (codePoints, _) = _expected[i];
+      final text = tester.widget<Text>(
+        find.byKey(const Key('full-screen-step-text')),
+      );
+      expect(text.data!.runes.toList(), codePoints, reason: 'step ${i + 1}');
+      expect(text.maxLines, isNull, reason: 'step ${i + 1}');
+      expect(text.overflow, isNull, reason: 'step ${i + 1}');
+      expect(text.softWrap, isNot(isFalse), reason: 'step ${i + 1}');
+      expect(tester.takeException(), isNull, reason: 'step ${i + 1}');
+      // A screen reader hears the whole text too.
+      expect(
+        find.bySemanticsLabel(
+          RegExp('^${RegExp.escape(String.fromCharCodes(codePoints))}, '),
+        ),
+        findsWidgets,
+        reason: 'step ${i + 1}',
+      );
+    }
+    semantics.dispose();
   });
 }
