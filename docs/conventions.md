@@ -71,6 +71,9 @@
 - Dart `int.tryParse` `0x21` (onaltılık), `+33` ve bazı başka biçimleri sayı kabul eder — kullanıcı
   girişinde önce `^[0-9]+$` deseni kontrol edilir; alan filtresi (digitsOnly) kullanılmaz, çünkü
   yapıştırılan `0x21`'i sessizce `021`'e (21) çevirir — from spec 0002 review round 1, F-2 (A-3).
+- Uygulama arka plandayken kare çizilmez: yaşam döngüsüne bağlı bir platform çağrısı (ekranı açık tut,
+  sistem çubukları) `setState` → `build` yoluyla değil, doğrudan `didChangeAppLifecycleState` içinde
+  yapılır; yoksa ön plana dönene kadar hiç çalışmaz — from spec 0010 build (plan R1).
 
 ## Enforced by tooling
 - `flutter analyze --fatal-infos --fatal-warnings` + `flutter_lints` ve ek kurallar

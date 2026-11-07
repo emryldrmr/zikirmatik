@@ -352,6 +352,30 @@ abstract class AppLocalizations {
   /// **'Her dokunuşta kısa titreşir'**
   String get settingsTapVibrationSubtitle;
 
+  /// No description provided for @settingsKeepScreenOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekranı açık tut'**
+  String get settingsKeepScreenOn;
+
+  /// No description provided for @settingsKeepScreenOnSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikirlerim açıkken ekran kararmaz'**
+  String get settingsKeepScreenOnSubtitle;
+
+  /// No description provided for @fullScreen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tam ekran'**
+  String get fullScreen;
+
+  /// No description provided for @fullScreenClose.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapat'**
+  String get fullScreenClose;
+
   /// No description provided for @appVersion.
   ///
   /// In tr, this message translates to:

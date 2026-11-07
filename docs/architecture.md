@@ -17,13 +17,13 @@ sınırlar, saf Dart'ta hızlı test edilen iş kuralları ve tek dosyada izole 
 
 | Module | Single responsibility | Owns |
 |---|---|---|
-| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`; özelliklerin birbirine kendisi kuramadığı bağları `featureWiring()` kurar — ör. `vibrationEnabledProvider` ve `tapVibrationEnabledProvider` ← titreşim ayarları, `appVersionProvider` ← kurulu sürüm (`package_info_plus`; yan menünün altında, spec 0009) — ve uygulama ile testler aynı listeyi kullanır); tema (açık/koyu, ayardan; içerik ayarlar okununca gösterilir); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
-| `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure` (`StorageFailure`, `ValidationFailure`), `Haptics` arayüzü + `hapticsProvider` + `vibrationEnabledProvider` (varsayılan açık); `Clock` ilk ihtiyaç duyan spec'te eklenir | Ortak tipler |
-| `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8; tesbihat modu (BR-13); tam ekran dokunma alanı, ses tuşuyla sayma, sayaç ekranında ekranı açık tutma | Kullanıcının zikirleri (`dhikrs`) ve seçili zikir (`dhikr_selections`); her zikrin sayım, tur, toplam, hedefi (`counters`, aynı id); tesbihat dizileri ve ilerlemesi |
+| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`; özelliklerin birbirine kendisi kuramadığı bağları `featureWiring()` kurar — ör. `vibrationEnabledProvider` ve `tapVibrationEnabledProvider` ← titreşim ayarları, `appVersionProvider` ← kurulu sürüm (`package_info_plus`; yan menünün altında, spec 0009), `keepScreenOnEnabledProvider` ← "Ekranı açık tut" ayarı (spec 0010) — ve uygulama ile testler aynı listeyi kullanır; `ChannelScreenAwake` uygulamanın kendi `zikirmatik/screen` kanalıyla `MainActivity`'deki `FLAG_KEEP_SCREEN_ON`'u açar/kapatır, izin ve paket istemez; `SystemChromeBars` sistem çubuklarını gizler/geri getirir); tema (açık/koyu, ayardan; içerik ayarlar okununca gösterilir); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
+| `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure` (`StorageFailure`, `ValidationFailure`), `Haptics` arayüzü + `hapticsProvider` + `vibrationEnabledProvider` (varsayılan açık); `ScreenAwake` + `SystemBars` arayüzleri ve sağlayıcıları, `keepScreenOnEnabledProvider` (varsayılan kapalı; spec 0010); `Clock` ilk ihtiyaç duyan spec'te eklenir | Ortak tipler |
+| `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8; tesbihat modu (BR-13); tam ekran sayma (Shell'in üstüne itilen rota; son parmak kalkınca 1 sayım, iptal edilen dokunuş saymaz) ve Zikirlerim öndeyken ekranı açık tutma (spec 0010); ses tuşuyla sayma (0011) | Kullanıcının zikirleri (`dhikrs`) ve seçili zikir (`dhikr_selections`); her zikrin sayım, tur, toplam, hedefi (`counters`, aynı id); tesbihat dizileri ve ilerlemesi |
 | `lib/features/suggested/` | Önerilen Zikirler listesi (gömülü veri), BR-9 | Önerilen zikir içeriği |
 | `lib/features/esma/` | Esmaü'l-Hüsna listesi (gömülü veri), BR-9 | 99 isim içeriği |
 | `lib/features/quran/` | Kur'an + meal: indirme, doğrulama, önbellek, okuma ekranı; BR-10…BR-12 | Kur'an/meal önbelleği; AlQuran Cloud adaptörü |
-| `lib/features/settings/` | Ayarlar ekranı: titreşim ve tema (spec 0004); sonra ara titreşim, büyük rakam, sol/sağ el yerleşimi, ses tuşuyla sayma, ekranı açık tut, varsayılan meal ve Kaynaklar ekranı kendi spec'leriyle | Kullanıcı tercihleri (`settings`, tek satır; satır yoksa varsayılanlar) |
+| `lib/features/settings/` | Ayarlar ekranı: titreşim ve tema (spec 0004), her sayımda titreşim (spec 0009), ekranı açık tut (spec 0010); sonra büyük rakam, sol/sağ el yerleşimi, ses tuşuyla sayma, varsayılan meal ve Kaynaklar ekranı kendi spec'leriyle | Kullanıcı tercihleri (`settings`, tek satır; satır yoksa varsayılanlar) |
 
 ## Communication rules
 
@@ -52,13 +52,13 @@ yerleşimi, ara titreşim) → Önerilen Zikirler ve Esmaü'l-Hüsna → Kur'an 
 spec'iyle gelir; sonraki özellikler kendi ayarlarını Ayarlar ekranına ekler. (Ayarlar öne alındı,
 Kaynaklar Kur'an'a bağlandı — emryldrmr, 2026-11-04.)
 
-Kalan sıra (0001–0008 shipped; emryldrmr, 2026-11-07):
-0009 her sayımda titreşim ayarı + yan menüde uygulama sürümü → 0010 sayma kolaylıkları (tam ekran
-dokunma, ses tuşu, ekranı açık tut, büyük rakam, el yerleşimi) → 0011 Günün Esması kartı + kişisel Esma
-notu → 0012 günlük geçmiş + seri (B-2 ile birlikte) → 0013 rozetler (4–6 sabit, seriye dayanır) → 0014
-JSON yedekleme/geri yükleme → 0015 sabah hatırlatma bildirimi (sabit, dini metin içermeyen "Günün
-zikrini çekmeyi unutma"; yeni izin → `docs/security.md`) → 0016 Kur'an + meal + Kaynaklar → 0017 Günün
-Ayeti (0011 kartına ek). Numaralar sıra içindir; her biri spec yazılırken kesinleşir.
+Kalan sıra (0001–0009 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07):
+0010 tam ekran sayma + ekranı açık tut → 0011 ses tuşuyla sayma → 0012 görünüm seçenekleri (büyük
+rakam, sol/sağ el yerleşimi) → 0013 Günün Esması kartı + kişisel Esma notu → 0014 günlük geçmiş + seri
+(B-2 ile birlikte) → 0015 rozetler (4–6 sabit, seriye dayanır) → 0016 JSON yedekleme/geri yükleme → 0017
+sabah hatırlatma bildirimi (sabit, dini metin içermeyen "Günün zikrini çekmeyi unutma"; yeni izin →
+`docs/security.md`) → 0018 Kur'an + meal + Kaynaklar → 0019 Günün Ayeti (0013 kartına ek). Numaralar
+sıra içindir; her biri spec yazılırken kesinleşir.
 
 ## Deliberately out of scope
 

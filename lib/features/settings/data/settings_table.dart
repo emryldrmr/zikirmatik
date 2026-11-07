@@ -14,6 +14,9 @@ class Settings extends Table {
   /// Spec 0009, schema v6. Rows kept from v5 get the default: off (AC-1).
   BoolColumn get tapVibration => boolean().withDefault(const Constant(false))();
 
+  /// Spec 0010, schema v7. Rows kept from v6 get the default: off (AC-8).
+  BoolColumn get keepScreenOn => boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }

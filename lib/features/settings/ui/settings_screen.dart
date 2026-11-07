@@ -37,6 +37,14 @@ class SettingsScreen extends ConsumerWidget {
           value: settings.tapVibration,
           onChanged: controller.setTapVibration,
         ),
+        // Spec 0010.
+        SwitchListTile(
+          key: const Key('settings-keep-screen-on'),
+          title: Text(l10n.settingsKeepScreenOn),
+          subtitle: Text(l10n.settingsKeepScreenOnSubtitle),
+          value: settings.keepScreenOn,
+          onChanged: controller.setKeepScreenOn,
+        ),
         const Divider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),

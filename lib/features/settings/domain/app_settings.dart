@@ -15,12 +15,13 @@ enum ThemeChoice {
   }
 }
 
-/// The user's preferences (spec 0004, spec 0009).
+/// The user's preferences (spec 0004, spec 0009, spec 0010).
 final class AppSettings {
   const AppSettings({
     required this.vibration,
     required this.theme,
     this.tapVibration = false,
+    this.keepScreenOn = false,
   });
 
   /// A new install, and the fallback when settings cannot be read (AC-1, AC-6):
@@ -39,14 +40,20 @@ final class AppSettings {
   /// Spec 0009: whether every counted tap gives a short vibration.
   final bool tapVibration;
 
+  /// Spec 0010: whether the screen stays on while Zikirlerim is in front.
+  /// Off by default and when settings cannot be read (AC-8).
+  final bool keepScreenOn;
+
   AppSettings copyWith({
     bool? vibration,
     ThemeChoice? theme,
     bool? tapVibration,
+    bool? keepScreenOn,
   }) => AppSettings(
     vibration: vibration ?? this.vibration,
     theme: theme ?? this.theme,
     tapVibration: tapVibration ?? this.tapVibration,
+    keepScreenOn: keepScreenOn ?? this.keepScreenOn,
   );
 
   @override
@@ -54,13 +61,14 @@ final class AppSettings {
       other is AppSettings &&
       other.vibration == vibration &&
       other.theme == theme &&
-      other.tapVibration == tapVibration;
+      other.tapVibration == tapVibration &&
+      other.keepScreenOn == keepScreenOn;
 
   @override
-  int get hashCode => Object.hash(vibration, theme, tapVibration);
+  int get hashCode => Object.hash(vibration, theme, tapVibration, keepScreenOn);
 
   @override
   String toString() =>
       'AppSettings(vibration: $vibration, theme: $theme, '
-      'tapVibration: $tapVibration)';
+      'tapVibration: $tapVibration, keepScreenOn: $keepScreenOn)';
 }

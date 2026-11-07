@@ -7,6 +7,7 @@ import '../domain/tesbihat_state.dart';
 import 'confirm_dialog.dart';
 import 'device_parts.dart';
 import 'dhikr_picker.dart';
+import 'full_screen_view.dart';
 import 'tesbihat_controller.dart';
 
 /// "Zikirlerim" body while the tesbihat is selected (spec 0006): its name
@@ -54,6 +55,9 @@ class TesbihatView extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               _TesbihatDevice(state: state),
+              // Spec 0010, AC-1.
+              const SizedBox(height: 16),
+              const FullScreenButton(),
             ],
           ),
         ),

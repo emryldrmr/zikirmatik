@@ -780,8 +780,29 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _keepScreenOnMeta = const VerificationMeta(
+    'keepScreenOn',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, vibration, theme, tapVibration];
+  late final GeneratedColumn<bool> keepScreenOn = GeneratedColumn<bool>(
+    'keep_screen_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("keep_screen_on" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    vibration,
+    theme,
+    tapVibration,
+    keepScreenOn,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -822,6 +843,15 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         ),
       );
     }
+    if (data.containsKey('keep_screen_on')) {
+      context.handle(
+        _keepScreenOnMeta,
+        keepScreenOn.isAcceptableOrUnknown(
+          data['keep_screen_on']!,
+          _keepScreenOnMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -847,6 +877,10 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         DriftSqlType.bool,
         data['${effectivePrefix}tap_vibration'],
       )!,
+      keepScreenOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}keep_screen_on'],
+      )!,
     );
   }
 
@@ -863,11 +897,15 @@ class Setting extends DataClass implements Insertable<Setting> {
 
   /// Spec 0009, schema v6. Rows kept from v5 get the default: off (AC-1).
   final bool tapVibration;
+
+  /// Spec 0010, schema v7. Rows kept from v6 get the default: off (AC-8).
+  final bool keepScreenOn;
   const Setting({
     required this.id,
     required this.vibration,
     required this.theme,
     required this.tapVibration,
+    required this.keepScreenOn,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -876,6 +914,7 @@ class Setting extends DataClass implements Insertable<Setting> {
     map['vibration'] = Variable<bool>(vibration);
     map['theme'] = Variable<String>(theme);
     map['tap_vibration'] = Variable<bool>(tapVibration);
+    map['keep_screen_on'] = Variable<bool>(keepScreenOn);
     return map;
   }
 
@@ -885,6 +924,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       vibration: Value(vibration),
       theme: Value(theme),
       tapVibration: Value(tapVibration),
+      keepScreenOn: Value(keepScreenOn),
     );
   }
 
@@ -898,6 +938,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       vibration: serializer.fromJson<bool>(json['vibration']),
       theme: serializer.fromJson<String>(json['theme']),
       tapVibration: serializer.fromJson<bool>(json['tapVibration']),
+      keepScreenOn: serializer.fromJson<bool>(json['keepScreenOn']),
     );
   }
   @override
@@ -908,6 +949,7 @@ class Setting extends DataClass implements Insertable<Setting> {
       'vibration': serializer.toJson<bool>(vibration),
       'theme': serializer.toJson<String>(theme),
       'tapVibration': serializer.toJson<bool>(tapVibration),
+      'keepScreenOn': serializer.toJson<bool>(keepScreenOn),
     };
   }
 
@@ -916,11 +958,13 @@ class Setting extends DataClass implements Insertable<Setting> {
     bool? vibration,
     String? theme,
     bool? tapVibration,
+    bool? keepScreenOn,
   }) => Setting(
     id: id ?? this.id,
     vibration: vibration ?? this.vibration,
     theme: theme ?? this.theme,
     tapVibration: tapVibration ?? this.tapVibration,
+    keepScreenOn: keepScreenOn ?? this.keepScreenOn,
   );
   Setting copyWithCompanion(SettingsCompanion data) {
     return Setting(
@@ -930,6 +974,9 @@ class Setting extends DataClass implements Insertable<Setting> {
       tapVibration: data.tapVibration.present
           ? data.tapVibration.value
           : this.tapVibration,
+      keepScreenOn: data.keepScreenOn.present
+          ? data.keepScreenOn.value
+          : this.keepScreenOn,
     );
   }
 
@@ -939,13 +986,15 @@ class Setting extends DataClass implements Insertable<Setting> {
           ..write('id: $id, ')
           ..write('vibration: $vibration, ')
           ..write('theme: $theme, ')
-          ..write('tapVibration: $tapVibration')
+          ..write('tapVibration: $tapVibration, ')
+          ..write('keepScreenOn: $keepScreenOn')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, vibration, theme, tapVibration);
+  int get hashCode =>
+      Object.hash(id, vibration, theme, tapVibration, keepScreenOn);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -953,7 +1002,8 @@ class Setting extends DataClass implements Insertable<Setting> {
           other.id == this.id &&
           other.vibration == this.vibration &&
           other.theme == this.theme &&
-          other.tapVibration == this.tapVibration);
+          other.tapVibration == this.tapVibration &&
+          other.keepScreenOn == this.keepScreenOn);
 }
 
 class SettingsCompanion extends UpdateCompanion<Setting> {
@@ -961,17 +1011,20 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   final Value<bool> vibration;
   final Value<String> theme;
   final Value<bool> tapVibration;
+  final Value<bool> keepScreenOn;
   const SettingsCompanion({
     this.id = const Value.absent(),
     this.vibration = const Value.absent(),
     this.theme = const Value.absent(),
     this.tapVibration = const Value.absent(),
+    this.keepScreenOn = const Value.absent(),
   });
   SettingsCompanion.insert({
     this.id = const Value.absent(),
     required bool vibration,
     required String theme,
     this.tapVibration = const Value.absent(),
+    this.keepScreenOn = const Value.absent(),
   }) : vibration = Value(vibration),
        theme = Value(theme);
   static Insertable<Setting> custom({
@@ -979,12 +1032,14 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Expression<bool>? vibration,
     Expression<String>? theme,
     Expression<bool>? tapVibration,
+    Expression<bool>? keepScreenOn,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (vibration != null) 'vibration': vibration,
       if (theme != null) 'theme': theme,
       if (tapVibration != null) 'tap_vibration': tapVibration,
+      if (keepScreenOn != null) 'keep_screen_on': keepScreenOn,
     });
   }
 
@@ -993,12 +1048,14 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Value<bool>? vibration,
     Value<String>? theme,
     Value<bool>? tapVibration,
+    Value<bool>? keepScreenOn,
   }) {
     return SettingsCompanion(
       id: id ?? this.id,
       vibration: vibration ?? this.vibration,
       theme: theme ?? this.theme,
       tapVibration: tapVibration ?? this.tapVibration,
+      keepScreenOn: keepScreenOn ?? this.keepScreenOn,
     );
   }
 
@@ -1017,6 +1074,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     if (tapVibration.present) {
       map['tap_vibration'] = Variable<bool>(tapVibration.value);
     }
+    if (keepScreenOn.present) {
+      map['keep_screen_on'] = Variable<bool>(keepScreenOn.value);
+    }
     return map;
   }
 
@@ -1026,7 +1086,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
           ..write('id: $id, ')
           ..write('vibration: $vibration, ')
           ..write('theme: $theme, ')
-          ..write('tapVibration: $tapVibration')
+          ..write('tapVibration: $tapVibration, ')
+          ..write('keepScreenOn: $keepScreenOn')
           ..write(')'))
         .toString();
   }
@@ -1907,6 +1968,7 @@ typedef $$SettingsTableCreateCompanionBuilder =
       required bool vibration,
       required String theme,
       Value<bool> tapVibration,
+      Value<bool> keepScreenOn,
     });
 typedef $$SettingsTableUpdateCompanionBuilder =
     SettingsCompanion Function({
@@ -1914,6 +1976,7 @@ typedef $$SettingsTableUpdateCompanionBuilder =
       Value<bool> vibration,
       Value<String> theme,
       Value<bool> tapVibration,
+      Value<bool> keepScreenOn,
     });
 
 class $$SettingsTableFilterComposer
@@ -1942,6 +2005,11 @@ class $$SettingsTableFilterComposer
 
   ColumnFilters<bool> get tapVibration => $composableBuilder(
     column: $table.tapVibration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get keepScreenOn => $composableBuilder(
+    column: $table.keepScreenOn,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1974,6 +2042,11 @@ class $$SettingsTableOrderingComposer
     column: $table.tapVibration,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get keepScreenOn => $composableBuilder(
+    column: $table.keepScreenOn,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SettingsTableAnnotationComposer
@@ -1996,6 +2069,11 @@ class $$SettingsTableAnnotationComposer
 
   GeneratedColumn<bool> get tapVibration => $composableBuilder(
     column: $table.tapVibration,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get keepScreenOn => $composableBuilder(
+    column: $table.keepScreenOn,
     builder: (column) => column,
   );
 }
@@ -2032,11 +2110,13 @@ class $$SettingsTableTableManager
                 Value<bool> vibration = const Value.absent(),
                 Value<String> theme = const Value.absent(),
                 Value<bool> tapVibration = const Value.absent(),
+                Value<bool> keepScreenOn = const Value.absent(),
               }) => SettingsCompanion(
                 id: id,
                 vibration: vibration,
                 theme: theme,
                 tapVibration: tapVibration,
+                keepScreenOn: keepScreenOn,
               ),
           createCompanionCallback:
               ({
@@ -2044,11 +2124,13 @@ class $$SettingsTableTableManager
                 required bool vibration,
                 required String theme,
                 Value<bool> tapVibration = const Value.absent(),
+                Value<bool> keepScreenOn = const Value.absent(),
               }) => SettingsCompanion.insert(
                 id: id,
                 vibration: vibration,
                 theme: theme,
                 tapVibration: tapVibration,
+                keepScreenOn: keepScreenOn,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

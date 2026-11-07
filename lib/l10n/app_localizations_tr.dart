@@ -153,6 +153,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsTapVibrationSubtitle => 'Her dokunuşta kısa titreşir';
 
   @override
+  String get settingsKeepScreenOn => 'Ekranı açık tut';
+
+  @override
+  String get settingsKeepScreenOnSubtitle =>
+      'Zikirlerim açıkken ekran kararmaz';
+
+  @override
+  String get fullScreen => 'Tam ekran';
+
+  @override
+  String get fullScreenClose => 'Kapat';
+
+  @override
   String appVersion(String version) {
     return 'Sürüm $version';
   }
