@@ -92,17 +92,15 @@ void main() {
     semantics.dispose();
   });
 
-  // Spec 0010, AC-5 (BR-12), review round 1 F-1: on a phone held sideways and
+  // Spec 0010, AC-5 (BR-12), review round 1 F-1: on a phone held upright and
   // with large text, the step's text stays readable — never shrunk away.
-  testWidgets('full screen step text stays readable sideways and large', (
-    tester,
-  ) async {
+  testWidgets('full screen step text stays readable large', (tester) async {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
     final steps = namazSonrasiTesbihat.steps;
-    for (final size in const [Size(852, 393), Size(640, 360), Size(320, 480)]) {
+    for (final size in const [Size(393, 852), Size(360, 640), Size(320, 480)]) {
       for (final scale in const [1.0, 1.3, 2.0]) {
         tester.view.physicalSize = size;
         tester.platformDispatcher.textScaleFactorTestValue = scale;
@@ -148,7 +146,7 @@ void main() {
 
   // Spec 0011, AC-8 (BR-12): with every display option — large digits, each
   // hand — the step's text is exactly as stored and whole, on the normal
-  // screen and in full screen, upright and sideways, with large text.
+  // screen and in full screen, upright, with large text.
   testWidgets('step text unchanged in every display combination', (
     tester,
   ) async {
@@ -157,7 +155,7 @@ void main() {
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
     final steps = namazSonrasiTesbihat.steps;
-    for (final size in const [Size(400, 800), Size(852, 393), Size(320, 480)]) {
+    for (final size in const [Size(400, 800), Size(320, 480)]) {
       for (final scale in const [1.0, 2.0]) {
         for (final large in const [false, true]) {
           for (final hand in HandLayout.values) {

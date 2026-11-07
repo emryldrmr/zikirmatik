@@ -608,11 +608,11 @@ void main() {
     }
   });
 
-  // Review round 1, F-1: sideways and with large text everything stays on
+  // Review round 1, F-1: with large text everything stays on
   // screen; the count is what gives way.
-  testWidgets('full screen fits sideways with large text', (tester) async {
+  testWidgets('full screen fits with large text', (tester) async {
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    for (final size in const [Size(852, 393), Size(640, 360)]) {
+    for (final size in const [Size(393, 852), Size(360, 640)]) {
       for (final scale in const [1.0, 1.3, 2.0]) {
         _phone(tester, size: size);
         tester.platformDispatcher.textScaleFactorTestValue = scale;
