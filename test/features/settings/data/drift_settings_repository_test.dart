@@ -145,4 +145,94 @@ void main() {
       ),
     );
   });
+
+  // Spec 0009, AC-6.
+  test('tap vibration survives reopening', () async {
+    final dir = Directory.systemTemp.createTempSync('zikirmatik_test_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}${Platform.pathSeparator}db.sqlite');
+
+    final first = AppDatabase(NativeDatabase(file));
+    const saved = AppSettings(
+      vibration: false,
+      theme: ThemeChoice.light,
+      tapVibration: true,
+    );
+    await DriftSettingsRepository(first).save(saved);
+    await first.close();
+
+    final second = AppDatabase(NativeDatabase(file));
+    addTearDown(second.close);
+    expect(_ok(await DriftSettingsRepository(second).load()), saved);
+  });
+
+  // Spec 0009, AC-1: an update keeps the saved settings; the new one is off.
+  test('migrates a v5 database and keeps the settings', () async {
+    final v5 = NativeDatabase.memory(
+      setup: (raw) {
+        if (raw.userVersion != 0) return;
+        raw
+          ..execute(
+            'CREATE TABLE counters (id INTEGER NOT NULL, '
+            'count INTEGER NOT NULL CHECK (count >= 0), '
+            'rounds INTEGER NOT NULL DEFAULT 0, total INTEGER NOT NULL DEFAULT 0, '
+            'target INTEGER NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE dhikrs (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+            'name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 50))',
+          )
+          ..execute(
+            'CREATE TABLE dhikr_selections (id INTEGER NOT NULL CHECK (id = 1), '
+            'dhikr_id INTEGER NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE settings (id INTEGER NOT NULL CHECK (id = 1), '
+            'vibration INTEGER NOT NULL, theme TEXT NOT NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE tesbihat_progress (id INTEGER NOT NULL CHECK (id = 1), '
+            'step INTEGER NOT NULL CHECK (step >= 0), '
+            'count INTEGER NOT NULL CHECK (count >= 0), '
+            'finished INTEGER NOT NULL, '
+            'completions INTEGER NOT NULL CHECK (completions >= 0), '
+            'selected INTEGER NOT NULL, PRIMARY KEY (id))',
+          )
+          ..execute("INSERT INTO dhikrs (id, name) VALUES (1, 'Zikir')")
+          ..execute(
+            'INSERT INTO counters (id, count, rounds, total, target) '
+            'VALUES (1, 5, 1, 38, 33)',
+          )
+          ..execute('INSERT INTO dhikr_selections (id, dhikr_id) VALUES (1, 1)')
+          ..execute(
+            "INSERT INTO settings (id, vibration, theme) VALUES (1, 0, 'dark')",
+          )
+          ..userVersion = 5;
+      },
+    );
+    final migrated = AppDatabase(v5);
+    addTearDown(migrated.close);
+
+    final settings = DriftSettingsRepository(migrated);
+    expect(
+      _ok(await settings.load()),
+      const AppSettings(vibration: false, theme: ThemeChoice.dark),
+    );
+    expect(
+      _ok(await DriftCounterRepository(migrated, dhikrId: 1).load()),
+      CounterState(
+        count: const DhikrCount(5),
+        rounds: 1,
+        total: 38,
+        target: Target.of(33),
+      ),
+    );
+    const changed = AppSettings(
+      vibration: false,
+      theme: ThemeChoice.dark,
+      tapVibration: true,
+    );
+    await settings.save(changed);
+    expect(_ok(await settings.load()), changed);
+  });
 }
