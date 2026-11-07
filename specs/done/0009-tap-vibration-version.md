@@ -1,6 +1,6 @@
 # Spec 0009 — Her sayımda titreşim ve uygulama sürümü
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0009-plan.md`
 - Self-critique: done
@@ -54,28 +54,47 @@ sayılarda (ör. 33'te) ara titreşim. Dini metin içermez; hassas alanın dış
   sesi); ayar kaydetme hatasının bildirilmesi (B-2); menüde lisans/hakkında sayfası.
 
 ## Acceptance criteria
-- [ ] AC-1 — Ayarlar ekranında "Titreşim"in altında "Her sayımda titreşim" anahtarı görünür; yeni kurulumda kapalıdır. Önceki sürümden güncellenen veritabanında mevcut titreşim ve tema değerleri korunur, yeni ayar kapalıdır.
-- [ ] AC-2 — Ayar açıkken Zikirlerim'de sayımı artıran her dokunuş bir kısa titreşim tetikler; ayar kapalıyken hiçbir dokunuş kısa titreşim tetiklemez.
-- [ ] AC-3 — Ayar açıkken tesbihatta sayımı artıran her dokunuş kısa titreşim tetikler; tamamlanmış tesbihata dokunuş titreşim tetiklemez.
-- [ ] AC-4 — Her sayım ve tur ayarı ikisi de açıkken turu tamamlayan dokunuş (sayaçta ve tesbihatta) yalnızca bir tur titreşimi tetikler; tur ayarı kapalı, her sayım ayarı açıkken aynı dokunuş bir kısa titreşim tetikler.
-- [ ] AC-5 — Geri al ve sıfırla, ayar açıkken de titreşim tetiklemez.
-- [ ] AC-6 — Ayar, uygulama yeniden başlatılınca (aynı kalıcı depoyla) aynen görünür ve uygulanır; ayarlar okunamazsa hata gösterilmez ve ayar kapalı kabul edilir.
-- [ ] AC-7 — Titreşim hata verirse sayım yine 1 artar ve hata gösterilmez.
-- [ ] AC-8 — Yan menünün en altında kurulu sürüm "Sürüm <sürüm adı>" olarak görünür (pubspec'teki 1.0.0 için "Sürüm 1.0.0"); sürüm okunamazsa satır görünmez ve beş giriş aynen çalışır.
-- [ ] AC-9 — Erişilebilirlik: anahtar "Her sayımda titreşim" etiketiyle ve açık/kapalı durumuyla bildirilir, dokunma hedefi en az 48×48 dp; sürüm satırı "Sürüm 1.0.0" okunur; Ayarlar ve yan menüdeki yeni metinlerin kontrastı Açık ve Koyu temada en az 4.5:1.
+- [x] AC-1 — Ayarlar ekranında "Titreşim"in altında "Her sayımda titreşim" anahtarı görünür; yeni kurulumda kapalıdır. Önceki sürümden güncellenen veritabanında mevcut titreşim ve tema değerleri korunur, yeni ayar kapalıdır.
+- [x] AC-2 — Ayar açıkken Zikirlerim'de sayımı artıran her dokunuş bir kısa titreşim tetikler; ayar kapalıyken hiçbir dokunuş kısa titreşim tetiklemez.
+- [x] AC-3 — Ayar açıkken tesbihatta sayımı artıran her dokunuş kısa titreşim tetikler; tamamlanmış tesbihata dokunuş titreşim tetiklemez.
+- [x] AC-4 — Her sayım ve tur ayarı ikisi de açıkken turu tamamlayan dokunuş (sayaçta ve tesbihatta) yalnızca bir tur titreşimi tetikler; tur ayarı kapalı, her sayım ayarı açıkken aynı dokunuş bir kısa titreşim tetikler.
+- [x] AC-5 — Geri al ve sıfırla, ayar açıkken de titreşim tetiklemez.
+- [x] AC-6 — Ayar, uygulama yeniden başlatılınca (aynı kalıcı depoyla) aynen görünür ve uygulanır; ayarlar okunamazsa hata gösterilmez ve ayar kapalı kabul edilir.
+- [x] AC-7 — Titreşim hata verirse sayım yine 1 artar ve hata gösterilmez.
+- [x] AC-8 — Yan menünün en altında kurulu sürüm "Sürüm <sürüm adı>" olarak görünür (pubspec'teki 1.0.0 için "Sürüm 1.0.0"); sürüm okunamazsa satır görünmez ve beş giriş aynen çalışır.
+- [x] AC-9 — Erişilebilirlik: anahtar "Her sayımda titreşim" etiketiyle ve açık/kapalı durumuyla bildirilir, dokunma hedefi en az 48×48 dp; sürüm satırı "Sürüm 1.0.0" okunur; Ayarlar ve yan menüdeki yeni metinlerin kontrastı Açık ve Koyu temada en az 4.5:1.
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 0 |
+| Fix rounds | 0 |
+| Review findings: real / noise / deferred | 0 / 0 / 0 (one-pass review clean) |
+| Regressions introduced | 0 |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+One-pass review (independent reviewer subagent, REVIEW + VERIFY), 2026-11-07, @109ee4c; triage confirmed the clean verdict.
+Full green: CHECK GREEN (full, 6 steps, 338 s) @7b0b6f5 — https://github.com/emryldrmr/zikirmatik/actions/runs/42400573470
+(later commits touch `specs/` only). No deliberate breaks required (outside the sensitive area; no concurrency, money, authorization or boundary criterion).
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `tap_vibration_test.dart` — `settings shows tap vibration off by default`; `drift_settings_repository_test.dart` — `migrates a v5 database and keeps the settings`; `app_settings_test.dart` — `vibration per count is off by default and changes alone` | PASS |
+| AC-2 | `tap_vibration_test.dart` — `tap vibration on vibrates every counted tap`, `tap vibration off never tap-vibrates` | PASS |
+| AC-3 | `tap_vibration_test.dart` — `tesbihat taps vibrate and a finished tesbihat does not` | PASS |
+| AC-4 | `tap_vibration_test.dart` — `a round-completing tap vibrates once`, `round off and tap on gives a short vibration`, `a step change with round vibration off is a short one` | PASS |
+| AC-5 | `tap_vibration_test.dart` — `undo and reset never vibrate` | PASS |
+| AC-6 | `drift_settings_repository_test.dart` — `tap vibration survives reopening`; `tap_vibration_test.dart` — `turning it on applies at once and is kept after restart`, `unreadable settings mean tap vibration off`, `unreadable settings show tap vibration off` | PASS |
+| AC-7 | `tap_vibration_test.dart` — `a failing tap vibration still counts` | PASS |
+| AC-8 | `shell_test.dart` — `menu shows the app version at the bottom`, `the shown version matches pubspec`, `no version row when the version is unreadable` | PASS |
+| AC-9 | `tap_vibration_test.dart` — `tap vibration semantics, target and contrast`; `shell_test.dart` — `version row semantics and contrast` | PASS |
+
+UI: no screenshots this round (owner's choice); judged on a phone (Xiaomi, Android 16) by emryldrmr at SHIP, 2026-11-07 — settings row, vibration feel (light per tap, heavy per round), version row "Sürüm 1.0.0".
