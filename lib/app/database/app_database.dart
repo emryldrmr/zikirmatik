@@ -21,7 +21,7 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'zikirmatik'));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -59,6 +59,10 @@ class AppDatabase extends _$AppDatabase {
         // Spec 0009: vibration per count, off for kept settings (AC-1). Before
         // v4 the table is created above with the column already in it.
         await m.addColumn(settings, settings.tapVibration);
+      }
+      if (from >= 4 && from < 7) {
+        // Spec 0010: keep the screen on, off for kept settings (AC-8).
+        await m.addColumn(settings, settings.keepScreenOn);
       }
     },
   );

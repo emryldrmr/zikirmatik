@@ -35,4 +35,15 @@ void main() {
     expect(on.theme, AppSettings.defaults.theme);
     expect(on, isNot(AppSettings.defaults));
   });
+
+  // Spec 0010, AC-8.
+  test('keep screen on is off by default and changes alone', () {
+    expect(AppSettings.defaults.keepScreenOn, isFalse);
+    final on = AppSettings.defaults.copyWith(keepScreenOn: true);
+    expect(on.keepScreenOn, isTrue);
+    expect(on.vibration, AppSettings.defaults.vibration);
+    expect(on.theme, AppSettings.defaults.theme);
+    expect(on.tapVibration, AppSettings.defaults.tapVibration);
+    expect(on, isNot(AppSettings.defaults));
+  });
 }
