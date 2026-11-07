@@ -1,6 +1,6 @@
 # Spec 0008 — Önerilen Zikirler
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0008-plan.md`
 - Self-critique: done
@@ -90,28 +90,47 @@ G1–G7 (emryldrmr, 2026-11-07) buraya katlandı.
   Kaynaklar sayfası; tesbihat metninin (0006) değişmesi.
 
 ## Acceptance criteria
-- [ ] AC-1 — Yan menüden "Önerilen Zikirler" açılınca başlık "Önerilen Zikirler" olur ve liste 7 satırı tablodaki sırayla gösterir; her satırda okunuş, anlam, hedef ("Hedef: 33", "Hedef: 100" ya da "Hedefsiz"), hadis referansı ve "Ekle" vardır; "Bu bölüm yakında." görünmez. Metin hiçbir ekran genişliğinde ve en büyük sistem yazı boyutunda kırpılmaz (üç nokta yok), alt satıra geçer.
-- [ ] AC-2 — 7 satırın okunuş, anlam ve hadis referansı metni tablodaki metinle bayt düzeyinde eşittir; hedefler tablodaki gibidir; ekrandaki metin saklanan metinle bayt düzeyinde eşittir (BR-12).
-- [ ] AC-3 — Her okunuş kırpıldıktan sonra 1–50 karakterdir (BR-1); her hedef 1–100000 aralığındadır ya da yoktur (BR-2). Ağ kapalıyken ilk açılışta da liste tam görünür.
-- [ ] AC-4 — "Ekle" Zikirlerim'in sonuna adı okunuşla bayt düzeyinde eşit, hedefi tablodaki hedef (hedefsiz satırda hedef yok), sayım/tur/toplam 0 olan bir zikir ekler; liste ekranı ve kaydırma konumu değişmez; seçili zikir değişmez; uygulama yeniden başlatılınca zikir yerindedir.
-- [ ] AC-5 — Hedefli eklenen zikir sayaçta sayılınca hedefe ulaştığında BR-4 aynen çalışır (ör. 33. dokunuşta tur 1, sayım 0).
-- [ ] AC-6 — Eklemeden sonra "Zikirlerim'e eklendi" bildirimi "Say" eylemiyle görünür; "Say" Zikirlerim'i eklenen zikir seçili, sayım 0 ve hedef tablodaki gibi açar; tesbihat seçiliyken de aynıdır ve tesbihatın ilerlemesi korunur.
-- [ ] AC-7 — Aynı zikrin "Ekle"sine iki kez basılınca aynı adlı iki ayrı zikir oluşur; her biri ayrı sayılır. Ekleme sırasında ve sonrasında mevcut hiçbir zikrin sayımı, turu, toplamı, hedefi ve tesbihatın durumu değişmez.
-- [ ] AC-8 — Listenin en altında kaynak satırı Requirements 9'daki metinle birebir görünür.
-- [ ] AC-9 — Erişilebilirlik: satır etiketi "<okunuş>, <anlam>, <hedef>"; "Ekle" etiketi "<okunuş> Zikirlerim'e ekle"; bildirim ekran okuyucuya duyurulur; dokunma hedefleri en az 48×48 dp.
+- [x] AC-1 — Yan menüden "Önerilen Zikirler" açılınca başlık "Önerilen Zikirler" olur ve liste 7 satırı tablodaki sırayla gösterir; her satırda okunuş, anlam, hedef ("Hedef: 33", "Hedef: 100" ya da "Hedefsiz"), hadis referansı ve "Ekle" vardır; "Bu bölüm yakında." görünmez. Metin hiçbir ekran genişliğinde ve en büyük sistem yazı boyutunda kırpılmaz (üç nokta yok), alt satıra geçer.
+- [x] AC-2 — 7 satırın okunuş, anlam ve hadis referansı metni tablodaki metinle bayt düzeyinde eşittir; hedefler tablodaki gibidir; ekrandaki metin saklanan metinle bayt düzeyinde eşittir (BR-12).
+- [x] AC-3 — Her okunuş kırpıldıktan sonra 1–50 karakterdir (BR-1); her hedef 1–100000 aralığındadır ya da yoktur (BR-2). Ağ kapalıyken ilk açılışta da liste tam görünür.
+- [x] AC-4 — "Ekle" Zikirlerim'in sonuna adı okunuşla bayt düzeyinde eşit, hedefi tablodaki hedef (hedefsiz satırda hedef yok), sayım/tur/toplam 0 olan bir zikir ekler; liste ekranı ve kaydırma konumu değişmez; seçili zikir değişmez; uygulama yeniden başlatılınca zikir yerindedir.
+- [x] AC-5 — Hedefli eklenen zikir sayaçta sayılınca hedefe ulaştığında BR-4 aynen çalışır (ör. 33. dokunuşta tur 1, sayım 0).
+- [x] AC-6 — Eklemeden sonra "Zikirlerim'e eklendi" bildirimi "Say" eylemiyle görünür; "Say" Zikirlerim'i eklenen zikir seçili, sayım 0 ve hedef tablodaki gibi açar; tesbihat seçiliyken de aynıdır ve tesbihatın ilerlemesi korunur.
+- [x] AC-7 — Aynı zikrin "Ekle"sine iki kez basılınca aynı adlı iki ayrı zikir oluşur; her biri ayrı sayılır. Ekleme sırasında ve sonrasında mevcut hiçbir zikrin sayımı, turu, toplamı, hedefi ve tesbihatın durumu değişmez.
+- [x] AC-8 — Listenin en altında kaynak satırı Requirements 9'daki metinle birebir görünür.
+- [x] AC-9 — Erişilebilirlik: satır etiketi "<okunuş>, <anlam>, <hedef>"; "Ekle" etiketi "<okunuş> Zikirlerim'e ekle"; bildirim ekran okuyucuya duyurulur; dokunma hedefleri en az 48×48 dp.
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 0 |
+| Fix rounds | 0 |
+| Review findings: real / noise / deferred | 0 / 1 / 0 (review round 1 clean; VERIFY: V-1 Medium noise — glyph shown on device, S-7) |
+| Regressions introduced | 0 |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+Independent VERIFY (QA session, separate from the builder and the reviewer), 2026-11-07, round 1 @7ef4fe0; triage in the plan's `## Triage` (review round 1 clean; VERIFY round 1: V-1 noise, proven on device by S-7).
+Full green: CHECK GREEN (full, 6 steps, 321 s) @7ef4fe0 — https://github.com/emryldrmr/zikirmatik/actions/runs/42314496001
+(215 tests; HEAD differs only in specs/). Sensitive area: deliberate breaks in a clone outside the repo (nothing committed), at least one per criterion; every one listed turned its test red for the right reason.
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `suggested_test.dart` — `the menu opens the 7 suggested dhikrs in order`, `long text wraps without ellipsis at the largest text size`; breaks K1a–K1e; S-1…S-6, S-7 | PASS |
+| AC-2 | `suggested_dhikrs_text_test.dart` — `every field matches the approved table byte for byte`, `targets match the table`; `suggested_test.dart` — `the text on screen equals the stored text`; breaks K2a–K2g; S-7 (U+1E94 drawn on device) | PASS |
+| AC-3 | `suggested_dhikrs_text_test.dart` — `readings are valid dhikr names and targets are within range`; `asset_suggested_repository_test.dart` — `the bundled file loads without network`, `an incomplete, misnumbered or out-of-range file is rejected`; breaks K3a–K3c | PASS |
+| AC-4 | `suggested_test.dart` — `add appends a dhikr named by the reading with the table's target and keeps the selection and scroll`, `an untargeted row adds a dhikr without target`; `drift_dhikr_list_repository_test.dart` — `add with a target without selecting stores the target`; breaks K4a–K4d | PASS |
+| AC-5 | `suggested_test.dart` — `an added targeted dhikr completes a round at its target`; break K5a | PASS |
+| AC-6 | `suggested_test.dart` — `the snackbar's count action opens the added dhikr`, `count action over the tesbihat keeps its progress`; breaks K6a–K6d | PASS |
+| AC-7 | `suggested_test.dart` — `adding twice creates two dhikrs counted separately`, `adding changes no dhikr and not the tesbihat`; breaks K7a–K7c | PASS |
+| AC-8 | `suggested_test.dart` — `the source line is shown at the end of the list`; break K8a | PASS |
+| AC-9 | `suggested_test.dart` — `row and add button labels, announcement and touch targets`; breaks K9a–K9c | PASS |
+
+UI: S-1…S-6 agent-captured (headless widget render), outside the repo. S-7: Önerilen Zikirler list on the phone (Xiaomi 2412DPC0AG, Android 16, debug APK built from 7ef4fe0, adb screencap), all 7 rows and the source line visible, row 4 reference `Müslim, “Ẕikir”, 28` drawn correctly — judged at SHIP by emryldrmr, 2026-11-07.
