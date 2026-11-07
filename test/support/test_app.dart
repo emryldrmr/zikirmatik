@@ -9,6 +9,7 @@ import 'package:zikirmatik/app/composition.dart';
 import 'package:zikirmatik/core/app_version.dart';
 import 'package:zikirmatik/core/haptics.dart';
 import 'package:zikirmatik/core/result.dart';
+import 'package:zikirmatik/core/screen.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/esma/esma.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
@@ -22,8 +23,10 @@ import 'package:zikirmatik/features/suggested/suggested.dart';
 /// dhikr "Zikir" (id 1) whose counter is [repo] — the setup of specs 0001/0002.
 /// Settings: [settings] when given (spec 0004); otherwise the defaults.
 /// Tesbihat: [tesbihat] when given (spec 0006); otherwise not started.
-/// Version: [version] when given (spec 0009); otherwise none is shown. The
-/// cross-feature wiring is the app's own (`featureWiring`).
+/// Version: [version] when given (spec 0009); otherwise none is shown.
+/// Screen and system bars: [screenAwake] and [systemBars] record what the app
+/// asks of the phone (spec 0010). The cross-feature wiring is the app's own
+/// (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
   CounterRepository? repo,
@@ -32,6 +35,8 @@ Widget testApp(
   FakeSettingsRepository? settings,
   FakeTesbihatRepository? tesbihat,
   String? version,
+  FakeScreenAwake? screenAwake,
+  FakeSystemBars? systemBars,
 }) {
   final dhikrs =
       store ?? FakeDhikrStore.single(repo ?? FakeCounterRepository());
@@ -52,6 +57,9 @@ Widget testApp(
         AssetSuggestedRepository(rootBundle),
       ),
       hapticsProvider.overrideWithValue(haptics ?? FakeHaptics()),
+      // Spec 0010.
+      screenAwakeProvider.overrideWithValue(screenAwake ?? FakeScreenAwake()),
+      systemBarsProvider.overrideWithValue(systemBars ?? FakeSystemBars()),
       // Spec 0009: no version unless given (as when it is unreadable).
       if (version != null) appVersionProvider.overrideWith((ref) => version),
       ...featureWiring(),
@@ -190,6 +198,36 @@ class FakeHaptics implements Haptics {
     await hold?.future;
     if (fail) throw StateError('vibrator unavailable');
   }
+}
+
+/// Records keep-screen-on requests instead of calling the platform
+/// (spec 0010).
+class FakeScreenAwake implements ScreenAwake {
+  /// Every request, in order.
+  final List<bool> calls = [];
+
+  /// Whether the screen is being kept on now (the last request).
+  bool get on => calls.isNotEmpty && calls.last;
+
+  @override
+  Future<void> set({required bool on}) async => calls.add(on);
+}
+
+/// Records whether the system bars are hidden (spec 0010).
+class FakeSystemBars implements SystemBars {
+  bool hidden = false;
+
+  /// Every hide request, so a re-hide on resume can be seen.
+  int hides = 0;
+
+  @override
+  Future<void> hide() async {
+    hides++;
+    hidden = true;
+  }
+
+  @override
+  Future<void> show() async => hidden = false;
 }
 
 /// In-memory dhikr list plus one [FakeCounterRepository] per dhikr (spec 0003).
