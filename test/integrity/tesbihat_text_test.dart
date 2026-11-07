@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zikirmatik/core/hand_layout.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/counter/domain/tesbihat.dart';
+import 'package:zikirmatik/features/settings/settings.dart';
 
 import '../support/test_app.dart';
 
@@ -143,4 +145,87 @@ void main() {
       }
     }
   });
+
+  // Spec 0011, AC-8 (BR-12): with every display option — large digits, each
+  // hand — the step's text is exactly as stored and whole, on the normal
+  // screen and in full screen, upright and sideways, with large text.
+  testWidgets('step text unchanged in every display combination', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    final steps = namazSonrasiTesbihat.steps;
+    for (final size in const [Size(400, 800), Size(852, 393), Size(320, 480)]) {
+      for (final scale in const [1.0, 2.0]) {
+        for (final large in const [false, true]) {
+          for (final hand in HandLayout.values) {
+            tester.view.physicalSize = size;
+            tester.platformDispatcher.textScaleFactorTestValue = scale;
+            for (var i = 0; i < steps.length; i++) {
+              final why = '$size ×$scale large:$large $hand step ${i + 1}';
+              await tester.pumpWidget(const SizedBox());
+              await tester.pumpWidget(
+                testApp(
+                  tester,
+                  tesbihat: FakeTesbihatRepository(
+                    stored: TesbihatState(step: i, selected: true),
+                  ),
+                  settings: FakeSettingsRepository(
+                    stored: AppSettings.defaults.copyWith(
+                      largeCount: large,
+                      handLayout: hand,
+                    ),
+                  ),
+                ),
+              );
+              await tester.pumpAndSettle();
+
+              // The normal screen.
+              final normal = find.byKey(const Key('tesbihat-text'));
+              await tester.ensureVisible(normal);
+              await tester.pumpAndSettle();
+              _expectWholeText(tester, normal, _expected[i].$1, size, why);
+
+              // Full screen.
+              final open = find.byKey(const Key('full-screen-open'));
+              await tester.ensureVisible(open);
+              await tester.pumpAndSettle();
+              await tester.tap(open);
+              await tester.pumpAndSettle();
+              _expectWholeText(
+                tester,
+                find.byKey(const Key('full-screen-step-text')),
+                _expected[i].$1,
+                size,
+                why,
+              );
+              expect(tester.takeException(), isNull, reason: why);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/// The text on screen is the stored one byte for byte, never cut or
+/// shortened, readable, and within the screen's width.
+void _expectWholeText(
+  WidgetTester tester,
+  Finder f,
+  List<int> codePoints,
+  Size screen,
+  String why,
+) {
+  final text = tester.widget<Text>(f);
+  expect(text.data!.runes.toList(), codePoints, reason: why);
+  expect(text.maxLines, isNull, reason: why);
+  expect(text.overflow, isNull, reason: why);
+  expect(text.softWrap, isNot(isFalse), reason: why);
+  final rect = Rect.fromPoints(tester.getTopLeft(f), tester.getBottomRight(f));
+  expect(rect.height, greaterThanOrEqualTo(20), reason: why);
+  expect(rect.left, greaterThanOrEqualTo(0), reason: why);
+  expect(rect.right, lessThanOrEqualTo(screen.width), reason: why);
 }

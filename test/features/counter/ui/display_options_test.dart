@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/core/hand_layout.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
@@ -557,6 +558,146 @@ void main() {
     }
   });
 
+  // AC-7: the options change only the look.
+  testWidgets('counting works the same in every combination', (tester) async {
+    _screen(tester, _upright);
+    for (final (large, hand) in _combinations) {
+      final why = 'large:$large $hand';
+      final settings = _settings(
+        large: large,
+        hand: hand,
+      ).copyWith(tapVibration: true);
+      final haptics = FakeHaptics();
+      final store = _sabah(count: 31);
+      await _start(tester, settings: settings, store: store, haptics: haptics);
+
+      // Two taps complete the round.
+      final button = find.byKey(const Key('counter-tap-area'));
+      await tester.ensureVisible(button);
+      await tester.pumpAndSettle();
+      await tester.tap(button);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      expect(
+        store.stateOf(1),
+        _round(count: 0, rounds: 3, total: 106),
+        reason: why,
+      );
+      expect(haptics.roundsCompleted, 1, reason: why);
+      // The tap that completes the round gives the round vibration instead
+      // (spec 0009).
+      expect(haptics.taps, 1, reason: why);
+
+      // Count, undo, reset (asks, keeps total and target).
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('counter-undo')));
+      await tester.pumpAndSettle();
+      expect(
+        store.stateOf(1),
+        _round(count: 0, rounds: 3, total: 106),
+        reason: why,
+      );
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('counter-reset')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('confirm-ok')));
+      await tester.pumpAndSettle();
+      expect(
+        store.stateOf(1),
+        _round(count: 0, rounds: 0, total: 107),
+        reason: why,
+      );
+
+      // Full screen counts and undoes the same counter.
+      await _openFullScreen(tester);
+      await tester.tapAt(tester.getCenter(_full));
+      await tester.pump();
+      await tester.tapAt(tester.getCenter(_full));
+      await tester.pump();
+      await tester.tap(_undo);
+      await tester.pumpAndSettle();
+      expect(
+        store.stateOf(1),
+        _round(count: 1, rounds: 0, total: 108),
+        reason: why,
+      );
+      await tester.tap(_close);
+      await tester.pumpAndSettle();
+
+      // A "restart" keeps it all.
+      await _start(tester, settings: settings, store: store);
+      expect(_text(tester, _value), '1', reason: why);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('counter-target')),
+          matching: find.text('Hedef 33 · Tur 0'),
+        ),
+        findsOneWidget,
+        reason: why,
+      );
+      expect(
+        _text(tester, find.byKey(const Key('counter-total'))),
+        'Toplam 108',
+        reason: why,
+      );
+
+      // The tesbihat moves on to its next step at the target.
+      final tesbihat = _tesbihat(count: 32);
+      final steps = FakeHaptics();
+      await _start(
+        tester,
+        settings: settings,
+        tesbihat: tesbihat,
+        haptics: steps,
+      );
+      await tester.ensureVisible(button);
+      await tester.pumpAndSettle();
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      expect(tesbihat.stored.step, 1, reason: why);
+      expect(tesbihat.stored.count.value, 0, reason: why);
+      expect(
+        _text(tester, find.byKey(const Key('tesbihat-step'))),
+        'Adım 2/3',
+        reason: why,
+      );
+      expect(steps.roundsCompleted, 1, reason: why);
+    }
+  });
+
+  // AC-10: what a screen reader hears, and in which order, does not depend
+  // on the options.
+  testWidgets('screen reader labels do not depend on the options', (
+    tester,
+  ) async {
+    _screen(tester, _upright);
+    final semantics = tester.ensureSemantics();
+    final heard = <(bool, HandLayout), List<List<String>>>{};
+    for (final (large, hand) in _combinations) {
+      final screens = <List<String>>[];
+      for (final tesbihat in [false, true]) {
+        await _start(
+          tester,
+          settings: _settings(large: large, hand: hand),
+          tesbihat: tesbihat ? _tesbihat() : null,
+        );
+        screens.add(_heard(tester));
+        await _openFullScreen(tester);
+        screens.add(_heard(tester));
+      }
+      heard[(large, hand)] = screens;
+    }
+    final today = heard[(false, HandLayout.center)]!;
+    expect(today.every((s) => s.isNotEmpty), isTrue);
+    expect(today[1], containsAllInOrder(['Geri al', 'Kapat']));
+    for (final MapEntry(:key, :value) in heard.entries) {
+      expect(value, today, reason: '$key');
+    }
+    semantics.dispose();
+  });
+
   // AC-4: the count is whole in every combination, upright and sideways,
   // with the phone's large text.
   testWidgets('the count is never cut', (tester) async {
@@ -599,4 +740,38 @@ Rect _rounded(Rect r) {
     round(r.right),
     round(r.bottom),
   );
+}
+
+CounterState _round({
+  required int count,
+  required int rounds,
+  required int total,
+}) => CounterState(
+  count: DhikrCount(count),
+  rounds: rounds,
+  total: total,
+  target: Target.of(33),
+);
+
+/// Every label a screen reader reads on the screen, in its reading order.
+List<String> _heard(WidgetTester tester) {
+  final root = tester
+      .binding
+      .renderViews
+      .first
+      .owner!
+      .semanticsOwner!
+      .rootSemanticsNode!;
+  final labels = <String>[];
+  void visit(SemanticsNode node) {
+    if (node.label.isNotEmpty) labels.add(node.label);
+    for (final child in node.debugListChildrenInOrder(
+      DebugSemanticsDumpOrder.traversalOrder,
+    )) {
+      visit(child);
+    }
+  }
+
+  visit(root);
+  return labels;
 }

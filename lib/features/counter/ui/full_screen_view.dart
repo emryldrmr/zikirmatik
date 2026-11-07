@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -158,6 +159,15 @@ class _Frame extends ConsumerWidget {
   final VoidCallback? onUndo;
   final bool showUndo;
 
+  /// Gives [child] a fixed place in the screen reader's reading order; its
+  /// own nodes stay as they are (each line read on its own).
+  static Widget _inOrder(double order, Widget child) => Semantics(
+    container: true,
+    explicitChildNodes: true,
+    sortKey: OrdinalSortKey(order),
+    child: child,
+  );
+
   /// Room the information keeps free for a bottom "Geri al" (plan 0011, R4).
   static const _buttonRoom = 72.0;
 
@@ -174,28 +184,36 @@ class _Frame extends ConsumerWidget {
         ? media.systemGestureInsets.bottom
         : media.viewPadding.bottom;
 
+    // AC-10: a screen reader reads the count area, "Geri al", "Kapat", then
+    // the information, whichever corners the buttons are in.
     final undo = showUndo && area != null
-        ? IconButton(
-            key: const Key('full-screen-undo'),
-            color: deviceBodyText,
-            disabledColor: deviceBodyText.withValues(alpha: 0.38),
-            iconSize: 32,
-            icon: Icon(Icons.undo, semanticLabel: l10n.undo),
-            onPressed: onUndo,
+        ? _inOrder(
+            1,
+            IconButton(
+              key: const Key('full-screen-undo'),
+              color: deviceBodyText,
+              disabledColor: deviceBodyText.withValues(alpha: 0.38),
+              iconSize: 32,
+              icon: Icon(Icons.undo, semanticLabel: l10n.undo),
+              onPressed: onUndo,
+            ),
           )
         : null;
-    final close = IconButton(
-      key: const Key('full-screen-close'),
-      color: deviceBodyText,
-      iconSize: 32,
-      icon: Icon(Icons.close, semanticLabel: l10n.fullScreenClose),
-      onPressed: () => Navigator.of(context).maybePop(),
+    final close = _inOrder(
+      2,
+      IconButton(
+        key: const Key('full-screen-close'),
+        color: deviceBodyText,
+        iconSize: 32,
+        icon: Icon(Icons.close, semanticLabel: l10n.fullScreenClose),
+        onPressed: () => Navigator.of(context).maybePop(),
+      ),
     );
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        ?area,
+        if (area != null) _inOrder(0, area!),
         if (info != null)
           IgnorePointer(
             child: SafeArea(
@@ -205,7 +223,7 @@ class _Frame extends ConsumerWidget {
                 24,
                 undoBelow ? bottomInset + _buttonRoom : 24,
               ),
-              child: Center(child: info),
+              child: Center(child: _inOrder(3, info!)),
             ),
           ),
         SafeArea(
