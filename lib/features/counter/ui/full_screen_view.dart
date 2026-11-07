@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/display.dart';
 import '../../../core/screen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/counter_state.dart';
@@ -390,13 +391,15 @@ class _TesbihatInfo extends StatelessWidget {
   }
 }
 
-class _BigCount extends StatelessWidget {
+/// The count in the middle; larger with "Büyük rakam" (spec 0011, Req. 2). It
+/// shrinks to fit, never cut (Req. 3).
+class _BigCount extends ConsumerWidget {
   const _BigCount({required this.count});
 
   final int count;
 
   @override
-  Widget build(BuildContext context) => FittedBox(
+  Widget build(BuildContext context, WidgetRef ref) => FittedBox(
     fit: BoxFit.scaleDown,
     child: Text(
       '$count',
@@ -404,7 +407,9 @@ class _BigCount extends StatelessWidget {
       maxLines: 1,
       style: Theme.of(context).textTheme.displayLarge?.copyWith(
         color: deviceBodyText,
-        fontSize: 120,
+        fontSize: ref.watch(largeCountEnabledProvider)
+            ? 120 * largeCountScale
+            : 120,
         fontFeatures: const [FontFeature.tabularFigures()],
       ),
     ),
