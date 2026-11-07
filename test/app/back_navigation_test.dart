@@ -272,6 +272,16 @@ void main() {
     await _goTo(tester, 'settings');
     await tester.tap(find.byKey(const Key('settings-vibration')));
     await tester.pumpAndSettle();
+    // Plan 0011, A-1: the theme choices sit below the display options.
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('theme-dark')),
+      100,
+      scrollable: find.descendant(
+        of: find.byKey(const Key('settings-screen')),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('theme-dark')));
     await tester.pumpAndSettle();
     await _back(tester);

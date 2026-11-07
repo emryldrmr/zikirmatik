@@ -364,6 +364,42 @@ abstract class AppLocalizations {
   /// **'Zikirlerim açıkken ekran kararmaz'**
   String get settingsKeepScreenOnSubtitle;
 
+  /// No description provided for @settingsLargeCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyük rakam'**
+  String get settingsLargeCount;
+
+  /// No description provided for @settingsLargeCountSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayım daha büyük görünür'**
+  String get settingsLargeCountSubtitle;
+
+  /// No description provided for @settingsHandLayout.
+  ///
+  /// In tr, this message translates to:
+  /// **'El yerleşimi'**
+  String get settingsHandLayout;
+
+  /// No description provided for @handCenter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ortada'**
+  String get handCenter;
+
+  /// No description provided for @handRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağ el'**
+  String get handRight;
+
+  /// No description provided for @handLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sol el'**
+  String get handLeft;
+
   /// No description provided for @fullScreen.
   ///
   /// In tr, this message translates to:
