@@ -795,6 +795,36 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _largeCountMeta = const VerificationMeta(
+    'largeCount',
+  );
+  @override
+  late final GeneratedColumn<bool> largeCount = GeneratedColumn<bool>(
+    'large_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("large_count" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _handLayoutMeta = const VerificationMeta(
+    'handLayout',
+  );
+  @override
+  late final GeneratedColumn<String> handLayout = GeneratedColumn<String>(
+    'hand_layout',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>(
+      "hand_layout IN ('center', 'right', 'left')",
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('center'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -802,6 +832,8 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     theme,
     tapVibration,
     keepScreenOn,
+    largeCount,
+    handLayout,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -852,6 +884,18 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         ),
       );
     }
+    if (data.containsKey('large_count')) {
+      context.handle(
+        _largeCountMeta,
+        largeCount.isAcceptableOrUnknown(data['large_count']!, _largeCountMeta),
+      );
+    }
+    if (data.containsKey('hand_layout')) {
+      context.handle(
+        _handLayoutMeta,
+        handLayout.isAcceptableOrUnknown(data['hand_layout']!, _handLayoutMeta),
+      );
+    }
     return context;
   }
 
@@ -881,6 +925,14 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         DriftSqlType.bool,
         data['${effectivePrefix}keep_screen_on'],
       )!,
+      largeCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}large_count'],
+      )!,
+      handLayout: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hand_layout'],
+      )!,
     );
   }
 
@@ -900,12 +952,19 @@ class Setting extends DataClass implements Insertable<Setting> {
 
   /// Spec 0010, schema v7. Rows kept from v6 get the default: off (AC-8).
   final bool keepScreenOn;
+
+  /// Spec 0011, schema v8. Rows kept from v7 get the defaults: normal digits
+  /// and the centre layout (AC-1).
+  final bool largeCount;
+  final String handLayout;
   const Setting({
     required this.id,
     required this.vibration,
     required this.theme,
     required this.tapVibration,
     required this.keepScreenOn,
+    required this.largeCount,
+    required this.handLayout,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -915,6 +974,8 @@ class Setting extends DataClass implements Insertable<Setting> {
     map['theme'] = Variable<String>(theme);
     map['tap_vibration'] = Variable<bool>(tapVibration);
     map['keep_screen_on'] = Variable<bool>(keepScreenOn);
+    map['large_count'] = Variable<bool>(largeCount);
+    map['hand_layout'] = Variable<String>(handLayout);
     return map;
   }
 
@@ -925,6 +986,8 @@ class Setting extends DataClass implements Insertable<Setting> {
       theme: Value(theme),
       tapVibration: Value(tapVibration),
       keepScreenOn: Value(keepScreenOn),
+      largeCount: Value(largeCount),
+      handLayout: Value(handLayout),
     );
   }
 
@@ -939,6 +1002,8 @@ class Setting extends DataClass implements Insertable<Setting> {
       theme: serializer.fromJson<String>(json['theme']),
       tapVibration: serializer.fromJson<bool>(json['tapVibration']),
       keepScreenOn: serializer.fromJson<bool>(json['keepScreenOn']),
+      largeCount: serializer.fromJson<bool>(json['largeCount']),
+      handLayout: serializer.fromJson<String>(json['handLayout']),
     );
   }
   @override
@@ -950,6 +1015,8 @@ class Setting extends DataClass implements Insertable<Setting> {
       'theme': serializer.toJson<String>(theme),
       'tapVibration': serializer.toJson<bool>(tapVibration),
       'keepScreenOn': serializer.toJson<bool>(keepScreenOn),
+      'largeCount': serializer.toJson<bool>(largeCount),
+      'handLayout': serializer.toJson<String>(handLayout),
     };
   }
 
@@ -959,12 +1026,16 @@ class Setting extends DataClass implements Insertable<Setting> {
     String? theme,
     bool? tapVibration,
     bool? keepScreenOn,
+    bool? largeCount,
+    String? handLayout,
   }) => Setting(
     id: id ?? this.id,
     vibration: vibration ?? this.vibration,
     theme: theme ?? this.theme,
     tapVibration: tapVibration ?? this.tapVibration,
     keepScreenOn: keepScreenOn ?? this.keepScreenOn,
+    largeCount: largeCount ?? this.largeCount,
+    handLayout: handLayout ?? this.handLayout,
   );
   Setting copyWithCompanion(SettingsCompanion data) {
     return Setting(
@@ -977,6 +1048,12 @@ class Setting extends DataClass implements Insertable<Setting> {
       keepScreenOn: data.keepScreenOn.present
           ? data.keepScreenOn.value
           : this.keepScreenOn,
+      largeCount: data.largeCount.present
+          ? data.largeCount.value
+          : this.largeCount,
+      handLayout: data.handLayout.present
+          ? data.handLayout.value
+          : this.handLayout,
     );
   }
 
@@ -987,14 +1064,23 @@ class Setting extends DataClass implements Insertable<Setting> {
           ..write('vibration: $vibration, ')
           ..write('theme: $theme, ')
           ..write('tapVibration: $tapVibration, ')
-          ..write('keepScreenOn: $keepScreenOn')
+          ..write('keepScreenOn: $keepScreenOn, ')
+          ..write('largeCount: $largeCount, ')
+          ..write('handLayout: $handLayout')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, vibration, theme, tapVibration, keepScreenOn);
+  int get hashCode => Object.hash(
+    id,
+    vibration,
+    theme,
+    tapVibration,
+    keepScreenOn,
+    largeCount,
+    handLayout,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1003,7 +1089,9 @@ class Setting extends DataClass implements Insertable<Setting> {
           other.vibration == this.vibration &&
           other.theme == this.theme &&
           other.tapVibration == this.tapVibration &&
-          other.keepScreenOn == this.keepScreenOn);
+          other.keepScreenOn == this.keepScreenOn &&
+          other.largeCount == this.largeCount &&
+          other.handLayout == this.handLayout);
 }
 
 class SettingsCompanion extends UpdateCompanion<Setting> {
@@ -1012,12 +1100,16 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   final Value<String> theme;
   final Value<bool> tapVibration;
   final Value<bool> keepScreenOn;
+  final Value<bool> largeCount;
+  final Value<String> handLayout;
   const SettingsCompanion({
     this.id = const Value.absent(),
     this.vibration = const Value.absent(),
     this.theme = const Value.absent(),
     this.tapVibration = const Value.absent(),
     this.keepScreenOn = const Value.absent(),
+    this.largeCount = const Value.absent(),
+    this.handLayout = const Value.absent(),
   });
   SettingsCompanion.insert({
     this.id = const Value.absent(),
@@ -1025,6 +1117,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     required String theme,
     this.tapVibration = const Value.absent(),
     this.keepScreenOn = const Value.absent(),
+    this.largeCount = const Value.absent(),
+    this.handLayout = const Value.absent(),
   }) : vibration = Value(vibration),
        theme = Value(theme);
   static Insertable<Setting> custom({
@@ -1033,6 +1127,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Expression<String>? theme,
     Expression<bool>? tapVibration,
     Expression<bool>? keepScreenOn,
+    Expression<bool>? largeCount,
+    Expression<String>? handLayout,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1040,6 +1136,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       if (theme != null) 'theme': theme,
       if (tapVibration != null) 'tap_vibration': tapVibration,
       if (keepScreenOn != null) 'keep_screen_on': keepScreenOn,
+      if (largeCount != null) 'large_count': largeCount,
+      if (handLayout != null) 'hand_layout': handLayout,
     });
   }
 
@@ -1049,6 +1147,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Value<String>? theme,
     Value<bool>? tapVibration,
     Value<bool>? keepScreenOn,
+    Value<bool>? largeCount,
+    Value<String>? handLayout,
   }) {
     return SettingsCompanion(
       id: id ?? this.id,
@@ -1056,6 +1156,8 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       theme: theme ?? this.theme,
       tapVibration: tapVibration ?? this.tapVibration,
       keepScreenOn: keepScreenOn ?? this.keepScreenOn,
+      largeCount: largeCount ?? this.largeCount,
+      handLayout: handLayout ?? this.handLayout,
     );
   }
 
@@ -1077,6 +1179,12 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     if (keepScreenOn.present) {
       map['keep_screen_on'] = Variable<bool>(keepScreenOn.value);
     }
+    if (largeCount.present) {
+      map['large_count'] = Variable<bool>(largeCount.value);
+    }
+    if (handLayout.present) {
+      map['hand_layout'] = Variable<String>(handLayout.value);
+    }
     return map;
   }
 
@@ -1087,7 +1195,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
           ..write('vibration: $vibration, ')
           ..write('theme: $theme, ')
           ..write('tapVibration: $tapVibration, ')
-          ..write('keepScreenOn: $keepScreenOn')
+          ..write('keepScreenOn: $keepScreenOn, ')
+          ..write('largeCount: $largeCount, ')
+          ..write('handLayout: $handLayout')
           ..write(')'))
         .toString();
   }
@@ -1969,6 +2079,8 @@ typedef $$SettingsTableCreateCompanionBuilder =
       required String theme,
       Value<bool> tapVibration,
       Value<bool> keepScreenOn,
+      Value<bool> largeCount,
+      Value<String> handLayout,
     });
 typedef $$SettingsTableUpdateCompanionBuilder =
     SettingsCompanion Function({
@@ -1977,6 +2089,8 @@ typedef $$SettingsTableUpdateCompanionBuilder =
       Value<String> theme,
       Value<bool> tapVibration,
       Value<bool> keepScreenOn,
+      Value<bool> largeCount,
+      Value<String> handLayout,
     });
 
 class $$SettingsTableFilterComposer
@@ -2010,6 +2124,16 @@ class $$SettingsTableFilterComposer
 
   ColumnFilters<bool> get keepScreenOn => $composableBuilder(
     column: $table.keepScreenOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get largeCount => $composableBuilder(
+    column: $table.largeCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get handLayout => $composableBuilder(
+    column: $table.handLayout,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2047,6 +2171,16 @@ class $$SettingsTableOrderingComposer
     column: $table.keepScreenOn,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get largeCount => $composableBuilder(
+    column: $table.largeCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get handLayout => $composableBuilder(
+    column: $table.handLayout,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SettingsTableAnnotationComposer
@@ -2074,6 +2208,16 @@ class $$SettingsTableAnnotationComposer
 
   GeneratedColumn<bool> get keepScreenOn => $composableBuilder(
     column: $table.keepScreenOn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get largeCount => $composableBuilder(
+    column: $table.largeCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get handLayout => $composableBuilder(
+    column: $table.handLayout,
     builder: (column) => column,
   );
 }
@@ -2111,12 +2255,16 @@ class $$SettingsTableTableManager
                 Value<String> theme = const Value.absent(),
                 Value<bool> tapVibration = const Value.absent(),
                 Value<bool> keepScreenOn = const Value.absent(),
+                Value<bool> largeCount = const Value.absent(),
+                Value<String> handLayout = const Value.absent(),
               }) => SettingsCompanion(
                 id: id,
                 vibration: vibration,
                 theme: theme,
                 tapVibration: tapVibration,
                 keepScreenOn: keepScreenOn,
+                largeCount: largeCount,
+                handLayout: handLayout,
               ),
           createCompanionCallback:
               ({
@@ -2125,12 +2273,16 @@ class $$SettingsTableTableManager
                 required String theme,
                 Value<bool> tapVibration = const Value.absent(),
                 Value<bool> keepScreenOn = const Value.absent(),
+                Value<bool> largeCount = const Value.absent(),
+                Value<String> handLayout = const Value.absent(),
               }) => SettingsCompanion.insert(
                 id: id,
                 vibration: vibration,
                 theme: theme,
                 tapVibration: tapVibration,
                 keepScreenOn: keepScreenOn,
+                largeCount: largeCount,
+                handLayout: handLayout,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

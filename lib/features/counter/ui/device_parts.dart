@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import '../../../core/display.dart';
+import '../../../core/hand_layout.dart';
 
 // The hand-held counter's parts (spec 0002), shared by a dhikr's device and
 // the tesbihat's (spec 0006). Original drawing of a generic counter; no
@@ -37,13 +41,18 @@ class DeviceBody extends StatelessWidget {
   );
 }
 
-class DeviceLcd extends StatelessWidget {
+/// How much larger the count is with "Büyük rakam" on (spec 0011, Req. 2).
+const largeCountScale = 1.5;
+
+class DeviceLcd extends ConsumerWidget {
   const DeviceLcd({super.key, required this.count});
 
   final int count;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final style = Theme.of(context).textTheme.displayLarge;
+    final large = ref.watch(largeCountEnabledProvider);
     return Container(
       key: const Key('counter-lcd'),
       width: double.infinity,
@@ -53,14 +62,25 @@ class DeviceLcd extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.black54, width: 3),
       ),
-      child: Text(
-        '$count',
-        key: const Key('counter-value'),
-        textAlign: TextAlign.right,
-        maxLines: 1,
-        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-          color: _lcdDigits,
-          fontFeatures: const [FontFeature.tabularFigures()],
+      // Spec 0011, Req. 3: a count that does not fit shrinks, never cut. The
+      // Align keeps the LCD's height that of the text (plan 0011, R2).
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            '$count',
+            key: const Key('counter-value'),
+            textAlign: TextAlign.right,
+            maxLines: 1,
+            style: style?.copyWith(
+              color: _lcdDigits,
+              fontSize: large && style.fontSize != null
+                  ? style.fontSize! * largeCountScale
+                  : null,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
         ),
       ),
     );
@@ -104,4 +124,24 @@ class DeviceCountButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Places a dhikr's or the tesbihat's view as a whole (spec 0011, Req. 4):
+/// in the middle, or near the chosen hand's edge. The child keeps its own
+/// padding, so the distance to the edge is today's margin; a child as wide as
+/// the screen stays where it is (plan 0011, R3).
+class HandAlign extends ConsumerWidget {
+  const HandAlign({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Align(
+    alignment: switch (ref.watch(handLayoutProvider)) {
+      HandLayout.center => Alignment.center,
+      HandLayout.right => Alignment.centerRight,
+      HandLayout.left => Alignment.centerLeft,
+    },
+    child: child,
+  );
 }

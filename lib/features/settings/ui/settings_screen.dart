@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/hand_layout.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/app_settings.dart';
 import 'settings_controller.dart';
 
-/// Ayarlar (spec 0004): vibration and theme.
+/// Ayarlar (spec 0004): vibration, keep screen on, display options (spec
+/// 0011) and theme.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -45,17 +47,33 @@ class SettingsScreen extends ConsumerWidget {
           value: settings.keepScreenOn,
           onChanged: controller.setKeepScreenOn,
         ),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: Semantics(
-            header: true,
-            child: Text(
-              l10n.settingsTheme,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+        // Spec 0011, Req. 1.
+        SwitchListTile(
+          key: const Key('settings-large-count'),
+          title: Text(l10n.settingsLargeCount),
+          subtitle: Text(l10n.settingsLargeCountSubtitle),
+          value: settings.largeCount,
+          onChanged: controller.setLargeCount,
+        ),
+        _Header(l10n.settingsHandLayout),
+        RadioGroup<HandLayout>(
+          groupValue: settings.handLayout,
+          onChanged: (hand) {
+            if (hand != null) controller.setHandLayout(hand);
+          },
+          child: Column(
+            children: [
+              for (final hand in HandLayout.values)
+                RadioListTile<HandLayout>(
+                  key: Key('hand-${hand.name}'),
+                  value: hand,
+                  title: Text(_handLabel(l10n, hand)),
+                ),
+            ],
           ),
         ),
+        const Divider(),
+        _Header(l10n.settingsTheme),
         RadioGroup<ThemeChoice>(
           groupValue: settings.theme,
           onChanged: (choice) {
@@ -82,4 +100,27 @@ class SettingsScreen extends ConsumerWidget {
         ThemeChoice.dark => l10n.themeDark,
         ThemeChoice.system => l10n.themeSystem,
       };
+
+  static String _handLabel(AppLocalizations l10n, HandLayout hand) =>
+      switch (hand) {
+        HandLayout.center => l10n.handCenter,
+        HandLayout.right => l10n.handRight,
+        HandLayout.left => l10n.handLeft,
+      };
+}
+
+/// A group's heading above its choices (theme, hand layout).
+class _Header extends StatelessWidget {
+  const _Header(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+    child: Semantics(
+      header: true,
+      child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+    ),
+  );
 }

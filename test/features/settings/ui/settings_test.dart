@@ -47,6 +47,25 @@ Future<void> _tap(WidgetTester tester, Finder f) async {
   await tester.pumpAndSettle();
 }
 
+/// Plan 0011, A-1: the theme choices sit below the display options (spec
+/// 0011), out of the test screen; scroll them into view first.
+Future<void> _showThemes(WidgetTester tester) =>
+    _scrollTo(tester, _theme(ThemeChoice.system), 100);
+
+/// Plan 0011, A-1: scrolls the settings list until [f] is in view; a negative
+/// [delta] scrolls back up.
+Future<void> _scrollTo(WidgetTester tester, Finder f, double delta) async {
+  await tester.scrollUntilVisible(
+    f,
+    delta,
+    scrollable: find.descendant(
+      of: find.byKey(const Key('settings-screen')),
+      matching: find.byType(Scrollable),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
 /// The theme the visible content is drawn with.
 Brightness _brightness(WidgetTester tester) =>
     Theme.of(tester.element(find.byType(AppBar))).brightness;
@@ -107,6 +126,7 @@ void main() {
     expect(find.text('Titreşim'), findsOneWidget);
     expect(find.text('Tur tamamlanınca titreşir'), findsOneWidget);
     expect(tester.widget<SwitchListTile>(_vibration).value, isTrue);
+    await _showThemes(tester); // plan 0011, A-1
     for (final (choice, label) in [
       (ThemeChoice.light, 'Açık'),
       (ThemeChoice.dark, 'Koyu'),
@@ -116,6 +136,7 @@ void main() {
         find.descendant(of: _theme(choice), matching: find.text(label)),
         findsOneWidget,
       );
+      await _showThemes(tester); // plan 0011, A-1
       expect(_checked(tester, choice), choice == ThemeChoice.system);
     }
   });
@@ -174,8 +195,10 @@ void main() {
     await _goTo(tester, 'settings');
     expect(_brightness(tester), Brightness.light);
 
+    await _showThemes(tester); // plan 0011, A-1
     await _tap(tester, _theme(ThemeChoice.dark));
     expect(_brightness(tester), Brightness.dark);
+    await _showThemes(tester); // plan 0011, A-1
     expect(_checked(tester, ThemeChoice.dark), isTrue);
     expect(settings.stored.theme, ThemeChoice.dark);
 
@@ -184,6 +207,7 @@ void main() {
     expect(_brightness(tester), Brightness.dark);
 
     await _goTo(tester, 'settings');
+    await _showThemes(tester); // plan 0011, A-1
     await _tap(tester, _theme(ThemeChoice.light));
     expect(_brightness(tester), Brightness.light);
     expect(settings.stored.theme, ThemeChoice.light);
@@ -215,6 +239,7 @@ void main() {
     expect(light, isNotEmpty);
 
     await _goTo(tester, 'settings');
+    await _showThemes(tester); // plan 0011, A-1
     await _tap(tester, _theme(ThemeChoice.dark));
     await _goTo(tester, 'myDhikrs');
     expect(_brightness(tester), Brightness.dark);
@@ -230,6 +255,7 @@ void main() {
     await _start(tester, settings: settings);
     await _goTo(tester, 'settings');
     await _tap(tester, _vibration);
+    await _showThemes(tester); // plan 0011, A-1
     await _tap(tester, _theme(ThemeChoice.dark));
 
     // "Restart", with the settings read slowly: a loading screen first, then
@@ -248,6 +274,7 @@ void main() {
     expect(_brightness(tester), Brightness.dark);
     await _goTo(tester, 'settings');
     expect(tester.widget<SwitchListTile>(_vibration).value, isFalse);
+    await _showThemes(tester); // plan 0011, A-1
     expect(_checked(tester, ThemeChoice.dark), isTrue);
   });
 
@@ -275,6 +302,7 @@ void main() {
 
     await _goTo(tester, 'settings');
     expect(tester.widget<SwitchListTile>(_vibration).value, isTrue);
+    await _showThemes(tester); // plan 0011, A-1
     expect(_checked(tester, ThemeChoice.system), isTrue);
   });
 
@@ -289,6 +317,7 @@ void main() {
 
     await _goTo(tester, 'settings');
     await _tap(tester, _vibration);
+    await _showThemes(tester); // plan 0011, A-1
     await _tap(tester, _theme(ThemeChoice.dark));
     await _goTo(tester, 'myDhikrs');
 
@@ -315,6 +344,7 @@ void main() {
       isSemantics(hasToggledState: true, isToggled: false),
     );
 
+    await _showThemes(tester); // plan 0011, A-1
     for (final c in ThemeChoice.values) {
       expect(
         tester.getSemantics(_theme(c)),
@@ -331,6 +361,8 @@ void main() {
       _vibration,
       for (final c in ThemeChoice.values) _theme(c),
     ]) {
+      // Plan 0011, A-1.
+      await _scrollTo(tester, f, identical(f, _vibration) ? -100 : 100);
       final size = tester.getSize(f);
       expect(size.width, greaterThanOrEqualTo(48), reason: '$f');
       expect(size.height, greaterThanOrEqualTo(48), reason: '$f');

@@ -160,6 +160,24 @@ class AppLocalizationsTr extends AppLocalizations {
       'Zikirlerim açıkken ekran kararmaz';
 
   @override
+  String get settingsLargeCount => 'Büyük rakam';
+
+  @override
+  String get settingsLargeCountSubtitle => 'Sayım daha büyük görünür';
+
+  @override
+  String get settingsHandLayout => 'El yerleşimi';
+
+  @override
+  String get handCenter => 'Ortada';
+
+  @override
+  String get handRight => 'Sağ el';
+
+  @override
+  String get handLeft => 'Sol el';
+
+  @override
   String get fullScreen => 'Tam ekran';
 
   @override

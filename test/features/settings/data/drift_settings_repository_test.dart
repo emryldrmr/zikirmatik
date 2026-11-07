@@ -4,6 +4,7 @@ import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/database/app_database.dart';
+import 'package:zikirmatik/core/hand_layout.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/features/counter/data/drift_counter_repository.dart';
 import 'package:zikirmatik/features/counter/data/drift_dhikr_list_repository.dart';
@@ -328,6 +329,126 @@ void main() {
       theme: ThemeChoice.light,
       tapVibration: true,
       keepScreenOn: true,
+    );
+    await settings.save(changed);
+    expect(_ok(await settings.load()), changed);
+  });
+
+  // Spec 0011, AC-1.
+  test('display options survive reopening', () async {
+    final dir = Directory.systemTemp.createTempSync('zikirmatik_test_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}${Platform.pathSeparator}db.sqlite');
+
+    for (final hand in HandLayout.values) {
+      final first = AppDatabase(NativeDatabase(file));
+      final saved = AppSettings(
+        vibration: true,
+        theme: ThemeChoice.dark,
+        largeCount: hand != HandLayout.center,
+        handLayout: hand,
+      );
+      await DriftSettingsRepository(first).save(saved);
+      await first.close();
+
+      final second = AppDatabase(NativeDatabase(file));
+      expect(_ok(await DriftSettingsRepository(second).load()), saved);
+      await second.close();
+    }
+  });
+
+  // Spec 0011, AC-1.
+  test('the database refuses an unknown hand layout', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+
+    await expectLater(
+      db.customStatement(
+        'INSERT INTO settings (id, vibration, theme, hand_layout) '
+        "VALUES (1, 1, 'light', 'both')",
+      ),
+      throwsA(isA<SqliteException>()),
+    );
+  });
+
+  // Spec 0011, AC-1: an update keeps the saved settings; the new ones are the
+  // defaults.
+  test('migrates a v7 database and keeps the settings', () async {
+    final v7 = NativeDatabase.memory(
+      setup: (raw) {
+        if (raw.userVersion != 0) return;
+        raw
+          ..execute(
+            'CREATE TABLE counters (id INTEGER NOT NULL, '
+            'count INTEGER NOT NULL CHECK (count >= 0), '
+            'rounds INTEGER NOT NULL DEFAULT 0, total INTEGER NOT NULL DEFAULT 0, '
+            'target INTEGER NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE dhikrs (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+            'name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 50))',
+          )
+          ..execute(
+            'CREATE TABLE dhikr_selections (id INTEGER NOT NULL CHECK (id = 1), '
+            'dhikr_id INTEGER NULL, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE settings (id INTEGER NOT NULL CHECK (id = 1), '
+            'vibration INTEGER NOT NULL, theme TEXT NOT NULL, '
+            'tap_vibration INTEGER NOT NULL DEFAULT 0, '
+            'keep_screen_on INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (id))',
+          )
+          ..execute(
+            'CREATE TABLE tesbihat_progress (id INTEGER NOT NULL CHECK (id = 1), '
+            'step INTEGER NOT NULL CHECK (step >= 0), '
+            'count INTEGER NOT NULL CHECK (count >= 0), '
+            'finished INTEGER NOT NULL, '
+            'completions INTEGER NOT NULL CHECK (completions >= 0), '
+            'selected INTEGER NOT NULL, PRIMARY KEY (id))',
+          )
+          ..execute("INSERT INTO dhikrs (id, name) VALUES (1, 'Zikir')")
+          ..execute(
+            'INSERT INTO counters (id, count, rounds, total, target) '
+            'VALUES (1, 7, 2, 73, 33)',
+          )
+          ..execute('INSERT INTO dhikr_selections (id, dhikr_id) VALUES (1, 1)')
+          ..execute(
+            'INSERT INTO settings '
+            '(id, vibration, theme, tap_vibration, keep_screen_on) '
+            "VALUES (1, 0, 'light', 1, 1)",
+          )
+          ..userVersion = 7;
+      },
+    );
+    final migrated = AppDatabase(v7);
+    addTearDown(migrated.close);
+
+    final settings = DriftSettingsRepository(migrated);
+    expect(
+      _ok(await settings.load()),
+      const AppSettings(
+        vibration: false,
+        theme: ThemeChoice.light,
+        tapVibration: true,
+        keepScreenOn: true,
+      ),
+    );
+    expect(
+      _ok(await DriftCounterRepository(migrated, dhikrId: 1).load()),
+      CounterState(
+        count: const DhikrCount(7),
+        rounds: 2,
+        total: 73,
+        target: Target.of(33),
+      ),
+    );
+    const changed = AppSettings(
+      vibration: false,
+      theme: ThemeChoice.light,
+      tapVibration: true,
+      keepScreenOn: true,
+      largeCount: true,
+      handLayout: HandLayout.left,
     );
     await settings.save(changed);
     expect(_ok(await settings.load()), changed);

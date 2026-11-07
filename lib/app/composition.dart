@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../core/app_version.dart';
+import '../core/display.dart';
 import '../core/haptics.dart';
 import '../core/screen.dart';
 import '../features/counter/counter.dart';
@@ -63,6 +64,17 @@ List<Override> featureWiring() => [
     (ref) =>
         ref.watch(settingsControllerProvider).valueOrNull?.keepScreenOn ??
         AppSettings.defaults.keepScreenOn,
+  ),
+  // Spec 0011, AC-1/AC-9: the display options follow the user's settings.
+  largeCountEnabledProvider.overrideWith(
+    (ref) =>
+        ref.watch(settingsControllerProvider).valueOrNull?.largeCount ??
+        AppSettings.defaults.largeCount,
+  ),
+  handLayoutProvider.overrideWith(
+    (ref) =>
+        ref.watch(settingsControllerProvider).valueOrNull?.handLayout ??
+        AppSettings.defaults.handLayout,
   ),
 ];
 

@@ -28,3 +28,11 @@ step 7). Nothing lands here without that decision; noise is rejected in the tria
 - **B-3** — Önerilen Zikirler'e salavat ve Hasbünallah eklenmesi: Diyanet/TDV'de okunuş + anlam (+ varsa sayı) birlikte veren kaynak bulunamadı — Source: spec 0008, self-critique G6 — Severity: Low
   — Recommendation: Diyanet/TDV kaynağı bulunursa spec 0008'in tablosuna ek olarak yeni spec (hassas alan)
   — Deferred by: emryldrmr, 2026-11-07, kaynaksız dini metin eklenmez (BR-12)
+
+- **B-4** — Tam ekranda Ortada yerleşiminde küçük yatay ekran + en büyük sistem yazısında (ör. 640×360, 2×) "Hedef/Tur" ve "Toplam" satırları birkaç satıra kayar, ortadaki sayım ~8 px'e iner (okunmaz) — Source: spec 0011, build adım 5 (plan 0011, A-2) — Severity: Low
+  — Recommendation: Ortada için de A-2'deki gibi kısa bilgi satırları tek satırda kalsın, sığmazsa küçülsün; spec 0010/0011 AC-2 (bugünkü görünüm) bunu yasakladığı için ayrı mini-spec (CHANGE)
+  — Deferred by: emryldrmr, 2026-11-07, spec 0011 Ortada görünümünü değiştirmez (AC-2)
+
+- **B-5** — Telefon yan çevrilince ekranlar bozuluyor (telefonda gözlendi; widget testleri yatayda yeşil) — uygulama hep dikey kalmalı, yatay mod hiç olmamalı — Source: spec 0011, VERIFY (G-5) — Severity: Medium
+  — Recommendation: `/change` ile mini-spec: Android'de ekran yönü dikeye kilitli (manifest + `SystemChrome.setPreferredOrientations`); yatay ekran kriterleri `Supersedes:` ile (0007, 0010, 0011 …) devre dışı; B-4 bununla kapanır
+  — Deferred by: emryldrmr, 2026-11-08, önce spec 0011 REVIEW → triage → SHIP, sonra bu CHANGE

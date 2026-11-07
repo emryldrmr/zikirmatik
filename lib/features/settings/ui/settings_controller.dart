@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/hand_layout.dart';
 import '../../../core/result.dart';
 import '../domain/app_settings.dart';
 import '../domain/settings_repository.dart';
@@ -39,6 +40,14 @@ class SettingsController extends AsyncNotifier<AppSettings> {
   /// Spec 0010, AC-8/AC-9.
   Future<void> setKeepScreenOn(bool on) =>
       _update((s) => s.copyWith(keepScreenOn: on));
+
+  /// Spec 0011, AC-1/AC-9.
+  Future<void> setLargeCount(bool on) =>
+      _update((s) => s.copyWith(largeCount: on));
+
+  /// Spec 0011, AC-1/AC-9.
+  Future<void> setHandLayout(HandLayout hand) =>
+      _update((s) => s.copyWith(handLayout: hand));
 
   /// AC-3.
   Future<void> setTheme(ThemeChoice theme) =>
