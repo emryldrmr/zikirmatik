@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zikirmatik/core/hand_layout.dart';
 import 'package:zikirmatik/features/settings/domain/app_settings.dart';
 
 void main() {
@@ -45,5 +46,24 @@ void main() {
     expect(on.theme, AppSettings.defaults.theme);
     expect(on.tapVibration, AppSettings.defaults.tapVibration);
     expect(on, isNot(AppSettings.defaults));
+  });
+
+  // Spec 0011, AC-1.
+  test('defaults have normal digits and centre', () {
+    expect(AppSettings.defaults.largeCount, isFalse);
+    expect(AppSettings.defaults.handLayout, HandLayout.center);
+    final changed = AppSettings.defaults.copyWith(
+      largeCount: true,
+      handLayout: HandLayout.right,
+    );
+    expect(changed.largeCount, isTrue);
+    expect(changed.handLayout, HandLayout.right);
+    expect(changed.keepScreenOn, AppSettings.defaults.keepScreenOn);
+    expect(changed.theme, AppSettings.defaults.theme);
+    expect(changed, isNot(AppSettings.defaults));
+    for (final h in HandLayout.values) {
+      expect(HandLayout.byName(h.name), h);
+    }
+    expect(HandLayout.byName('both'), isNull);
   });
 }

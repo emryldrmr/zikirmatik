@@ -21,7 +21,7 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'zikirmatik'));
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -63,6 +63,12 @@ class AppDatabase extends _$AppDatabase {
       if (from >= 4 && from < 7) {
         // Spec 0010: keep the screen on, off for kept settings (AC-8).
         await m.addColumn(settings, settings.keepScreenOn);
+      }
+      if (from >= 4 && from < 8) {
+        // Spec 0011: normal digits and the centre layout for kept settings
+        // (AC-1).
+        await m.addColumn(settings, settings.largeCount);
+        await m.addColumn(settings, settings.handLayout);
       }
     },
   );

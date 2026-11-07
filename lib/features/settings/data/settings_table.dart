@@ -17,6 +17,18 @@ class Settings extends Table {
   /// Spec 0010, schema v7. Rows kept from v6 get the default: off (AC-8).
   BoolColumn get keepScreenOn => boolean().withDefault(const Constant(false))();
 
+  /// Spec 0011, schema v8. Rows kept from v7 get the defaults: normal digits
+  /// and the centre layout (AC-1).
+  BoolColumn get largeCount => boolean().withDefault(const Constant(false))();
+
+  TextColumn get handLayout => text()
+      .withDefault(const Constant('center'))
+      .check(
+        const CustomExpression<bool>(
+          "hand_layout IN ('center', 'right', 'left')",
+        ),
+      )();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
