@@ -5,6 +5,7 @@ import '../core/haptics.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
 import '../features/settings/settings.dart';
+import '../features/suggested/suggested.dart';
 import 'database/app_database.dart';
 
 /// Composition root: binds every feature's abstract dependencies to their
@@ -18,6 +19,9 @@ List<Override> appOverrides(AppDatabase db) => [
   tesbihatRepositoryProvider.overrideWithValue(DriftTesbihatRepository(db)),
   settingsRepositoryProvider.overrideWithValue(DriftSettingsRepository(db)),
   esmaRepositoryProvider.overrideWithValue(AssetEsmaRepository(rootBundle)),
+  suggestedRepositoryProvider.overrideWithValue(
+    AssetSuggestedRepository(rootBundle),
+  ),
   hapticsProvider.overrideWithValue(const SystemHaptics()),
   ...featureWiring(),
 ];

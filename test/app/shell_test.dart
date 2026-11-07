@@ -42,11 +42,17 @@ void main() {
     await tester.pump();
 
     // Spec 0004: Ayarlar is no longer "coming soon" (settings_test.dart, AC-1);
-    // spec 0007: nor is Esmaü'l-Hüsna (esma_test.dart, AC-1).
+    // spec 0007: nor is Esmaü'l-Hüsna (esma_test.dart, AC-1); spec 0008: nor
+    // is Önerilen Zikirler (suggested_test.dart, AC-1).
     for (final section
         in _sections
             .skip(1)
-            .where((s) => s != 'Ayarlar' && s != "Esmaü'l-Hüsna")) {
+            .where(
+              (s) =>
+                  s != 'Ayarlar' &&
+                  s != "Esmaü'l-Hüsna" &&
+                  s != 'Önerilen Zikirler',
+            )) {
       await _openMenu(tester);
       await tester.tap(
         find.descendant(of: find.byType(Drawer), matching: find.text(section)),

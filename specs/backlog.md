@@ -24,3 +24,7 @@ step 7). Nothing lands here without that decision; noise is rejected in the tria
   — Recommendation: tek bir spec'te ortak bir "kaydedilemedi" geri bildirimi (sayaç + liste) ve durumun geri alınması
   — Deferred by: emryldrmr, 2026-11-02, depolama hatası nadir; sayaç ve listeyi birlikte, tutarlı çözmek için
   — Also (spec 0006, review round 1, F-4, emryldrmr, 2026-11-06): tesbihat kaydı okunamazsa boş durumdaki "Tesbihat çek" sessizce tepkisiz kalır; tesbihat kaydı yazılamazsa ekran güncellenir ama yeniden başlatınca geri gelir.
+
+- **B-3** — Önerilen Zikirler'e salavat ve Hasbünallah eklenmesi: Diyanet/TDV'de okunuş + anlam (+ varsa sayı) birlikte veren kaynak bulunamadı — Source: spec 0008, self-critique G6 — Severity: Low
+  — Recommendation: Diyanet/TDV kaynağı bulunursa spec 0008'in tablosuna ek olarak yeni spec (hassas alan)
+  — Deferred by: emryldrmr, 2026-11-07, kaynaksız dini metin eklenmez (BR-12)

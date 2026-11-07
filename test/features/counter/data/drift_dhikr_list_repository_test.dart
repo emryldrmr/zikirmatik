@@ -196,6 +196,21 @@ void main() {
     },
   );
 
+  // Spec 0008, AC-4: a suggested dhikr keeps its target.
+  test('add with a target without selecting stores the target', () async {
+    final added = _ok(
+      await repo.add(_n('Sübhânallah'), Target.of(33), select: false),
+    );
+
+    final list = _ok(await repo.load());
+    expect(list.entries, [DhikrEntry(1, _n('Zikir')), added]);
+    expect(list.selectedId, 1);
+    expect(
+      await counterOf(db, added.id),
+      CounterState(count: DhikrCount.zero, target: Target.of(33)),
+    );
+  });
+
   test('the database refuses an empty or 51-character name', () async {
     for (final bad in ['', 'x' * 51]) {
       await expectLater(
