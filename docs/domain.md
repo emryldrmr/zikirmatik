@@ -21,6 +21,8 @@
 | Meal (`Translation`) | Bir ayetin Türkçe çevirisi; kaynağı (çevirmen/yayıncı) ile birlikte. | Tefsir değildir. Ayetle birebir hizalanır. |
 | Tesbihat (`DhikrSequence`) | Sırayla çekilen zikirlerden oluşan dizi; her adımın bir zikri ve hedefi vardır (ör. namaz sonrası tesbihat). | Tek bir zikrin turlarıyla karıştırılmaz. Varsayılan dizinin metni ve hedefleri ilgili spec'te kaynağıyla belirlenir; hassas alan. |
 | Adım (`step`) | Tesbihat içindeki tek zikir + hedef. | |
+| Günlük sayım (`DailyCount`) | Bir yerel takvim gününde sayımı artıran dokunuşların sayısı (zikir + tesbihat), geri al ile azalır. | Zikrin toplamı değildir; sıfırlama ve silme günlük sayımı değiştirmez (spec 0014). Gün yerel 00:00'da değişir. |
+| Seri (`streak`) | Sayımı en az 1 olan art arda günlerin sayısı; bugünden, bugün henüz sayım yoksa dünden geriye sayılır. | "En uzun seri" tüm geçmişteki en uzun böyle dizidir (spec 0014). |
 | Önbellek (`QuranCache`) | API'den indirilip doğrulanmış, cihazda saklanan Kur'an + meal verisi. | Doğrulanmamış veri önbellek sayılmaz (BR-11). |
 
 ## Business rules
