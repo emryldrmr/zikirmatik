@@ -44,12 +44,22 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
     if (out.state == current) return;
     state = AsyncData(out.state);
     final saved = _repo.save(out.state);
+    ref.read(countLogProvider).counted(); // spec 0014, AC-1
     unawaited(vibrateAfterTap(ref, roundCompleted: out.vibrate));
     await saved;
   }
 
-  /// AC-5.
-  Future<void> undo() => _apply((s) => s.undo());
+  /// AC-5; an undo that took one back is reported (spec 0014, AC-2).
+  Future<void> undo() async {
+    final current = _current;
+    if (current == null) return;
+    final next = current.undo();
+    if (next == current) return;
+    state = AsyncData(next);
+    final saved = _repo.save(next);
+    ref.read(countLogProvider).uncounted();
+    await saved;
+  }
 
   /// AC-4 "Baştan başla" and AC-6 "Sıfırla" (its confirmation is asked by the
   /// screen).

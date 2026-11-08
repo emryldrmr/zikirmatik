@@ -16,6 +16,8 @@ export 'domain/tesbihat_repository.dart' show TesbihatRepository;
 export 'domain/tesbihat_state.dart' show TesbihatState;
 export 'ui/counter_providers.dart'
     show
+        CountLog,
+        countLogProvider,
         counterRepositoryForProvider,
         dhikrListRepositoryProvider,
         tesbihatRepositoryProvider;

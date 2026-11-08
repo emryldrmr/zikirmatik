@@ -7,11 +7,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/app.dart';
 import 'package:zikirmatik/app/composition.dart';
 import 'package:zikirmatik/core/app_version.dart';
+import 'package:zikirmatik/core/clock.dart';
 import 'package:zikirmatik/core/haptics.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/core/screen.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/esma/esma.dart';
+import 'package:zikirmatik/features/history/history.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
 import 'package:zikirmatik/features/suggested/suggested.dart';
 
@@ -25,7 +27,9 @@ import 'package:zikirmatik/features/suggested/suggested.dart';
 /// Tesbihat: [tesbihat] when given (spec 0006); otherwise not started.
 /// Version: [version] when given (spec 0009); otherwise none is shown.
 /// Screen and system bars: [screenAwake] and [systemBars] record what the app
-/// asks of the phone (spec 0010). The cross-feature wiring is the app's own
+/// asks of the phone (spec 0010). History: [history] when given (spec 0014);
+/// otherwise empty. Time: [clock] when given; otherwise fixed at noon on
+/// 8 November 2026. The cross-feature wiring is the app's own
 /// (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
@@ -37,7 +41,10 @@ Widget testApp(
   String? version,
   FakeScreenAwake? screenAwake,
   FakeSystemBars? systemBars,
+  FakeHistoryRepository? history,
+  FakeClock? clock,
 }) {
+  final time = clock ?? FakeClock();
   final dhikrs =
       store ?? FakeDhikrStore.single(repo ?? FakeCounterRepository());
   return ProviderScope(
@@ -62,6 +69,11 @@ Widget testApp(
       systemBarsProvider.overrideWithValue(systemBars ?? FakeSystemBars()),
       // Spec 0009: no version unless given (as when it is unreadable).
       if (version != null) appVersionProvider.overrideWith((ref) => version),
+      // Spec 0014.
+      historyRepositoryProvider.overrideWithValue(
+        history ?? FakeHistoryRepository(),
+      ),
+      clockProvider.overrideWithValue(() => time.now),
       ...featureWiring(),
     ],
     // Live view metrics (spec 0004: the phone's light/dark setting can change
@@ -168,6 +180,55 @@ class FakeTesbihatRepository implements TesbihatRepository {
   Future<Result<void>> save(TesbihatState state) async {
     saves.add(state);
     stored = state;
+    return const Ok(null);
+  }
+}
+
+/// A clock the test sets (spec 0014: 23:59 → 00:00, month and year ends).
+class FakeClock {
+  FakeClock([DateTime? now]) : now = now ?? DateTime(2026, 11, 8, 12);
+
+  DateTime now;
+}
+
+/// In-memory [HistoryRepository] (spec 0014) whose load can be held open or
+/// made to fail and whose writes can fail. Survives a "restart" when the same
+/// instance is reused.
+class FakeHistoryRepository implements HistoryRepository {
+  FakeHistoryRepository({Map<Day, int>? stored, this.failLoad = false})
+    : stored = {...?stored};
+
+  final Map<Day, int> stored;
+  final bool failLoad;
+
+  /// When true, every write fails without changing [stored].
+  bool failWrites = false;
+
+  /// When set, [load] waits for it, so the loading state stays visible.
+  Completer<void>? holdLoad;
+
+  @override
+  Future<Result<DailyHistory>> load() async {
+    // Read when asked, as storage runs statements in order: writes issued
+    // after the load are not in it (plan 0014, R2).
+    final snapshot = DailyHistory(stored);
+    await holdLoad?.future;
+    if (failLoad) return const Err(StorageFailure('history unreadable'));
+    return Ok(snapshot);
+  }
+
+  @override
+  Future<Result<void>> add(Day day) async {
+    if (failWrites) return const Err(StorageFailure('disk full'));
+    stored[day] = (stored[day] ?? 0) + 1;
+    return const Ok(null);
+  }
+
+  @override
+  Future<Result<void>> remove(Day day) async {
+    if (failWrites) return const Err(StorageFailure('disk full'));
+    final n = stored[day] ?? 0;
+    if (n > 0) stored[day] = n - 1;
     return const Ok(null);
   }
 }
