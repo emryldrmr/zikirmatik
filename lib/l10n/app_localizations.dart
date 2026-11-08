@@ -106,6 +106,12 @@ abstract class AppLocalizations {
   /// **'Zikirlerim'**
   String get sectionMyDhikrs;
 
+  /// No description provided for @sectionHistory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçmiş'**
+  String get sectionHistory;
+
   /// No description provided for @sectionSuggested.
   ///
   /// In tr, this message translates to:
@@ -627,6 +633,48 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Okunuş, anlam ve sayılar: Diyanet, Hadislerle İslâm (c. 2) · Diyanet Aylık Dergi (Kasım 2024) · TDV İslâm Ansiklopedisi'**
   String get suggestedSource;
+
+  /// No description provided for @historyStreak.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seri: {days} gün'**
+  String historyStreak(String days);
+
+  /// No description provided for @historyLongestStreak.
+  ///
+  /// In tr, this message translates to:
+  /// **'En uzun seri: {days} gün'**
+  String historyLongestStreak(String days);
+
+  /// No description provided for @historyToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün'**
+  String get historyToday;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz sayım yok.'**
+  String get historyEmpty;
+
+  /// No description provided for @historyLoadFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçmiş yüklenemedi.'**
+  String get historyLoadFailed;
+
+  /// No description provided for @historyLoading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçmiş yükleniyor'**
+  String get historyLoading;
+
+  /// No description provided for @historyRowSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'{date}: {count} zikir'**
+  String historyRowSemantics(String date, String count);
 }
 
 class _AppLocalizationsDelegate

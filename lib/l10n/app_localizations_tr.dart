@@ -15,6 +15,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sectionMyDhikrs => 'Zikirlerim';
 
   @override
+  String get sectionHistory => 'Geçmiş';
+
+  @override
   String get sectionSuggested => 'Önerilen Zikirler';
 
   @override
@@ -317,4 +320,31 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get suggestedSource =>
       'Okunuş, anlam ve sayılar: Diyanet, Hadislerle İslâm (c. 2) · Diyanet Aylık Dergi (Kasım 2024) · TDV İslâm Ansiklopedisi';
+
+  @override
+  String historyStreak(String days) {
+    return 'Seri: $days gün';
+  }
+
+  @override
+  String historyLongestStreak(String days) {
+    return 'En uzun seri: $days gün';
+  }
+
+  @override
+  String get historyToday => 'Bugün';
+
+  @override
+  String get historyEmpty => 'Henüz sayım yok.';
+
+  @override
+  String get historyLoadFailed => 'Geçmiş yüklenemedi.';
+
+  @override
+  String get historyLoading => 'Geçmiş yükleniyor';
+
+  @override
+  String historyRowSemantics(String date, String count) {
+    return '$date: $count zikir';
+  }
 }

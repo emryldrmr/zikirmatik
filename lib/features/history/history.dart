@@ -8,3 +8,4 @@ export 'domain/history_repository.dart' show HistoryRepository;
 export 'ui/history_controller.dart'
     show HistoryController, historyControllerProvider;
 export 'ui/history_providers.dart' show historyRepositoryProvider;
+export 'ui/history_screen.dart' show HistoryScreen;
