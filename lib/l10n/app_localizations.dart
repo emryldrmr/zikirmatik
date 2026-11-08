@@ -175,13 +175,13 @@ abstract class AppLocalizations {
   /// No description provided for @targetSemanticsNone.
   ///
   /// In tr, this message translates to:
-  /// **'Hedef: yok'**
+  /// **'Hedef: yok. Değiştirmek için dokunun.'**
   String get targetSemanticsNone;
 
   /// No description provided for @targetSemantics.
   ///
   /// In tr, this message translates to:
-  /// **'Hedef: {target}'**
+  /// **'Hedef: {target}. Değiştirmek için dokunun.'**
   String targetSemantics(String target);
 
   /// No description provided for @totalLabel.

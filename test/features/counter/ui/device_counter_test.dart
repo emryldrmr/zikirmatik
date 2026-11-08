@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/app/database/app_database.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
+import 'package:zikirmatik/features/counter/ui/device_parts.dart'
+    show deviceBodyColor, deviceBodyText;
 
 import '../../../support/test_app.dart';
 
@@ -452,7 +454,10 @@ void main() {
     );
     expect(find.bySemanticsLabel('Geri al'), findsOneWidget);
     expect(find.bySemanticsLabel('Sıfırla'), findsOneWidget);
-    expect(find.bySemanticsLabel('Hedef: yok'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Hedef: yok. Değiştirmek için dokunun.'),
+      findsOneWidget,
+    );
     for (final f in [_button, _undo, _reset, _targetButton]) {
       final size = tester.getSize(f);
       expect(size.width, greaterThanOrEqualTo(48), reason: '$f');
@@ -462,7 +467,10 @@ void main() {
     await _pick(tester, 'target-option-33');
     await tester.tap(find.byKey(const Key('confirm-ok')));
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Hedef: 33'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Hedef: 33. Değiştirmek için dokunun.'),
+      findsOneWidget,
+    );
     semantics.dispose();
   });
 
@@ -471,4 +479,63 @@ void main() {
 
     expect(_text(tester, _total), 'Toplam 1.250');
   });
+
+  // Spec 0013, CB-1 and CB-3.
+  testWidgets('the target row looks tappable', (tester) async {
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    await _pump(tester, CounterState.initial);
+
+    final icon = find.descendant(
+      of: _targetButton,
+      matching: find.byKey(const Key('counter-target-icon')),
+    );
+    Color frame() {
+      final material = tester.widget<Material>(
+        find.descendant(of: _targetButton, matching: find.byType(Material)),
+      );
+      return (material.shape! as OutlinedBorder).side.color;
+    }
+
+    Color iconColor() => tester.widget<Icon>(icon).color!;
+
+    expect(tester.widget<Icon>(icon).icon, Icons.arrow_drop_down);
+    expect(_targetText(tester), 'Hedef yok');
+    expect(frame(), deviceBodyText);
+    expect(iconColor(), deviceBodyText);
+    expect(_contrast(frame(), deviceBodyColor), greaterThanOrEqualTo(3));
+
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    await tester.pumpAndSettle();
+    expect(frame(), deviceBodyText);
+    expect(iconColor(), deviceBodyText);
+
+    await _pick(tester, 'target-option-33');
+    expect(_targetText(tester), 'Hedef 33 · Tur 0');
+    expect(icon, findsOneWidget);
+  });
+
+  // Plan 0013, R2: the frame and ▾ never push the longest row out.
+  testWidgets('a long target row fits a narrow screen', (tester) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await _pump(
+      tester,
+      _state(count: 5, rounds: 99999, total: 999999, target: Target.max),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(_targetButton, findsOneWidget);
+    expect(find.byKey(const Key('counter-target-icon')), findsOneWidget);
+  });
+}
+
+double _contrast(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  final (hi, lo) = la > lb ? (la, lb) : (lb, la);
+  return (hi + 0.05) / (lo + 0.05);
 }
