@@ -241,18 +241,36 @@ class _Device extends ConsumerWidget {
             button: true,
             label: targetLabel,
             excludeSemantics: true,
-            child: TextButton(
+            // Spec 0013, CB-1/CB-3: framed and with ▾ so it reads as tappable;
+            // device colours only, the same in light and dark.
+            child: OutlinedButton(
               key: const Key('counter-target'),
-              style: TextButton.styleFrom(
+              style: OutlinedButton.styleFrom(
                 foregroundColor: deviceBodyText,
+                side: const BorderSide(color: deviceBodyText),
                 minimumSize: const Size(48, 48),
               ),
               onPressed: () => _pickTarget(context, ref),
-              child: Text(
-                targetText,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: deviceBodyText,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Plan 0013, R2: a long target and round never overflow.
+                  Flexible(
+                    child: Text(
+                      targetText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: deviceBodyText,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_drop_down,
+                    key: Key('counter-target-icon'),
+                    color: deviceBodyText,
+                  ),
+                ],
               ),
             ),
           ),
