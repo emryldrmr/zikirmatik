@@ -52,11 +52,11 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get targetSemanticsNone => 'Hedef: yok';
+  String get targetSemanticsNone => 'Hedef: yok. Değiştirmek için dokunun.';
 
   @override
   String targetSemantics(String target) {
-    return 'Hedef: $target';
+    return 'Hedef: $target. Değiştirmek için dokunun.';
   }
 
   @override

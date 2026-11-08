@@ -452,7 +452,7 @@ void main() {
     );
     expect(find.bySemanticsLabel('Geri al'), findsOneWidget);
     expect(find.bySemanticsLabel('Sıfırla'), findsOneWidget);
-    expect(find.bySemanticsLabel('Hedef: yok'), findsOneWidget);
+    expect(find.bySemanticsLabel('Hedef: yok. Değiştirmek için dokunun.'), findsOneWidget);
     for (final f in [_button, _undo, _reset, _targetButton]) {
       final size = tester.getSize(f);
       expect(size.width, greaterThanOrEqualTo(48), reason: '$f');
@@ -462,7 +462,7 @@ void main() {
     await _pick(tester, 'target-option-33');
     await tester.tap(find.byKey(const Key('confirm-ok')));
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Hedef: 33'), findsOneWidget);
+    expect(find.bySemanticsLabel('Hedef: 33. Değiştirmek için dokunun.'), findsOneWidget);
     semantics.dispose();
   });
 

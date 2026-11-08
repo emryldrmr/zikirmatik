@@ -24,8 +24,8 @@
       "rounds": {"type": "String"}
     }
   },
-  "targetSemanticsNone": "Hedef: yok",
-  "targetSemantics": "Hedef: {target}",
+  "targetSemanticsNone": "Hedef: yok. Değiştirmek için dokunun.",
+  "targetSemantics": "Hedef: {target}. Değiştirmek için dokunun.",
   "@targetSemantics": {
     "placeholders": {
       "target": {"type": "String"}

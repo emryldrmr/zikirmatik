@@ -1,6 +1,6 @@
 # Spec 0013 — Hedefin dokunulabilir olduğu belli olsun (mini)
 
-- Status: Approved
+- Status: In progress
 - Mode: lite
 - Plan: `specs/plans/0013-plan.md`
 - Self-critique: done
