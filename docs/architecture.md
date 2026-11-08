@@ -17,9 +17,10 @@ sınırlar, saf Dart'ta hızlı test edilen iş kuralları ve tek dosyada izole 
 
 | Module | Single responsibility | Owns |
 |---|---|---|
-| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`; özelliklerin birbirine kendisi kuramadığı bağları `featureWiring()` kurar — ör. `vibrationEnabledProvider` ve `tapVibrationEnabledProvider` ← titreşim ayarları, `appVersionProvider` ← kurulu sürüm (`package_info_plus`; yan menünün altında, spec 0009), `keepScreenOnEnabledProvider` ← "Ekranı açık tut" ayarı (spec 0010), `largeCountEnabledProvider` ve `handLayoutProvider` ← "Büyük rakam" ve "El yerleşimi" ayarları (spec 0011) — ve uygulama ile testler aynı listeyi kullanır; `ChannelScreenAwake` uygulamanın kendi `zikirmatik/screen` kanalıyla `MainActivity`'deki `FLAG_KEEP_SCREEN_ON`'u açar/kapatır, izin ve paket istemez; `SystemChromeBars` sistem çubuklarını gizler/geri getirir); tema (açık/koyu, ayardan; içerik ayarlar okununca gösterilir); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
-| `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure` (`StorageFailure`, `ValidationFailure`), `Haptics` arayüzü + `hapticsProvider` + `vibrationEnabledProvider` (varsayılan açık); `ScreenAwake` + `SystemBars` arayüzleri ve sağlayıcıları, `keepScreenOnEnabledProvider` (varsayılan kapalı; spec 0010); saf Dart `HandLayout` (Ortada / Sağ el / Sol el) + `largeCountEnabledProvider` (varsayılan kapalı) + `handLayoutProvider` (varsayılan Ortada; spec 0011); `Clock` ilk ihtiyaç duyan spec'te eklenir | Ortak tipler |
+| `lib/app/` | Uygulama kabuğu: yan menü (Drawer), yönlendirme (yerleşik `Navigator`), tema; kompozisyon kökü (`composition.dart`: soyut bağımlılıkları cihaz uygulamalarına bağlar, ör. `SystemHaptics`; özelliklerin birbirine kendisi kuramadığı bağları `featureWiring()` kurar — ör. `vibrationEnabledProvider` ve `tapVibrationEnabledProvider` ← titreşim ayarları, `appVersionProvider` ← kurulu sürüm (`package_info_plus`; yan menünün altında, spec 0009), `keepScreenOnEnabledProvider` ← "Ekranı açık tut" ayarı (spec 0010), `largeCountEnabledProvider` ve `handLayoutProvider` ← "Büyük rakam" ve "El yerleşimi" ayarları (spec 0011), `countLogProvider` ← günlük geçmiş (sayaç geçmişi import etmez; spec 0014) — ve uygulama ile testler aynı listeyi kullanır; `ChannelScreenAwake` uygulamanın kendi `zikirmatik/screen` kanalıyla `MainActivity`'deki `FLAG_KEEP_SCREEN_ON`'u açar/kapatır, izin ve paket istemez; `SystemChromeBars` sistem çubuklarını gizler/geri getirir); tema (açık/koyu, ayardan; içerik ayarlar okununca gösterilir); tek drift veritabanı ve şema migration'ları (`database/`) | Gezinme yapısı, tema, veritabanı şeması |
+| `lib/core/` | Paylaşılan küçük yapı taşları: `Result`/`Failure` (`StorageFailure`, `ValidationFailure`), `Haptics` arayüzü + `hapticsProvider` + `vibrationEnabledProvider` (varsayılan açık); `ScreenAwake` + `SystemBars` arayüzleri ve sağlayıcıları, `keepScreenOnEnabledProvider` (varsayılan kapalı; spec 0010); saf Dart `HandLayout` (Ortada / Sağ el / Sol el) + `largeCountEnabledProvider` (varsayılan kapalı) + `handLayoutProvider` (varsayılan Ortada; spec 0011); `clockProvider` (yerel saat, testte sabit; spec 0014) | Ortak tipler |
 | `lib/features/counter/` | Zikirlerim + sayaç: BR-1…BR-8; tesbihat modu (BR-13); tam ekran sayma (Shell'in üstüne itilen rota; son parmak kalkınca 1 sayım, iptal edilen dokunuş saymaz) ve Zikirlerim öndeyken ekranı açık tutma (spec 0010); görünüm seçenekleri: büyük rakam (sığmayan sayım küçülür, kesilmez) ve el yerleşimi (normal ekranda cihaz seçilen kenara, tam ekranda "Geri al" elin alt köşesine; spec 0011) | Kullanıcının zikirleri (`dhikrs`) ve seçili zikir (`dhikr_selections`); her zikrin sayım, tur, toplam, hedefi (`counters`, aynı id); tesbihat dizileri ve ilerlemesi |
+| `lib/features/history/` | Günlük geçmiş ve seri (spec 0014): sayım artıran her dokunuş o günün sayımını 1 artırır, geri al bugünü azaltır; seri, en uzun seri, son 30 gün ("Geçmiş" bölümü) | Günlük sayımlar (`daily_counts`, gün başına bir satır; satır yoksa 0) |
 | `lib/features/suggested/` | Önerilen Zikirler listesi (gömülü veri), BR-9 | Önerilen zikir içeriği |
 | `lib/features/esma/` | Esmaü'l-Hüsna listesi (gömülü veri), BR-9 | 99 isim içeriği |
 | `lib/features/quran/` | Kur'an + meal: indirme, doğrulama, önbellek, okuma ekranı; BR-10…BR-12 | Kur'an/meal önbelleği; AlQuran Cloud adaptörü |
@@ -52,13 +53,13 @@ yerleşimi, ara titreşim) → Önerilen Zikirler ve Esmaü'l-Hüsna → Kur'an 
 spec'iyle gelir; sonraki özellikler kendi ayarlarını Ayarlar ekranına ekler. (Ayarlar öne alındı,
 Kaynaklar Kur'an'a bağlandı — emryldrmr, 2026-11-04.)
 
-Kalan sıra (0001–0010 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07; ses tuşuyla sayma
-çıkarıldı, vazgeçildi — emryldrmr, 2026-11-07): 0011 görünüm seçenekleri (büyük rakam, sol/sağ el
-yerleşimi) → 0012 Günün Esması kartı + kişisel Esma notu → 0013 günlük geçmiş + seri (B-2 ile birlikte) →
-0014 rozetler (4–6 sabit, seriye dayanır) → 0015 JSON yedekleme/geri yükleme → 0016 sabah hatırlatma
-bildirimi (sabit, dini metin içermeyen "Günün zikrini çekmeyi unutma"; yeni izin → `docs/security.md`) →
-0017 Kur'an + meal + Kaynaklar → 0018 Günün Ayeti (0012 kartına ek). Numaralar sıra içindir; her biri
-spec yazılırken kesinleşir.
+Kalan sıra (0001–0013 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07; ses tuşuyla sayma
+çıkarıldı, vazgeçildi — emryldrmr, 2026-11-07; "Günün Esması kartı + kişisel Esma notu" bekletildi, hatırlatıcı
+bildirimlerle birlikte yeniden ele alınacak — emryldrmr, 2026-11-08; B-2 günlük geçmişten ayrı spec'e ayrıldı —
+emryldrmr, 2026-11-08): 0014 günlük geçmiş + seri → B-2 depolama hatası geri bildirimi → rozetler (4–6 sabit,
+seriye dayanır) → JSON yedekleme/geri yükleme → sabah hatırlatma bildirimi (yeni izin → `docs/security.md`;
+içeriği ve Günün Esması burada kararlaştırılır) → Kur'an + meal + Kaynaklar → Günün Ayeti (Günün Esması
+kararına bağlı). Numaralar sıra içindir; her biri spec yazılırken kesinleşir.
 
 ## Deliberately out of scope
 

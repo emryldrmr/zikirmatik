@@ -24,7 +24,9 @@
   (seçiciyle ayırma, Two speeds kural 4). Başlangıçta hiçbir test `slow` değildir.
 - **Determinism (bu yığında nasıl):**
   - Saat `core`'daki `Clock` arayüzüyle enjekte edilir; testte sabit saat.
-  - Locale `tr` ve saat dilimi testte sabitlenir; rastgelelik kullanılmaz (gerekirse sabit seed).
+  - Locale `tr` ve saat dilimi testte sabitlenir: `scripts/check.conf` test adımı `TZ=Europe/Istanbul` ile
+    koşar — UTC olmayan bir dilim, ki UTC'deki CI'da da "yerel gün ≠ UTC günü" hataları yakalansın
+    (spec 0014, V-1); rastgelelik kullanılmaz (gerekirse sabit seed).
   - Animasyonlar: test kökünde `MediaQuery(disableAnimations: true)` ve uygulamanın
     `AppConfig.reduceMotion` test anahtarı; `pumpAndSettle` yerine durum beklenir.
   - **Testlerde gerçek ağ yasaktır:** HTTP istemcisi her zaman enjekte edilir; testte `MockClient`.

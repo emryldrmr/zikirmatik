@@ -4,6 +4,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 import '../../features/counter/data/counter_table.dart';
 import '../../features/counter/data/dhikr_tables.dart';
 import '../../features/counter/data/tesbihat_table.dart';
+import '../../features/history/data/daily_counts_table.dart';
 import '../../features/settings/data/settings_table.dart';
 
 part 'app_database.g.dart';
@@ -11,7 +12,14 @@ part 'app_database.g.dart';
 /// The app's single on-device database. Lives in the composition root so that
 /// every feature's tables register here without features importing each other.
 @DriftDatabase(
-  tables: [Counters, Dhikrs, DhikrSelections, Settings, TesbihatProgress],
+  tables: [
+    Counters,
+    Dhikrs,
+    DhikrSelections,
+    Settings,
+    TesbihatProgress,
+    DailyCounts,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
@@ -21,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'zikirmatik'));
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -69,6 +77,11 @@ class AppDatabase extends _$AppDatabase {
         // (AC-1).
         await m.addColumn(settings, settings.largeCount);
         await m.addColumn(settings, settings.handLayout);
+      }
+      if (from < 9) {
+        // Spec 0014: daily counts. No row means 0 and there is no history
+        // before this version (Req. 7), so nothing is seeded.
+        await m.createTable(dailyCounts);
       }
     },
   );

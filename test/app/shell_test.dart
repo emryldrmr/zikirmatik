@@ -11,6 +11,7 @@ import '../support/test_app.dart';
 
 const _sections = [
   'Zikirlerim',
+  'Geçmiş',
   'Önerilen Zikirler',
   "Esmaü'l-Hüsna",
   "Kur'an + Meal",
@@ -25,7 +26,7 @@ Future<void> _openMenu(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('drawer lists five sections in order', (tester) async {
+  testWidgets('drawer lists six sections in order', (tester) async {
     await tester.pumpWidget(testApp(tester, repo: FakeCounterRepository()));
     await tester.pump();
     await _openMenu(tester);
@@ -49,12 +50,14 @@ void main() {
 
     // Spec 0004: Ayarlar is no longer "coming soon" (settings_test.dart, AC-1);
     // spec 0007: nor is Esmaü'l-Hüsna (esma_test.dart, AC-1); spec 0008: nor
-    // is Önerilen Zikirler (suggested_test.dart, AC-1).
+    // is Önerilen Zikirler (suggested_test.dart, AC-1); spec 0014: nor is
+    // Geçmiş (history_test.dart, AC-6).
     for (final section
         in _sections
             .skip(1)
             .where(
               (s) =>
+                  s != 'Geçmiş' &&
                   s != 'Ayarlar' &&
                   s != "Esmaü'l-Hüsna" &&
                   s != 'Önerilen Zikirler',

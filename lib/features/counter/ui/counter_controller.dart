@@ -52,12 +52,22 @@ class CounterController extends FamilyAsyncNotifier<CounterState, int> {
     final outcome = current.tap();
     state = AsyncData(outcome.state);
     final saved = _save(outcome.state);
+    ref.read(countLogProvider).counted(); // spec 0014, AC-1
     unawaited(vibrateAfterTap(ref, roundCompleted: outcome.roundCompleted));
     await saved;
   }
 
-  /// BR-5.
-  Future<void> undo() => _apply((s) => s.undo());
+  /// BR-5; an undo that took one back is reported (spec 0014, AC-2).
+  Future<void> undo() async {
+    final current = _current;
+    if (current == null) return;
+    final next = current.undo();
+    if (next == current) return;
+    state = AsyncData(next);
+    final saved = _save(next);
+    ref.read(countLogProvider).uncounted();
+    await saved;
+  }
 
   /// BR-7 (the confirmation of BR-6 is asked by the screen).
   Future<void> reset() => _apply((s) => s.reset());

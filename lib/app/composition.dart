@@ -8,6 +8,7 @@ import '../core/haptics.dart';
 import '../core/screen.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
+import '../features/history/history.dart';
 import '../features/settings/settings.dart';
 import '../features/suggested/suggested.dart';
 import 'database/app_database.dart';
@@ -22,6 +23,7 @@ List<Override> appOverrides(AppDatabase db) => [
   dhikrListRepositoryProvider.overrideWithValue(DriftDhikrListRepository(db)),
   tesbihatRepositoryProvider.overrideWithValue(DriftTesbihatRepository(db)),
   settingsRepositoryProvider.overrideWithValue(DriftSettingsRepository(db)),
+  historyRepositoryProvider.overrideWithValue(DriftHistoryRepository(db)),
   esmaRepositoryProvider.overrideWithValue(AssetEsmaRepository(rootBundle)),
   suggestedRepositoryProvider.overrideWithValue(
     AssetSuggestedRepository(rootBundle),
@@ -47,6 +49,10 @@ Future<String?> installedVersion() async {
 /// Connections between features that the features themselves may not make
 /// (docs/architecture.md, FD-2). The app and the tests use the same list.
 List<Override> featureWiring() => [
+  // Spec 0014, AC-1/AC-2: counting taps and undos go to the daily history.
+  countLogProvider.overrideWith(
+    (ref) => _HistoryCountLog(ref.watch(historyControllerProvider.notifier)),
+  ),
   // Spec 0004, AC-2: the round vibration follows the user's setting.
   vibrationEnabledProvider.overrideWith(
     (ref) =>
@@ -77,6 +83,19 @@ List<Override> featureWiring() => [
         AppSettings.defaults.handLayout,
   ),
 ];
+
+/// The counter's [CountLog] written to the daily history (spec 0014).
+final class _HistoryCountLog implements CountLog {
+  const _HistoryCountLog(this._history);
+
+  final HistoryController _history;
+
+  @override
+  void counted() => _history.counted();
+
+  @override
+  void uncounted() => _history.uncounted();
+}
 
 /// [ScreenAwake] through the app's own channel to `MainActivity`, which sets
 /// or clears the window's keep-screen-on flag (plan 0010, R1): needs no

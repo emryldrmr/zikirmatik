@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/app_version.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
+import '../features/history/history.dart';
 import '../features/settings/settings.dart';
 import '../features/suggested/suggested.dart';
 import '../l10n/app_localizations.dart';
@@ -130,6 +131,7 @@ class _ShellState extends State<Shell> {
       ),
       body: switch (_section) {
         AppSection.myDhikrs => const CounterScreen(),
+        AppSection.history => const HistoryScreen(), // spec 0014
         AppSection.settings => const SettingsScreen(),
         // Spec 0008, AC-6: "Say" opens Zikirlerim with the added dhikr.
         AppSection.suggested => SuggestedScreen(
