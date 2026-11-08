@@ -1611,6 +1611,215 @@ class TesbihatProgressCompanion extends UpdateCompanion<TesbihatProgressData> {
   }
 }
 
+class $DailyCountsTable extends DailyCounts
+    with TableInfo<$DailyCountsTable, DailyCount> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyCountsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    check: () => const CustomExpression<bool>('count >= 0'),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [day, count];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_counts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyCount> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {day};
+  @override
+  DailyCount map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyCount(
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+    );
+  }
+
+  @override
+  $DailyCountsTable createAlias(String alias) {
+    return $DailyCountsTable(attachedDatabase, alias);
+  }
+}
+
+class DailyCount extends DataClass implements Insertable<DailyCount> {
+  final String day;
+  final int count;
+  const DailyCount({required this.day, required this.count});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['day'] = Variable<String>(day);
+    map['count'] = Variable<int>(count);
+    return map;
+  }
+
+  DailyCountsCompanion toCompanion(bool nullToAbsent) {
+    return DailyCountsCompanion(day: Value(day), count: Value(count));
+  }
+
+  factory DailyCount.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyCount(
+      day: serializer.fromJson<String>(json['day']),
+      count: serializer.fromJson<int>(json['count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'day': serializer.toJson<String>(day),
+      'count': serializer.toJson<int>(count),
+    };
+  }
+
+  DailyCount copyWith({String? day, int? count}) =>
+      DailyCount(day: day ?? this.day, count: count ?? this.count);
+  DailyCount copyWithCompanion(DailyCountsCompanion data) {
+    return DailyCount(
+      day: data.day.present ? data.day.value : this.day,
+      count: data.count.present ? data.count.value : this.count,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyCount(')
+          ..write('day: $day, ')
+          ..write('count: $count')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(day, count);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyCount &&
+          other.day == this.day &&
+          other.count == this.count);
+}
+
+class DailyCountsCompanion extends UpdateCompanion<DailyCount> {
+  final Value<String> day;
+  final Value<int> count;
+  final Value<int> rowid;
+  const DailyCountsCompanion({
+    this.day = const Value.absent(),
+    this.count = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DailyCountsCompanion.insert({
+    required String day,
+    required int count,
+    this.rowid = const Value.absent(),
+  }) : day = Value(day),
+       count = Value(count);
+  static Insertable<DailyCount> custom({
+    Expression<String>? day,
+    Expression<int>? count,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (day != null) 'day': day,
+      if (count != null) 'count': count,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DailyCountsCompanion copyWith({
+    Value<String>? day,
+    Value<int>? count,
+    Value<int>? rowid,
+  }) {
+    return DailyCountsCompanion(
+      day: day ?? this.day,
+      count: count ?? this.count,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyCountsCompanion(')
+          ..write('day: $day, ')
+          ..write('count: $count, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1623,6 +1832,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TesbihatProgressTable tesbihatProgress = $TesbihatProgressTable(
     this,
   );
+  late final $DailyCountsTable dailyCounts = $DailyCountsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1633,6 +1843,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dhikrSelections,
     settings,
     tesbihatProgress,
+    dailyCounts,
   ];
 }
 
@@ -2531,6 +2742,145 @@ typedef $$TesbihatProgressTableProcessedTableManager =
       TesbihatProgressData,
       PrefetchHooks Function()
     >;
+typedef $$DailyCountsTableCreateCompanionBuilder =
+    DailyCountsCompanion Function({
+      required String day,
+      required int count,
+      Value<int> rowid,
+    });
+typedef $$DailyCountsTableUpdateCompanionBuilder =
+    DailyCountsCompanion Function({
+      Value<String> day,
+      Value<int> count,
+      Value<int> rowid,
+    });
+
+class $$DailyCountsTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyCountsTable> {
+  $$DailyCountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DailyCountsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyCountsTable> {
+  $$DailyCountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyCountsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyCountsTable> {
+  $$DailyCountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+}
+
+class $$DailyCountsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyCountsTable,
+          DailyCount,
+          $$DailyCountsTableFilterComposer,
+          $$DailyCountsTableOrderingComposer,
+          $$DailyCountsTableAnnotationComposer,
+          $$DailyCountsTableCreateCompanionBuilder,
+          $$DailyCountsTableUpdateCompanionBuilder,
+          (
+            DailyCount,
+            BaseReferences<_$AppDatabase, $DailyCountsTable, DailyCount>,
+          ),
+          DailyCount,
+          PrefetchHooks Function()
+        > {
+  $$DailyCountsTableTableManager(_$AppDatabase db, $DailyCountsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyCountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyCountsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyCountsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> day = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyCountsCompanion(day: day, count: count, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String day,
+                required int count,
+                Value<int> rowid = const Value.absent(),
+              }) => DailyCountsCompanion.insert(
+                day: day,
+                count: count,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyCountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyCountsTable,
+      DailyCount,
+      $$DailyCountsTableFilterComposer,
+      $$DailyCountsTableOrderingComposer,
+      $$DailyCountsTableAnnotationComposer,
+      $$DailyCountsTableCreateCompanionBuilder,
+      $$DailyCountsTableUpdateCompanionBuilder,
+      (
+        DailyCount,
+        BaseReferences<_$AppDatabase, $DailyCountsTable, DailyCount>,
+      ),
+      DailyCount,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2545,4 +2895,6 @@ class $AppDatabaseManager {
       $$SettingsTableTableManager(_db, _db.settings);
   $$TesbihatProgressTableTableManager get tesbihatProgress =>
       $$TesbihatProgressTableTableManager(_db, _db.tesbihatProgress);
+  $$DailyCountsTableTableManager get dailyCounts =>
+      $$DailyCountsTableTableManager(_db, _db.dailyCounts);
 }
