@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/haptics.dart';
 import '../../../core/result.dart';
+import '../../../core/storage_notice.dart';
 import '../domain/tesbihat.dart';
 import '../domain/tesbihat_repository.dart';
 import '../domain/tesbihat_state.dart';
@@ -43,7 +44,7 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
     final out = current.tap(namazSonrasiTesbihat);
     if (out.state == current) return;
     state = AsyncData(out.state);
-    final saved = _repo.save(out.state);
+    final saved = _save(out.state);
     ref.read(countLogProvider).counted(); // spec 0014, AC-1
     unawaited(vibrateAfterTap(ref, roundCompleted: out.vibrate));
     await saved;
@@ -56,7 +57,7 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
     final next = current.undo();
     if (next == current) return;
     state = AsyncData(next);
-    final saved = _repo.save(next);
+    final saved = _save(next);
     ref.read(countLogProvider).uncounted();
     await saved;
   }
@@ -66,15 +67,31 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
   Future<void> restart() => _apply((s) => s.restart());
 
   /// Shows the tesbihat (true) or the selected dhikr (false) on Zikirlerim.
-  Future<void> select(bool value) => _apply((s) => s.selecting(value));
+  /// A tesbihat that could not be read does not open; the user is told
+  /// (spec 0015, Req 6).
+  Future<void> select(bool value) async {
+    if (value && state is AsyncError) {
+      _notice(StorageNotice.tesbihatNotLoaded);
+      return;
+    }
+    await _apply((s) => s.selecting(value));
+  }
 
-  // Behaviour on a failed save is out of scope (specs 0001–0006, B-2).
   Future<void> _apply(TesbihatState Function(TesbihatState) rule) async {
     final current = _current;
     if (current == null) return;
     final next = rule(current);
     if (next == current) return;
     state = AsyncData(next);
-    await _repo.save(next);
+    await _save(next);
   }
+
+  // Spec 0015, Req 2: like a dhikr's save — a failed one keeps the screen and
+  // says it may be lost; issued synchronously, in tap order.
+  Future<void> _save(TesbihatState next) async {
+    if (await _repo.save(next) case Err()) _notice(StorageNotice.mayBeLost);
+  }
+
+  void _notice(StorageNotice notice) =>
+      ref.read(storageNoticeProvider.notifier).report(notice);
 }

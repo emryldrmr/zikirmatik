@@ -112,6 +112,9 @@ class FakeCounterRepository implements CounterRepository {
 
   final List<CounterState> saves = [];
 
+  /// When true, every save fails without changing [stored] (spec 0015).
+  bool failWrites = false;
+
   @override
   Future<Result<CounterState>> load() async {
     await holdLoad?.future;
@@ -123,6 +126,7 @@ class FakeCounterRepository implements CounterRepository {
 
   @override
   Future<Result<void>> save(CounterState state) async {
+    if (failWrites) return const Err(StorageFailure('disk full'));
     saves.add(state);
     stored = state;
     await holdSave?.future;
@@ -146,6 +150,9 @@ class FakeSettingsRepository implements SettingsRepository {
 
   final List<AppSettings> saves = [];
 
+  /// When true, every save fails without changing [stored] (spec 0015).
+  bool failWrites = false;
+
   @override
   Future<Result<AppSettings>> load() async {
     await holdLoad?.future;
@@ -157,6 +164,7 @@ class FakeSettingsRepository implements SettingsRepository {
 
   @override
   Future<Result<void>> save(AppSettings settings) async {
+    if (failWrites) return const Err(StorageFailure('disk full'));
     saves.add(settings);
     stored = settings;
     return const Ok(null);
@@ -164,20 +172,29 @@ class FakeSettingsRepository implements SettingsRepository {
 }
 
 /// In-memory [TesbihatRepository] (spec 0006); not started and not selected
-/// unless [stored] says otherwise. Survives a "restart" when the same instance
-/// is reused.
+/// unless [stored] says otherwise; its load can fail (spec 0015). Survives a
+/// "restart" when the same instance is reused.
 class FakeTesbihatRepository implements TesbihatRepository {
-  FakeTesbihatRepository({this.stored = TesbihatState.initial});
+  FakeTesbihatRepository({
+    this.stored = TesbihatState.initial,
+    this.failLoad = false,
+  });
 
   TesbihatState stored;
+  final bool failLoad;
 
   final List<TesbihatState> saves = [];
 
+  /// When true, every save fails without changing [stored] (spec 0015).
+  bool failWrites = false;
+
   @override
-  Future<Result<TesbihatState>> load() async => Ok(stored);
+  Future<Result<TesbihatState>> load() async =>
+      failLoad ? const Err(StorageFailure('tesbihat unreadable')) : Ok(stored);
 
   @override
   Future<Result<void>> save(TesbihatState state) async {
+    if (failWrites) return const Err(StorageFailure('disk full'));
     saves.add(state);
     stored = state;
     return const Ok(null);
@@ -315,6 +332,24 @@ class FakeDhikrStore implements DhikrListRepository {
   int? selectedId;
   int _nextId = 1;
 
+  /// When true, list writes (add, rename, delete, select) fail without
+  /// changing the store (spec 0015). Read when a write starts, so a write
+  /// issued while it is true fails even if it is turned off before the write
+  /// is let through by [holdWrites].
+  bool failWrites = false;
+
+  /// When set, each list write stays in flight until it completes, so other
+  /// changes can happen in between (spec 0015, G2).
+  Completer<void>? holdWrites;
+
+  Future<Result<T>> _write<T>(T Function() apply) async {
+    final fail = failWrites;
+    final hold = holdWrites;
+    if (hold != null) await hold.future;
+    if (fail) return const Err(StorageFailure('disk full'));
+    return Ok(apply());
+  }
+
   CounterRepository counterFor(int id) =>
       counters[id] ?? (throw StateError('no counter for dhikr $id'));
 
@@ -331,33 +366,30 @@ class FakeDhikrStore implements DhikrListRepository {
     DhikrName name,
     Target? target, {
     bool select = true,
-  }) async {
+  }) => _write(() {
     final entry = DhikrEntry(_nextId++, name);
     entries.add(entry);
     counters[entry.id] = FakeCounterRepository(
       state: CounterState(count: DhikrCount.zero, target: target),
     );
     if (select) selectedId = entry.id;
-    return Ok(entry);
-  }
+    return entry;
+  });
 
   @override
-  Future<Result<void>> rename(int id, DhikrName name) async {
+  Future<Result<void>> rename(int id, DhikrName name) => _write(() {
     final i = entries.indexWhere((e) => e.id == id);
     entries[i] = DhikrEntry(id, name);
-    return const Ok(null);
-  }
+  });
 
   @override
-  Future<Result<void>> delete(int id) async {
+  Future<Result<void>> delete(int id) => _write(() {
     entries.removeWhere((e) => e.id == id);
     counters.remove(id);
-    return const Ok(null);
-  }
+  });
 
   @override
-  Future<Result<void>> select(int? id) async {
+  Future<Result<void>> select(int? id) => _write(() {
     selectedId = id;
-    return const Ok(null);
-  }
+  });
 }
