@@ -53,7 +53,8 @@ class EsmaScreen extends ConsumerWidget {
   }
 
   /// AC-4, AC-6: adds the name as an untargeted dhikr without selecting it.
-  /// The snackbar appears only when it was stored (write errors: B-2).
+  /// The snackbar appears only when it was stored; otherwise the list
+  /// controller says it was not saved (spec 0015, AC-7).
   Future<void> _add(BuildContext context, WidgetRef ref, AsmaName name) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
