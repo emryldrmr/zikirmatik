@@ -41,6 +41,13 @@
 - UI her `Failure` için `app_tr.arb`'deki Türkçe, anlaşılır bir mesaj gösterir. Ham API/SQL hatası,
   yığın izi ya da URL kullanıcıya asla gösterilmez.
 - Ağ yoksa: önbellekteki veri; o da yoksa "çevrimdışı" durumu ve "Tekrar dene" eylemi.
+- Kayıt (yazma) hatası asla sessiz kalmaz (spec 0015). **Sayma grubu** (sayaç, tesbihat, Ayarlar, günlük
+  sayım): ekran yeni değeri gösterir, sayma sürer, "kaybolabilir" mesajı; her kayıt tam durumu yazdığı için
+  sonraki başarılı kayıt açığı kapatır. **Liste grubu** (Zikirlerim: ekle, seç, yeniden adlandır, sil): yalnız
+  başarısız işlemin etkisi *o anki* listeye geri uygulanır (arada yapılanlar korunur), "Kaydedilemedi."
+  mesajı; ekle formu kaydı bekler, başarısızsa açık kalır. Mesaj yalnız
+  `storageNoticeProvider.notifier.report(...)` ile verilir; tek gösterim yeri `lib/app`'teki banner'dır —
+  ekranlar kendi SnackBar'ını açmaz.
 
 ## Data rules
 - Sayım, tur sayısı, toplam: `int`, asla negatif değil (`docs/domain.md` invariants).
