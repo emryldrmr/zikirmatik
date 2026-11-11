@@ -168,6 +168,36 @@ void main() {
     }
   });
 
+  testWidgets('does not cover the count button after a sheet closes under it', (
+    tester,
+  ) async {
+    // Review round 1, F-1: the message shows while the picker is open (no
+    // count button on the current route), then the picker closes and the
+    // button is back under it.
+    _screen(tester, scale: 2);
+    await tester.pumpWidget(
+      testApp(
+        tester,
+        store: _store(),
+        tesbihat: FakeTesbihatRepository()..failWrites = true,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dhikr-picker-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('tesbihat-row')));
+    await tester.pumpAndSettle();
+
+    expect(find.text(_mayBeLost), findsOneWidget);
+    final button = tester.getRect(_button);
+    final notice = tester.getRect(_notice);
+    expect(
+      button.overlaps(notice),
+      isFalse,
+      reason: 'button $button notice $notice',
+    );
+  });
+
   testWidgets('stays at the bottom in full screen with the largest text', (
     tester,
   ) async {

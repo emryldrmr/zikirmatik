@@ -39,14 +39,24 @@ class StorageNoticeBanner extends ConsumerWidget {
       StorageNotice.tesbihatNotLoaded => l10n.storageTesbihatNotLoaded,
     };
 
+    final areas = ref.watch(noticeKeepClearProvider);
+    final safe = MediaQuery.viewPaddingOf(context);
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+
     return IgnorePointer(
-      child: CustomSingleChildLayout(
-        delegate: _Placement(
-          // Where the count button was laid out in the last frame: its
-          // place on the screen now (layout may not read other subtrees).
-          keepClear: ref.watch(noticeKeepClearProvider).shown.toList(),
-          safe: MediaQuery.viewPaddingOf(context),
-          keyboard: MediaQuery.viewInsetsOf(context).bottom,
+      // Placed again when the count button comes or goes (a sheet over it
+      // closes; review round 1, F-1).
+      child: ListenableBuilder(
+        listenable: areas,
+        builder: (context, child) => CustomSingleChildLayout(
+          delegate: _Placement(
+            // Where the count button was laid out in the last frame: its
+            // place on the screen now (layout may not read other subtrees).
+            keepClear: areas.shown.toList(),
+            safe: safe,
+            keyboard: keyboard,
+          ),
+          child: child,
         ),
         child: Semantics(
           key: const Key('storage-notice'),
