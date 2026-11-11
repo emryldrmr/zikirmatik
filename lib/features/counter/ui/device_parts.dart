@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/display.dart';
 import '../../../core/hand_layout.dart';
+import '../../../core/notice_keep_clear.dart';
 
 // The hand-held counter's parts (spec 0002), shared by a dhikr's device and
 // the tesbihat's (spec 0006). Original drawing of a generic counter; no
@@ -111,15 +112,18 @@ class DeviceCountButton extends StatelessWidget {
       label: semanticsLabel,
       excludeSemantics: true,
       onTap: enabled ? onTap : null,
-      child: Material(
-        color: _buttonColor,
-        shape: const CircleBorder(),
-        elevation: 6,
-        child: InkWell(
-          key: const Key('counter-tap-area'),
-          customBorder: const CircleBorder(),
-          onTap: onTap,
-          child: const SizedBox.square(dimension: 140),
+      // Spec 0015 (plan A-1): a storage failure message never covers it.
+      child: NoticeKeepClear(
+        child: Material(
+          color: _buttonColor,
+          shape: const CircleBorder(),
+          elevation: 6,
+          child: InkWell(
+            key: const Key('counter-tap-area'),
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: const SizedBox.square(dimension: 140),
+          ),
         ),
       ),
     );

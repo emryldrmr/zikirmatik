@@ -675,6 +675,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{date}: {count} zikir'**
   String historyRowSemantics(String date, String count);
+
+  /// No description provided for @storageMayBeLost.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydedilemedi. Bu değişiklik uygulama kapanınca kaybolabilir.'**
+  String get storageMayBeLost;
+
+  /// No description provided for @storageNotSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydedilemedi.'**
+  String get storageNotSaved;
+
+  /// No description provided for @storageTesbihatNotLoaded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat yüklenemedi.'**
+  String get storageTesbihatNotLoaded;
 }
 
 class _AppLocalizationsDelegate

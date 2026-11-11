@@ -213,5 +213,8 @@
       "date": {"type": "String"},
       "count": {"type": "String"}
     }
-  }
+  },
+  "storageMayBeLost": "Kaydedilemedi. Bu değişiklik uygulama kapanınca kaybolabilir.",
+  "storageNotSaved": "Kaydedilemedi.",
+  "storageTesbihatNotLoaded": "Tesbihat yüklenemedi."
 }
