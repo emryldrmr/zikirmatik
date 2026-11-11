@@ -65,4 +65,42 @@ void main() {
     final list = DhikrList([a, _e(2, 'Zikir')]).added(_e(3, 'Zikir'));
     expect(list.entries.map((e) => e.id), [1, 2, 3]);
   });
+
+  // Spec 0015, AC-6: a delete that was not stored is put back.
+  group('restored', () {
+    test('goes back to its old place in the middle', () {
+      final list = DhikrList([
+        a,
+        c,
+      ], selectedId: 3).restored(b, 1, select: false);
+      expect(list.entries, [a, b, c]);
+      expect(list.selected, c);
+    });
+
+    test('goes to the end when the list is now shorter', () {
+      final list = DhikrList([a], selectedId: 1).restored(c, 2, select: false);
+      expect(list.entries, [a, c]);
+      expect(list.selected, a);
+    });
+
+    test('with select brings the selection back too', () {
+      final list = DhikrList([
+        b,
+        c,
+      ], selectedId: 2).restored(a, 0, select: true);
+      expect(list.entries, [a, b, c]);
+      expect(list.selected, a);
+    });
+
+    test('into an empty list selects it', () {
+      final list = DhikrList(const []).restored(a, 0, select: false);
+      expect(list.entries, [a]);
+      expect(list.selected, a);
+    });
+
+    test('a dhikr still in the list changes nothing', () {
+      final list = DhikrList([a, b], selectedId: 2);
+      expect(list.restored(a, 1, select: true), list);
+    });
+  });
 }
