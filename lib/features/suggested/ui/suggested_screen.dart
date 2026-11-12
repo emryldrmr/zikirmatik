@@ -50,8 +50,8 @@ class SuggestedScreen extends ConsumerWidget {
   }
 
   /// AC-4, AC-6: adds the dhikr with its table target (or none) without
-  /// selecting it. The snackbar appears only when it was stored (write
-  /// errors: B-2).
+  /// selecting it. The snackbar appears only when it was stored; otherwise
+  /// the list controller says it was not saved (spec 0015, AC-7).
   Future<void> _add(
     BuildContext context,
     WidgetRef ref,

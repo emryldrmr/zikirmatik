@@ -66,6 +66,19 @@ final class DhikrList {
       if (e.id != id) e,
   ], selectedId: selectedId == id ? null : selectedId);
 
+  /// Spec 0015, AC-6: puts back a dhikr whose delete was not stored, at its
+  /// old [index] (at the end when the list is now shorter); selects it when
+  /// [select]. A dhikr still in the list changes nothing.
+  DhikrList restored(DhikrEntry entry, int index, {required bool select}) {
+    if (entries.any((e) => e.id == entry.id)) return this;
+    final at = index.clamp(0, entries.length);
+    return DhikrList([
+      ...entries.take(at),
+      entry,
+      ...entries.skip(at),
+    ], selectedId: select ? entry.id : selectedId);
+  }
+
   /// AC-4: selects an existing dhikr; an unknown id changes nothing.
   DhikrList selecting(int id) => entries.any((e) => e.id == id)
       ? DhikrList(entries, selectedId: id)

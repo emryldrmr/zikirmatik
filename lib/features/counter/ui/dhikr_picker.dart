@@ -10,15 +10,18 @@ import 'tesbihat_controller.dart';
 
 /// Opens the add form and stores the new dhikr (AC-3, AC-7). True when a
 /// dhikr was added (it is then selected, also over the tesbihat: spec 0006,
-/// AC-9).
-Future<bool> addDhikr(BuildContext context, WidgetRef ref) async {
-  final created = await showAddDhikrForm(context);
-  if (created == null) return false;
-  final added = await ref
-      .read(dhikrListControllerProvider.notifier)
-      .add(created.name, created.target);
-  if (added) await ref.read(tesbihatControllerProvider.notifier).select(false);
-  return added;
+/// AC-9). When it is not stored the form stays open (spec 0015, Req 4).
+Future<bool> addDhikr(BuildContext context, WidgetRef ref) {
+  final dhikrs = ref.read(dhikrListControllerProvider.notifier);
+  final tesbihat = ref.read(tesbihatControllerProvider.notifier);
+  return showAddDhikrForm(
+    context,
+    onSubmit: (created) async {
+      final added = await dhikrs.add(created.name, created.target);
+      if (added) await tesbihat.select(false);
+      return added;
+    },
+  );
 }
 
 /// Opens the edit form; renames, or asks and deletes (AC-5, AC-6).
@@ -104,12 +107,16 @@ class _DhikrPickerSheet extends ConsumerWidget {
                 ),
                 title: Text(entry.name.value),
                 onTap: () async {
-                  await ref
+                  // A selection that is not stored is undone; the tesbihat
+                  // then stays too (spec 0015, plan R2).
+                  final stored = await ref
                       .read(dhikrListControllerProvider.notifier)
                       .select(entry.id);
-                  await ref
-                      .read(tesbihatControllerProvider.notifier)
-                      .select(false);
+                  if (stored) {
+                    await ref
+                        .read(tesbihatControllerProvider.notifier)
+                        .select(false);
+                  }
                   if (context.mounted) Navigator.of(context).pop();
                 },
                 trailing: IconButton(

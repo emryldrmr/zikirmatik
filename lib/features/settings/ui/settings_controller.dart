@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/hand_layout.dart';
 import '../../../core/result.dart';
+import '../../../core/storage_notice.dart';
 import '../domain/app_settings.dart';
 import '../domain/settings_repository.dart';
 
@@ -53,13 +54,15 @@ class SettingsController extends AsyncNotifier<AppSettings> {
   Future<void> setTheme(ThemeChoice theme) =>
       _update((s) => s.copyWith(theme: theme));
 
-  /// Applies at once, then stores. A failed write is not reported: write
-  /// failures are out of scope (spec 0004, G3; backlog B-2).
+  /// Applies at once, then stores. A failed write keeps the setting applied
+  /// and says it may be lost (spec 0015, Req 2).
   Future<void> _update(AppSettings Function(AppSettings) change) async {
     final current = state.valueOrNull;
     if (current == null) return;
     final next = change(current);
     state = AsyncData(next);
-    await ref.read(settingsRepositoryProvider).save(next);
+    if (await ref.read(settingsRepositoryProvider).save(next) case Err()) {
+      ref.read(storageNoticeProvider.notifier).report(StorageNotice.mayBeLost);
+    }
   }
 }

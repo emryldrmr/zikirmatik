@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/haptics.dart';
 import '../../../core/result.dart';
+import '../../../core/storage_notice.dart';
 import '../domain/counter_repository.dart';
 import '../domain/counter_state.dart';
 import '../domain/target.dart';
@@ -85,6 +86,12 @@ class CounterController extends FamilyAsyncNotifier<CounterState, int> {
     await _save(next);
   }
 
-  // Behaviour on a failed save is out of scope (specs 0001, 0002).
-  Future<void> _save(CounterState next) => _repo.save(next);
+  // Spec 0015, Req 2: a failed save keeps the screen and says it may be lost;
+  // the next good save stores the whole state again. Issued synchronously, so
+  // saves stay in tap order.
+  Future<void> _save(CounterState next) async {
+    if (await _repo.save(next) case Err()) {
+      ref.read(storageNoticeProvider.notifier).report(StorageNotice.mayBeLost);
+    }
+  }
 }

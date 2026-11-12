@@ -29,25 +29,35 @@ final class DeleteDhikr extends DhikrEdit {
   const DeleteDhikr();
 }
 
-/// "Yeni zikir": name (BR-1) and optional target (BR-2). Null on cancel.
-Future<NewDhikr?> showAddDhikrForm(BuildContext context) =>
-    showDialog<NewDhikr>(
+/// "Yeni zikir": name (BR-1) and optional target (BR-2). "Kaydet" hands the
+/// input to [onSubmit] and waits: true closes the form; false (not stored)
+/// keeps it open with the name and target as typed, so the user can try again
+/// (spec 0015, Req 4). True when a dhikr was added; false on cancel.
+Future<bool> showAddDhikrForm(
+  BuildContext context, {
+  required Future<bool> Function(NewDhikr) onSubmit,
+}) async =>
+    await showDialog<bool>(
       context: context,
-      builder: (_) => const _DhikrForm(entry: null),
-    );
+      builder: (_) => _DhikrForm(entry: null, onSubmit: onSubmit),
+    ) ??
+    false;
 
 /// "Zikri düzenle": name only (spec 0003, G4) and "Sil". Null on cancel.
 Future<DhikrEdit?> showEditDhikrForm(BuildContext context, DhikrEntry entry) =>
     showDialog<DhikrEdit>(
       context: context,
-      builder: (_) => _DhikrForm(entry: entry),
+      builder: (_) => _DhikrForm(entry: entry, onSubmit: null),
     );
 
 class _DhikrForm extends StatefulWidget {
-  const _DhikrForm({required this.entry});
+  const _DhikrForm({required this.entry, required this.onSubmit});
 
   /// Null: add form; otherwise the dhikr being edited.
   final DhikrEntry? entry;
+
+  /// The add form's store; null for the edit form.
+  final Future<bool> Function(NewDhikr)? onSubmit;
 
   @override
   State<_DhikrForm> createState() => _DhikrFormState();
@@ -57,6 +67,9 @@ class _DhikrFormState extends State<_DhikrForm> {
   late final _name = TextEditingController(text: widget.entry?.name.value);
   final _target = TextEditingController();
   bool _nameTouched = false;
+
+  /// While the add form's store runs, so "Kaydet" cannot store twice.
+  bool _saving = false;
 
   bool get _isAdd => widget.entry == null;
 
@@ -81,13 +94,20 @@ class _DhikrFormState extends State<_DhikrForm> {
     super.dispose();
   }
 
-  void _save() {
+  Future<void> _save() async {
     final name = _validName;
-    if (name == null) return;
+    if (name == null || _saving) return;
     if (_isAdd) {
       final target = _targetInput;
       if (!target.valid) return;
-      Navigator.of(context).pop(NewDhikr(name, target.target));
+      setState(() => _saving = true);
+      final added = await widget.onSubmit!(NewDhikr(name, target.target));
+      if (!mounted) return;
+      if (added) {
+        Navigator.of(context).pop(true);
+      } else {
+        setState(() => _saving = false);
+      }
     } else {
       Navigator.of(context).pop(RenameDhikr(name));
     }
@@ -98,7 +118,7 @@ class _DhikrFormState extends State<_DhikrForm> {
     final l10n = AppLocalizations.of(context);
     final name = _validName;
     final target = _targetInput;
-    final canSave = name != null && (!_isAdd || target.valid);
+    final canSave = name != null && (!_isAdd || target.valid) && !_saving;
 
     return AlertDialog(
       key: Key(_isAdd ? 'dhikr-add-form' : 'dhikr-edit-form'),

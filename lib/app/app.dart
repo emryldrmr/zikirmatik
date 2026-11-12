@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/settings/settings.dart';
 import '../l10n/app_localizations.dart';
 import 'shell.dart';
+import 'storage_notice_banner.dart';
 
 /// Root widget. Turkish only (docs/conventions.md, Language). Light and dark
 /// themes share the teal seed; the user's choice picks one (spec 0004, AC-3).
@@ -24,6 +25,11 @@ class ZikirmatikApp extends ConsumerWidget {
         brightness: Brightness.dark,
       ),
       themeMode: _mode(settings?.theme ?? ThemeChoice.system),
+      // Spec 0015: a storage failure's message shows over every route.
+      builder: (context, child) => Stack(
+        fit: StackFit.expand,
+        children: [?child, const StorageNoticeBanner()],
+      ),
       home: _Gate(ready: settings != null),
     );
   }

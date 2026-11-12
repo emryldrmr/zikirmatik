@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/clock.dart';
 import '../../../core/result.dart';
+import '../../../core/storage_notice.dart';
 import '../domain/daily_history.dart';
 import '../domain/history_repository.dart';
 import 'history_providers.dart';
@@ -66,12 +67,17 @@ class HistoryController extends AsyncNotifier<DailyHistory> {
     unawaited(_store(store));
   }
 
-  // G5: a failed write never stops counting; telling the user is B-2.
+  // G5: a failed write never stops counting; it says the change may be lost
+  // (spec 0015, Req 2).
   Future<void> _store(Future<Result<void>> Function() store) async {
+    bool failed;
     try {
-      await store();
+      failed = await store() is Err;
     } on Object catch (_) {
-      // Swallowed on purpose.
+      failed = true;
+    }
+    if (failed) {
+      ref.read(storageNoticeProvider.notifier).report(StorageNotice.mayBeLost);
     }
   }
 }

@@ -347,4 +347,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String historyRowSemantics(String date, String count) {
     return '$date: $count zikir';
   }
+
+  @override
+  String get storageMayBeLost =>
+      'Kaydedilemedi. Bu değişiklik uygulama kapanınca kaybolabilir.';
+
+  @override
+  String get storageNotSaved => 'Kaydedilemedi.';
+
+  @override
+  String get storageTesbihatNotLoaded => 'Tesbihat yüklenemedi.';
 }
