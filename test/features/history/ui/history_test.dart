@@ -46,7 +46,11 @@ Future<void> _scrollTo(WidgetTester tester, Finder f) =>
     tester.scrollUntilVisible(
       f,
       200,
-      scrollable: find.descendant(of: _list, matching: find.byType(Scrollable)),
+      // The list's own vertical Scrollable; the badge row (spec 0016) is a
+      // second, horizontal one inside it (plan 0016, A-1).
+      scrollable: find
+          .descendant(of: _list, matching: find.byType(Scrollable))
+          .first,
     );
 
 void main() {
@@ -230,6 +234,8 @@ void main() {
       matchesSemantics(label: 'Bugün: 3 zikir'),
     );
     final long = Day(2026, 9, 30);
+    // Below the badges (spec 0016) the row starts out of view (plan 0016, A-1).
+    await _scrollTo(tester, _day(long));
     expect(
       tester.getSemantics(_day(long)),
       matchesSemantics(label: '30 Eylül 2026, Çarşamba: 123.456 zikir'),

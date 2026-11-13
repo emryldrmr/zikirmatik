@@ -4,11 +4,13 @@ import 'package:intl/intl.dart';
 
 import '../../../core/clock.dart';
 import '../../../l10n/app_localizations.dart';
+import '../domain/badges.dart';
 import '../domain/daily_history.dart';
+import 'badge_row.dart';
 import 'history_controller.dart';
 
-/// "Geçmiş" body (spec 0014): the streak, the longest streak and the last 30
-/// days from today backwards.
+/// "Geçmiş" body (spec 0014): the streak, the longest streak, the badges
+/// (spec 0016) and the last 30 days from today backwards.
 ///
 /// "Today" is read from the clock on every build; the screen builds again
 /// when the app returns to the foreground, so a midnight passed in between
@@ -70,7 +72,7 @@ class _History extends StatelessWidget {
     final numbers = NumberFormat.decimalPattern('tr');
     final theme = Theme.of(context);
     // Each streak line is its own screen reader item (AC-10).
-    final streaks = [
+    final header = [
       Semantics(
         container: true,
         child: Text(
@@ -90,13 +92,22 @@ class _History extends StatelessWidget {
           style: theme.textTheme.titleMedium,
         ),
       ),
+      // Spec 0016: from the same history and "today" as the streak lines, so
+      // both change together (Req. 7).
+      const SizedBox(height: 16),
+      BadgeRow(
+        progress: BadgeProgress(
+          longest: history.longestStreak(today),
+          current: history.streak(today),
+        ),
+      ),
     ];
     if (history.isEmptyUpTo(today)) {
       return ListView(
         key: const Key('history-list'),
         padding: const EdgeInsets.all(16),
         children: [
-          ...streaks,
+          ...header,
           const SizedBox(height: 24),
           Text(
             l10n.historyEmpty,
@@ -115,7 +126,7 @@ class _History extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: streaks,
+                children: header,
               ),
             )
           : _DayRow(row: rows[i - 1], isToday: i == 1, numbers: numbers),
