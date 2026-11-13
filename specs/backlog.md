@@ -23,3 +23,6 @@ step 7). Nothing lands here without that decision; noise is rejected in the tria
 - **B-3** — Önerilen Zikirler'e salavat ve Hasbünallah eklenmesi: Diyanet/TDV'de okunuş + anlam (+ varsa sayı) birlikte veren kaynak bulunamadı — Source: spec 0008, self-critique G6 — Severity: Low
   — Recommendation: Diyanet/TDV kaynağı bulunursa spec 0008'in tablosuna ek olarak yeni spec (hassas alan)
   — Deferred by: emryldrmr, 2026-11-07, kaynaksız dini metin eklenmez (BR-12)
+
+- **B-4** — `badges_test.dart` `badge semantics in threshold order including off screen`: the edge-mark assert checks for an `ExcludeSemantics` widget type, not that the mark adds no node to the semantics tree (behavior holds today) — Source: spec 0016, VERIFY round 2 Q-2 (`test/features/history/ui/badges_test.dart`) — Severity: Info
+  — Recommendation: assert that the mark produces no separate semantics node — Deferred by: emryldrmr, 2026-11-14, behavior correct; test-quality improvement is separate work
