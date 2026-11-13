@@ -80,44 +80,57 @@ class _BadgeRowState extends State<BadgeRow> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Stack(
+        // The marks sit in gutters of their own beside the row, never over a
+        // badge: the latest earned stays readable at the left edge (Req. 5,
+        // VERIFY round 1 V-1, plan 0016 A-3). The gutters are always there,
+        // so the row does not shift when a mark comes or goes.
+        Row(
           children: [
-            NotificationListener<Notification>(
-              onNotification: (n) {
-                if (n is ScrollNotification || n is ScrollMetricsNotification) {
-                  _updateMarks();
-                }
-                return false;
-              },
-              // Not a lazy list: all five stay in the semantics tree, so a
-              // screen reader reaches the ones out of view (plan 0016 R3).
-              child: SingleChildScrollView(
-                key: const Key('badge-row'),
-                controller: _controller,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final b in StreakBadge.values)
-                      Padding(
-                        key: _keys[b],
-                        padding: EdgeInsets.only(
-                          right: b == StreakBadge.values.last ? 0 : 8,
+            _EdgeMark(
+              markKey: const Key('badge-mark-left'),
+              left: true,
+              shown: _hiddenBefore,
+            ),
+            Expanded(
+              child: NotificationListener<Notification>(
+                onNotification: (n) {
+                  if (n is ScrollNotification ||
+                      n is ScrollMetricsNotification) {
+                    _updateMarks();
+                  }
+                  return false;
+                },
+                // Not a lazy list: all five stay in the semantics tree, so a
+                // screen reader reaches the ones out of view (plan 0016 R3).
+                child: SingleChildScrollView(
+                  key: const Key('badge-row'),
+                  controller: _controller,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final b in StreakBadge.values)
+                        Padding(
+                          key: _keys[b],
+                          padding: EdgeInsets.only(
+                            right: b == StreakBadge.values.last ? 0 : 8,
+                          ),
+                          child: _BadgeTile(
+                            badge: b,
+                            earned: progress.isEarned(b),
+                            numbers: numbers,
+                          ),
                         ),
-                        child: _BadgeTile(
-                          badge: b,
-                          earned: progress.isEarned(b),
-                          numbers: numbers,
-                        ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            if (_hiddenBefore)
-              const _EdgeMark(key: Key('badge-mark-left'), left: true),
-            if (_hiddenAfter)
-              const _EdgeMark(key: Key('badge-mark-right'), left: false),
+            _EdgeMark(
+              markKey: const Key('badge-mark-right'),
+              left: false,
+              shown: _hiddenAfter,
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -215,40 +228,34 @@ class _BadgeTile extends StatelessWidget {
   }
 }
 
-/// "More badges this way": visual only, lets touches through (AC-10).
+/// "More badges this way": a gutter beside the row, the arrow only while
+/// that edge hides badges; visual only (AC-10).
 class _EdgeMark extends StatelessWidget {
-  const _EdgeMark({super.key, required this.left});
+  const _EdgeMark({
+    required this.markKey,
+    required this.left,
+    required this.shown,
+  });
 
+  final Key markKey;
   final bool left;
+  final bool shown;
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).colorScheme.surface;
-    return Positioned(
-      left: left ? 0 : null,
-      right: left ? null : 0,
-      top: 0,
-      bottom: 0,
-      child: IgnorePointer(
-        child: ExcludeSemantics(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: left ? Alignment.centerLeft : Alignment.centerRight,
-                end: left ? Alignment.centerRight : Alignment.centerLeft,
-                colors: [surface, surface.withValues(alpha: 0)],
+    return SizedBox(
+      width: 24,
+      child: shown
+          ? KeyedSubtree(
+              key: markKey,
+              child: ExcludeSemantics(
+                child: Icon(
+                  left ? Icons.chevron_left : Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            child: SizedBox(
-              width: 32,
-              child: Icon(
-                left ? Icons.chevron_left : Icons.chevron_right,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ),
-      ),
+            )
+          : null,
     );
   }
 }

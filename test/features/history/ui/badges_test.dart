@@ -450,6 +450,36 @@ void main() {
     expect(_markLeft, findsOneWidget);
   });
 
+  testWidgets('edge marks never cover a badge in view', (tester) async {
+    // VERIFY round 1, V-1: the latest earned badge stays readable (Req. 5).
+    _narrow(tester);
+    for (final scale in [1.0, 2.0]) {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      for (final longest in [40, 365]) {
+        await tester.pumpWidget(const SizedBox());
+        await _show(tester, _run(_today, longest));
+        expect(_markLeft, findsOneWidget, reason: '$longest at $scale');
+
+        final row = tester.getRect(_row);
+        for (final mark in [_markLeft, _markRight]) {
+          if (!tester.any(mark)) continue;
+          final m = tester.getRect(mark);
+          for (final id in _ids) {
+            final shown = tester.getRect(_badge(id)).intersect(row);
+            if (shown.width <= 0) continue; // out of view
+            final covered = shown.intersect(m);
+            expect(
+              covered.width <= 0 || covered.height <= 0,
+              isTrue,
+              reason: 'mark over $id ($longest at $scale)',
+            );
+          }
+        }
+      }
+    }
+  });
+
   testWidgets('edge marks follow hidden badges at 320 dp and wide', (
     tester,
   ) async {
