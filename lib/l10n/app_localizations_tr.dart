@@ -349,6 +349,44 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get badgeFirstDay => 'İlk gün';
+
+  @override
+  String get badgeWeek => 'Bir hafta';
+
+  @override
+  String get badgeMonth => 'Bir ay';
+
+  @override
+  String get badgeHundred => '100 gün';
+
+  @override
+  String get badgeYear => 'Bir yıl';
+
+  @override
+  String badgeCondition(String days) {
+    return '$days gün seri';
+  }
+
+  @override
+  String badgeNext(String days) {
+    return 'Sıradaki rozete $days gün';
+  }
+
+  @override
+  String get badgeAllEarned => 'Tüm rozetler kazanıldı.';
+
+  @override
+  String badgeEarnedSemantics(String name) {
+    return 'Rozet: $name, kazanıldı';
+  }
+
+  @override
+  String badgeLockedSemantics(String name, String days) {
+    return 'Rozet: $name, kazanılmadı, $days gün seri gerekir';
+  }
+
+  @override
   String get storageMayBeLost =>
       'Kaydedilemedi. Bu değişiklik uygulama kapanınca kaybolabilir.';
 

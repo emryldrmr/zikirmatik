@@ -214,6 +214,37 @@
       "count": {"type": "String"}
     }
   },
+  "badgeFirstDay": "İlk gün",
+  "badgeWeek": "Bir hafta",
+  "badgeMonth": "Bir ay",
+  "badgeHundred": "100 gün",
+  "badgeYear": "Bir yıl",
+  "badgeCondition": "{days} gün seri",
+  "@badgeCondition": {
+    "placeholders": {
+      "days": {"type": "String"}
+    }
+  },
+  "badgeNext": "Sıradaki rozete {days} gün",
+  "@badgeNext": {
+    "placeholders": {
+      "days": {"type": "String"}
+    }
+  },
+  "badgeAllEarned": "Tüm rozetler kazanıldı.",
+  "badgeEarnedSemantics": "Rozet: {name}, kazanıldı",
+  "@badgeEarnedSemantics": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "badgeLockedSemantics": "Rozet: {name}, kazanılmadı, {days} gün seri gerekir",
+  "@badgeLockedSemantics": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "days": {"type": "String"}
+    }
+  },
   "storageMayBeLost": "Kaydedilemedi. Bu değişiklik uygulama kapanınca kaybolabilir.",
   "storageNotSaved": "Kaydedilemedi.",
   "storageTesbihatNotLoaded": "Tesbihat yüklenemedi."

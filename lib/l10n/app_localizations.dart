@@ -676,6 +676,66 @@ abstract class AppLocalizations {
   /// **'{date}: {count} zikir'**
   String historyRowSemantics(String date, String count);
 
+  /// No description provided for @badgeFirstDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlk gün'**
+  String get badgeFirstDay;
+
+  /// No description provided for @badgeWeek.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir hafta'**
+  String get badgeWeek;
+
+  /// No description provided for @badgeMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir ay'**
+  String get badgeMonth;
+
+  /// No description provided for @badgeHundred.
+  ///
+  /// In tr, this message translates to:
+  /// **'100 gün'**
+  String get badgeHundred;
+
+  /// No description provided for @badgeYear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir yıl'**
+  String get badgeYear;
+
+  /// No description provided for @badgeCondition.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days} gün seri'**
+  String badgeCondition(String days);
+
+  /// No description provided for @badgeNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıradaki rozete {days} gün'**
+  String badgeNext(String days);
+
+  /// No description provided for @badgeAllEarned.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm rozetler kazanıldı.'**
+  String get badgeAllEarned;
+
+  /// No description provided for @badgeEarnedSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rozet: {name}, kazanıldı'**
+  String badgeEarnedSemantics(String name);
+
+  /// No description provided for @badgeLockedSemantics.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rozet: {name}, kazanılmadı, {days} gün seri gerekir'**
+  String badgeLockedSemantics(String name, String days);
+
   /// No description provided for @storageMayBeLost.
   ///
   /// In tr, this message translates to:
