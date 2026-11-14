@@ -11,6 +11,14 @@ export 'domain/dhikr_count.dart' show DhikrCount;
 export 'domain/dhikr_list.dart' show DhikrEntry, DhikrList;
 export 'domain/dhikr_list_repository.dart' show DhikrListRepository;
 export 'domain/dhikr_name.dart' show DhikrName;
+export 'domain/resume_point.dart'
+    show
+        CountedDhikr,
+        CountedItem,
+        CountedTesbihat,
+        DhikrResume,
+        ResumePoint,
+        TesbihatResume;
 export 'domain/target.dart' show Target;
 export 'domain/tesbihat_repository.dart' show TesbihatRepository;
 export 'domain/tesbihat_state.dart' show TesbihatState;
@@ -24,3 +32,5 @@ export 'ui/counter_providers.dart'
 export 'ui/counter_screen.dart' show CounterScreen;
 export 'ui/dhikr_list_controller.dart'
     show DhikrListController, dhikrListControllerProvider;
+export 'ui/last_counted.dart'
+    show lastCountedProvider, openCounted, resumePointProvider;

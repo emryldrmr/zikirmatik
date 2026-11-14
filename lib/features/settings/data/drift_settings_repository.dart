@@ -21,7 +21,8 @@ final class DriftSettingsRepository implements SettingsRepository {
       final row = await _db
           .customSelect(
             'SELECT vibration, theme, tap_vibration, keep_screen_on, '
-            'large_count, hand_layout FROM settings WHERE id = 1',
+            'large_count, hand_layout, continue_notification FROM settings '
+            'WHERE id = 1',
           )
           .getSingleOrNull();
       if (row == null) return const Ok(AppSettings.defaults);
@@ -47,6 +48,7 @@ final class DriftSettingsRepository implements SettingsRepository {
           keepScreenOn: row.read<bool>('keep_screen_on'),
           largeCount: row.read<bool>('large_count'),
           handLayout: hand,
+          continueNotification: row.read<bool>('continue_notification'),
         ),
       );
     } on Object catch (e) {
@@ -60,12 +62,13 @@ final class DriftSettingsRepository implements SettingsRepository {
       await _db.customStatement(
         'INSERT INTO settings '
         '(id, vibration, theme, tap_vibration, keep_screen_on, large_count, '
-        'hand_layout) VALUES (1, ?, ?, ?, ?, ?, ?) '
+        'hand_layout, continue_notification) VALUES (1, ?, ?, ?, ?, ?, ?, ?) '
         'ON CONFLICT(id) DO UPDATE SET vibration = excluded.vibration, '
         'theme = excluded.theme, tap_vibration = excluded.tap_vibration, '
         'keep_screen_on = excluded.keep_screen_on, '
         'large_count = excluded.large_count, '
-        'hand_layout = excluded.hand_layout',
+        'hand_layout = excluded.hand_layout, '
+        'continue_notification = excluded.continue_notification',
         [
           if (settings.vibration) 1 else 0,
           settings.theme.name,
@@ -73,6 +76,7 @@ final class DriftSettingsRepository implements SettingsRepository {
           if (settings.keepScreenOn) 1 else 0,
           if (settings.largeCount) 1 else 0,
           settings.handLayout.name,
+          if (settings.continueNotification) 1 else 0,
         ],
       );
       return const Ok(null);

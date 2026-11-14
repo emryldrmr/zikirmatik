@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/haptics.dart';
 import '../../../core/result.dart';
 import '../../../core/storage_notice.dart';
+import '../domain/resume_point.dart';
 import '../domain/tesbihat.dart';
 import '../domain/tesbihat_repository.dart';
 import '../domain/tesbihat_state.dart';
 import 'counter_providers.dart';
+import 'last_counted.dart';
 
 /// The tesbihat's progress and selection (spec 0006): loading, error, or the
 /// current [TesbihatState]. Kept alive for the app's lifetime.
@@ -46,6 +48,7 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
     state = AsyncData(out.state);
     final saved = _save(out.state);
     ref.read(countLogProvider).counted(); // spec 0014, AC-1
+    ref.read(lastCountedProvider.notifier).counted(const CountedTesbihat());
     unawaited(vibrateAfterTap(ref, roundCompleted: out.vibrate));
     await saved;
   }
@@ -63,8 +66,12 @@ class TesbihatController extends AsyncNotifier<TesbihatState> {
   }
 
   /// AC-4 "Baştan başla" and AC-6 "Sıfırla" (its confirmation is asked by the
-  /// screen).
-  Future<void> restart() => _apply((s) => s.restart());
+  /// screen). The tesbihat is no longer where the user left off until its
+  /// next tap (spec 0017, G1).
+  Future<void> restart() {
+    ref.read(lastCountedProvider.notifier).cleared(const CountedTesbihat());
+    return _apply((s) => s.restart());
+  }
 
   /// Shows the tesbihat (true) or the selected dhikr (false) on Zikirlerim.
   /// A tesbihat that could not be read does not open; the user is told

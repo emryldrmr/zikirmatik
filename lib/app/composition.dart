@@ -9,6 +9,7 @@ import '../core/screen.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
 import '../features/history/history.dart';
+import '../features/notifications/notifications.dart';
 import '../features/settings/settings.dart';
 import '../features/suggested/suggested.dart';
 import 'database/app_database.dart';
@@ -32,6 +33,10 @@ List<Override> appOverrides(AppDatabase db) => [
   screenAwakeProvider.overrideWithValue(const ChannelScreenAwake()),
   systemBarsProvider.overrideWithValue(const SystemChromeBars()),
   appVersionProvider.overrideWith((ref) => installedVersion()),
+  // Spec 0017: local notifications only; nothing leaves the phone.
+  continueNotifierProvider.overrideWithValue(
+    LocalContinueNotifier(channelName: continueChannelName()),
+  ),
   ...featureWiring(),
 ];
 
@@ -81,6 +86,15 @@ List<Override> featureWiring() => [
     (ref) =>
         ref.watch(settingsControllerProvider).valueOrNull?.handLayout ??
         AppSettings.defaults.handLayout,
+  ),
+  // Spec 0017, Req. 7: the continue notification follows the user's setting.
+  continueNotificationEnabledProvider.overrideWith(
+    (ref) =>
+        ref
+            .watch(settingsControllerProvider)
+            .valueOrNull
+            ?.continueNotification ??
+        AppSettings.defaults.continueNotification,
   ),
 ];
 

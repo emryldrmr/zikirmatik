@@ -29,6 +29,10 @@ class Settings extends Table {
         ),
       )();
 
+  /// Spec 0017, schema v10. Rows kept from v9 get the default: off (G3).
+  BoolColumn get continueNotification =>
+      boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }

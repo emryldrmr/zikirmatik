@@ -13,6 +13,7 @@ import '../features/suggested/suggested.dart';
 import '../l10n/app_localizations.dart';
 import 'app_section.dart';
 import 'coming_soon_screen.dart';
+import 'continue_notification_host.dart';
 
 /// App frame: title bar, side menu (Drawer) and the selected section's body.
 class Shell extends StatefulWidget {
@@ -71,6 +72,12 @@ class _ShellState extends State<Shell> {
       );
   }
 
+  /// Spec 0017, Req. 5: Zikirlerim in front, the menu closed.
+  void _openMyDhikrs() {
+    _scaffoldKey.currentState?.closeDrawer();
+    setState(() => _section = AppSection.myDhikrs);
+  }
+
   @override
   void dispose() {
     _exitArmed?.cancel();
@@ -80,10 +87,14 @@ class _ShellState extends State<Shell> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return PopScope<Object?>(
-      canPop: false,
-      onPopInvokedWithResult: _onBack,
-      child: _scaffold(context, l10n),
+    // Spec 0017: the continue notification opens Zikirlerim (Req. 5).
+    return ContinueNotificationHost(
+      onOpenMyDhikrs: _openMyDhikrs,
+      child: PopScope<Object?>(
+        canPop: false,
+        onPopInvokedWithResult: _onBack,
+        child: _scaffold(context, l10n),
+      ),
     );
   }
 

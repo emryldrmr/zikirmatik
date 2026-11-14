@@ -395,4 +395,39 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get storageTesbihatNotLoaded => 'Tesbihat yüklenemedi.';
+
+  @override
+  String get settingsNotifications => 'Bildirimler';
+
+  @override
+  String get settingsContinueNotification => 'Yarım kalan zikir bildirimi';
+
+  @override
+  String get settingsContinueNotificationSubtitle =>
+      'Saymaya başlayıp uygulamadan çıkınca kaldığınız yeri gösterir';
+
+  @override
+  String get notificationPermissionDenied =>
+      'Bildirim izni verilmedi. Telefonun ayarlarından açabilirsiniz.';
+
+  @override
+  String continueTitleTarget(String name, String count, String target) {
+    return '$name: $count / $target';
+  }
+
+  @override
+  String continueTitleNoTarget(String name, String count) {
+    return '$name: $count';
+  }
+
+  @override
+  String continueTitleTesbihat(String step, String count, String target) {
+    return 'Tesbihat · $step. adım: $count / $target';
+  }
+
+  @override
+  String get continueBody => 'Devam etmek için dokunun';
+
+  @override
+  String get continueChannelName => 'Yarım kalan zikir';
 }

@@ -14,6 +14,7 @@ import 'package:zikirmatik/core/screen.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/esma/esma.dart';
 import 'package:zikirmatik/features/history/history.dart';
+import 'package:zikirmatik/features/notifications/notifications.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
 import 'package:zikirmatik/features/suggested/suggested.dart';
 
@@ -29,8 +30,9 @@ import 'package:zikirmatik/features/suggested/suggested.dart';
 /// Screen and system bars: [screenAwake] and [systemBars] record what the app
 /// asks of the phone (spec 0010). History: [history] when given (spec 0014);
 /// otherwise empty. Time: [clock] when given; otherwise fixed at noon on
-/// 8 November 2026. The cross-feature wiring is the app's own
-/// (`featureWiring`).
+/// 8 November 2026. Notifications: [notifier] when given (spec 0017);
+/// otherwise one with no permission. The cross-feature wiring is the app's
+/// own (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
   CounterRepository? repo,
@@ -43,6 +45,7 @@ Widget testApp(
   FakeSystemBars? systemBars,
   FakeHistoryRepository? history,
   FakeClock? clock,
+  FakeContinueNotifier? notifier,
 }) {
   final time = clock ?? FakeClock();
   final dhikrs =
@@ -74,6 +77,10 @@ Widget testApp(
         history ?? FakeHistoryRepository(),
       ),
       clockProvider.overrideWithValue(() => time.now),
+      // Spec 0017.
+      continueNotifierProvider.overrideWithValue(
+        notifier ?? FakeContinueNotifier(),
+      ),
       ...featureWiring(),
     ],
     // Live view metrics (spec 0004: the phone's light/dark setting can change
@@ -392,4 +399,70 @@ class FakeDhikrStore implements DhikrListRepository {
   Future<Result<void>> select(int? id) => _write(() {
     selectedId = id;
   });
+}
+
+/// Records what the app asks of the phone's notifications instead of calling
+/// the platform (spec 0017). No permission unless [granted]; [grantOnRequest]
+/// is what the permission dialog answers.
+class FakeContinueNotifier implements ContinueNotifier {
+  FakeContinueNotifier({
+    this.granted = false,
+    this.grantOnRequest = false,
+    this.launch,
+  });
+
+  bool granted;
+  bool grantOnRequest;
+
+  /// The payload of the notification that started the app, if any.
+  String? launch;
+
+  /// How many times the permission was asked for.
+  int requests = 0;
+
+  /// The notification shown now, if any (a new one replaces it, Req. 4).
+  ({String title, String body, String payload})? shown;
+
+  /// Every notification shown, in order.
+  final List<({String title, String body, String payload})> shows = [];
+
+  int cancels = 0;
+
+  final StreamController<String> _taps = StreamController.broadcast();
+
+  /// The user taps the notification while the app runs.
+  void tap(String payload) => _taps.add(payload);
+
+  @override
+  Future<void> show({
+    required String title,
+    required String body,
+    required String payload,
+  }) async {
+    final n = (title: title, body: body, payload: payload);
+    shows.add(n);
+    shown = n;
+  }
+
+  @override
+  Future<void> cancel() async {
+    cancels++;
+    shown = null;
+  }
+
+  @override
+  Future<bool> permitted() async => granted;
+
+  @override
+  Future<bool> requestPermission() async {
+    requests++;
+    granted = grantOnRequest;
+    return granted;
+  }
+
+  @override
+  Future<String?> launchPayload() async => launch;
+
+  @override
+  Stream<String> get taps => _taps.stream;
 }

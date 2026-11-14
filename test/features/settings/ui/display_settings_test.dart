@@ -31,10 +31,10 @@ Future<void> _goTo(WidgetTester tester, String section) async {
   await tester.pumpAndSettle();
 }
 
-Future<void> _show(WidgetTester tester, Finder f) async {
+Future<void> _show(WidgetTester tester, Finder f, {double delta = 100}) async {
   await tester.scrollUntilVisible(
     f,
-    100,
+    delta,
     scrollable: find.descendant(
       of: find.byKey(const Key('settings-screen')),
       matching: find.byType(Scrollable),
@@ -110,7 +110,8 @@ void main() {
 
     // Choosing stores at once, the other settings unchanged; a "restart"
     // with the same store keeps them.
-    await _show(tester, _largeCount);
+    // Above the hand layout now that the list is longer (plan 0017, A-2).
+    await _show(tester, _largeCount, delta: -100);
     await tester.tap(_largeCount);
     await tester.pumpAndSettle();
     await _show(tester, _hand(HandLayout.right));

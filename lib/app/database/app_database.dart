@@ -29,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'zikirmatik'));
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -82,6 +82,10 @@ class AppDatabase extends _$AppDatabase {
         // Spec 0014: daily counts. No row means 0 and there is no history
         // before this version (Req. 7), so nothing is seeded.
         await m.createTable(dailyCounts);
+      }
+      if (from >= 4 && from < 10) {
+        // Spec 0017: the continue notification, off for kept settings (G3).
+        await m.addColumn(settings, settings.continueNotification);
       }
     },
   );
