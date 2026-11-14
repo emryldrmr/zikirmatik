@@ -97,7 +97,8 @@ void main() {
   });
 
   test('migrates a v8 database and keeps the rest', () async {
-    // A database as spec 0013 left it: v9 without daily_counts is v8.
+    // A database as spec 0013 left it: v10 without daily_counts and without
+    // the continue notification column (spec 0017) is v8.
     final file = tempDb();
     final v8 = AppDatabase(NativeDatabase(file));
     final counter = DriftCounterRepository(v8, dhikrId: 1);
@@ -108,6 +109,9 @@ void main() {
     const changed = AppSettings(vibration: false, theme: ThemeChoice.dark);
     await DriftSettingsRepository(v8).save(changed);
     await v8.customStatement('DROP TABLE daily_counts');
+    await v8.customStatement(
+      'ALTER TABLE settings DROP COLUMN continue_notification',
+    );
     await v8.customStatement('PRAGMA user_version = 8');
     await v8.close();
 

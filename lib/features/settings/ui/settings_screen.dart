@@ -7,12 +7,56 @@ import '../domain/app_settings.dart';
 import 'settings_controller.dart';
 
 /// Ayarlar (spec 0004): vibration, keep screen on, display options (spec
-/// 0011) and theme.
-class SettingsScreen extends ConsumerWidget {
+/// 0011), theme and notifications (spec 0017).
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    // Spec 0017, Req. 8 (plan R4): a permission taken back while away shows
+    // as off when the screen opens and when the app comes back to it.
+    _checkPermission();
+    _lifecycle = AppLifecycleListener(onShow: _checkPermission);
+  }
+
+  void _checkPermission() => ref
+      .read(settingsControllerProvider.notifier)
+      .checkNotificationPermission();
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  /// Spec 0017, Req. 8: a refused permission keeps it off and says why.
+  Future<void> _setContinueNotification(bool on) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final denied = AppLocalizations.of(context).notificationPermissionDenied;
+    final ok = await ref
+        .read(settingsControllerProvider.notifier)
+        .setContinueNotification(on);
+    if (ok || !mounted) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          key: const Key('notification-permission-denied'),
+          content: Text(denied),
+        ),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     // The app shows its content only once the settings are loaded (app.dart),
     // so a value is always there; the defaults are a safe fallback.
@@ -89,6 +133,16 @@ class SettingsScreen extends ConsumerWidget {
                 ),
             ],
           ),
+        ),
+        // Spec 0017, Req. 7: after the theme, so the order above stays.
+        const Divider(),
+        _Header(l10n.settingsNotifications),
+        SwitchListTile(
+          key: const Key('settings-continue-notification'),
+          title: Text(l10n.settingsContinueNotification),
+          subtitle: Text(l10n.settingsContinueNotificationSubtitle),
+          value: settings.continueNotification,
+          onChanged: _setContinueNotification,
         ),
       ],
     );

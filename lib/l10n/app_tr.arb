@@ -247,5 +247,34 @@
   },
   "storageMayBeLost": "Kaydedilemedi. Bu değişiklik uygulama kapanınca kaybolabilir.",
   "storageNotSaved": "Kaydedilemedi.",
-  "storageTesbihatNotLoaded": "Tesbihat yüklenemedi."
+  "storageTesbihatNotLoaded": "Tesbihat yüklenemedi.",
+  "settingsNotifications": "Bildirimler",
+  "settingsContinueNotification": "Yarım kalan zikir bildirimi",
+  "settingsContinueNotificationSubtitle": "Saymaya başlayıp uygulamadan çıkınca kaldığınız yeri gösterir",
+  "notificationPermissionDenied": "Bildirim izni verilmedi. Telefonun ayarlarından açabilirsiniz.",
+  "continueTitleTarget": "{name}: {count} / {target}",
+  "@continueTitleTarget": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "count": {"type": "String"},
+      "target": {"type": "String"}
+    }
+  },
+  "continueTitleNoTarget": "{name}: {count}",
+  "@continueTitleNoTarget": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "count": {"type": "String"}
+    }
+  },
+  "continueTitleTesbihat": "Tesbihat · {step}. adım: {count} / {target}",
+  "@continueTitleTesbihat": {
+    "placeholders": {
+      "step": {"type": "String"},
+      "count": {"type": "String"},
+      "target": {"type": "String"}
+    }
+  },
+  "continueBody": "Devam etmek için dokunun",
+  "continueChannelName": "Yarım kalan zikir"
 }

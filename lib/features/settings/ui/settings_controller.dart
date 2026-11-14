@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/hand_layout.dart';
 import '../../../core/result.dart';
 import '../../../core/storage_notice.dart';
+import '../../notifications/notifications.dart';
 import '../domain/app_settings.dart';
 import '../domain/settings_repository.dart';
 
@@ -49,6 +50,25 @@ class SettingsController extends AsyncNotifier<AppSettings> {
   /// Spec 0011, AC-1/AC-9.
   Future<void> setHandLayout(HandLayout hand) =>
       _update((s) => s.copyWith(handLayout: hand));
+
+  /// Spec 0017, Req. 7–8: turning it on asks for the phone's permission
+  /// first and stays off until it is given; false when it was refused (the
+  /// screen then says so). Turning it off needs nothing.
+  Future<bool> setContinueNotification(bool on) async {
+    if (on && !await ref.read(continueNotifierProvider).requestPermission()) {
+      return false;
+    }
+    await _update((s) => s.copyWith(continueNotification: on));
+    return true;
+  }
+
+  /// Spec 0017, Req. 8 (plan R4): a permission taken back in the phone's
+  /// settings turns the setting off, so what is shown is what is stored.
+  Future<void> checkNotificationPermission() async {
+    if (state.valueOrNull?.continueNotification != true) return;
+    if (await ref.read(continueNotifierProvider).permitted()) return;
+    await _update((s) => s.copyWith(continueNotification: false));
+  }
 
   /// AC-3.
   Future<void> setTheme(ThemeChoice theme) =>

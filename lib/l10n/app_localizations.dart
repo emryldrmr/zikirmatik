@@ -753,6 +753,60 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Tesbihat yüklenemedi.'**
   String get storageTesbihatNotLoaded;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsContinueNotification.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yarım kalan zikir bildirimi'**
+  String get settingsContinueNotification;
+
+  /// No description provided for @settingsContinueNotificationSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saymaya başlayıp uygulamadan çıkınca kaldığınız yeri gösterir'**
+  String get settingsContinueNotificationSubtitle;
+
+  /// No description provided for @notificationPermissionDenied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim izni verilmedi. Telefonun ayarlarından açabilirsiniz.'**
+  String get notificationPermissionDenied;
+
+  /// No description provided for @continueTitleTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'{name}: {count} / {target}'**
+  String continueTitleTarget(String name, String count, String target);
+
+  /// No description provided for @continueTitleNoTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'{name}: {count}'**
+  String continueTitleNoTarget(String name, String count);
+
+  /// No description provided for @continueTitleTesbihat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat · {step}. adım: {count} / {target}'**
+  String continueTitleTesbihat(String step, String count, String target);
+
+  /// No description provided for @continueBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam etmek için dokunun'**
+  String get continueBody;
+
+  /// No description provided for @continueChannelName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yarım kalan zikir'**
+  String get continueChannelName;
 }
 
 class _AppLocalizationsDelegate

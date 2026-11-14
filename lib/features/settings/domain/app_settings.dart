@@ -26,6 +26,7 @@ final class AppSettings {
     this.keepScreenOn = false,
     this.largeCount = false,
     this.handLayout = HandLayout.center,
+    this.continueNotification = false,
   });
 
   /// A new install, and the fallback when settings cannot be read (AC-1, AC-6):
@@ -56,6 +57,10 @@ final class AppSettings {
   /// when settings cannot be read (AC-1).
   final HandLayout handLayout;
 
+  /// Spec 0017: whether leaving the app after counting shows where the user
+  /// left off. Off by default and when settings cannot be read (G3).
+  final bool continueNotification;
+
   AppSettings copyWith({
     bool? vibration,
     ThemeChoice? theme,
@@ -63,6 +68,7 @@ final class AppSettings {
     bool? keepScreenOn,
     bool? largeCount,
     HandLayout? handLayout,
+    bool? continueNotification,
   }) => AppSettings(
     vibration: vibration ?? this.vibration,
     theme: theme ?? this.theme,
@@ -70,6 +76,7 @@ final class AppSettings {
     keepScreenOn: keepScreenOn ?? this.keepScreenOn,
     largeCount: largeCount ?? this.largeCount,
     handLayout: handLayout ?? this.handLayout,
+    continueNotification: continueNotification ?? this.continueNotification,
   );
 
   @override
@@ -80,7 +87,8 @@ final class AppSettings {
       other.tapVibration == tapVibration &&
       other.keepScreenOn == keepScreenOn &&
       other.largeCount == largeCount &&
-      other.handLayout == handLayout;
+      other.handLayout == handLayout &&
+      other.continueNotification == continueNotification;
 
   @override
   int get hashCode => Object.hash(
@@ -90,11 +98,13 @@ final class AppSettings {
     keepScreenOn,
     largeCount,
     handLayout,
+    continueNotification,
   );
 
   @override
   String toString() =>
       'AppSettings(vibration: $vibration, theme: $theme, '
       'tapVibration: $tapVibration, keepScreenOn: $keepScreenOn, '
-      'largeCount: $largeCount, handLayout: $handLayout)';
+      'largeCount: $largeCount, handLayout: $handLayout, '
+      'continueNotification: $continueNotification)';
 }
