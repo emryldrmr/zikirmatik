@@ -193,6 +193,18 @@ void main() {
     expect(notifier.shown, isNull);
   });
 
+  testWidgets('cold start cancels', (tester) async {
+    // Left after counting, the process died; started again by the icon.
+    final notifier = FakeContinueNotifier(granted: true)
+      ..shown = (
+        title: 'Sübhanallah: 5 / 33',
+        body: 'Devam etmek için dokunun',
+        payload: 'dhikr:1',
+      );
+    await _start(tester, notifier: notifier);
+    expect(notifier.shown, isNull);
+  });
+
   testWidgets('turning off cancels', (tester) async {
     final notifier = FakeContinueNotifier(granted: true);
     await _start(tester, notifier: notifier);

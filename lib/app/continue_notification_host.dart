@@ -45,6 +45,10 @@ class _ContinueNotificationHostState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _taps = _notifier.taps.listen(_open);
+    // Req. 6, cold start by the icon or the recent apps: starting is coming
+    // to the front, but the first resumed is handled while the binding is
+    // set up, before this observer exists (review 0017 round 1, F-1).
+    _onShow();
     unawaited(_openLaunch());
   }
 
