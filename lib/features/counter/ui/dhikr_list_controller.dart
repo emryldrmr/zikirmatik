@@ -4,9 +4,11 @@ import '../../../core/result.dart';
 import '../../../core/storage_notice.dart';
 import '../domain/dhikr_list.dart';
 import '../domain/dhikr_name.dart';
+import '../domain/resume_point.dart';
 import '../domain/target.dart';
 import 'counter_controller.dart';
 import 'counter_providers.dart';
+import 'last_counted.dart';
 import 'tesbihat_controller.dart';
 
 /// The user's dhikrs and the selection (spec 0003): loading, error, or the
@@ -148,6 +150,8 @@ class DhikrListController extends AsyncNotifier<DhikrList> {
       state = AsyncData(latest.restored(entry, index, select: reselect));
       return;
     }
+    // Spec 0017, G1: a deleted dhikr is no longer where the user left off.
+    ref.read(lastCountedProvider.notifier).cleared(CountedDhikr(id));
     await repo.select(next.selectedId);
   }
 

@@ -7,8 +7,10 @@ import '../../../core/result.dart';
 import '../../../core/storage_notice.dart';
 import '../domain/counter_repository.dart';
 import '../domain/counter_state.dart';
+import '../domain/resume_point.dart';
 import '../domain/target.dart';
 import 'counter_providers.dart';
+import 'last_counted.dart';
 
 /// Holds one dhikr's counter state (by dhikr id): loading, error, or the
 /// current [CounterState].
@@ -54,6 +56,7 @@ class CounterController extends FamilyAsyncNotifier<CounterState, int> {
     state = AsyncData(outcome.state);
     final saved = _save(outcome.state);
     ref.read(countLogProvider).counted(); // spec 0014, AC-1
+    ref.read(lastCountedProvider.notifier).counted(CountedDhikr(arg)); // 0017
     unawaited(vibrateAfterTap(ref, roundCompleted: outcome.roundCompleted));
     await saved;
   }
@@ -70,8 +73,12 @@ class CounterController extends FamilyAsyncNotifier<CounterState, int> {
     await saved;
   }
 
-  /// BR-7 (the confirmation of BR-6 is asked by the screen).
-  Future<void> reset() => _apply((s) => s.reset());
+  /// BR-7 (the confirmation of BR-6 is asked by the screen). The dhikr is no
+  /// longer where the user left off until its next tap (spec 0017, G1).
+  Future<void> reset() {
+    ref.read(lastCountedProvider.notifier).cleared(CountedDhikr(arg));
+    return _apply((s) => s.reset());
+  }
 
   /// Spec 0002 G4 (the confirmation is asked by the screen).
   Future<void> changeTarget(Target? target) =>
