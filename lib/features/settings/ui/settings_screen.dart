@@ -15,16 +15,21 @@ class SettingsScreen extends ConsumerStatefulWidget {
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  late final AppLifecycleListener _lifecycle;
-
+class _SettingsScreenState extends ConsumerState<SettingsScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     // Spec 0017, Req. 8 (plan R4): a permission taken back while away shows
     // as off when the screen opens and when the app comes back to it.
     _checkPermission();
-    _lifecycle = AppLifecycleListener(onShow: _checkPermission);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // An observer, not an AppLifecycleListener: it takes any sequence of states.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _checkPermission();
   }
 
   void _checkPermission() => ref
@@ -33,7 +38,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   void dispose() {
-    _lifecycle.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
