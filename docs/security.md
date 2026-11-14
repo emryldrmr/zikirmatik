@@ -22,7 +22,10 @@
 
 ## AuthN / AuthZ
 - Hesap ve kimlik doğrulama yoktur; tüm veri tek kullanıcının cihazındadır.
-- **Varsayılan ret (izinler):** uygulama yalnızca `INTERNET` ve `VIBRATE` Android izinlerini ister.
+- **Varsayılan ret (izinler):** uygulama yalnızca `INTERNET`, `VIBRATE` ve `POST_NOTIFICATIONS` (spec 0017: yarım
+  kalan zikir bildirimi; Android 13+ kullanıcıya anahtar açılırken sorar) Android izinlerini ister. Bildirim
+  yereldir (`flutter_local_notifications`): sunucu, Firebase, ağ yok; veri cihazdan çıkmaz. Birleşik manifestteki
+  `<paket>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` AndroidX'in kendi imza düzeyi iznidir, kullanıcıya sorulmaz.
   Yeni bir izin eklemek spec'te gerekçelendirilir ve planda insan onayı gerektirir.
 - **Gizlilik:** analitik, telemetri, crash raporlama ve üçüncü taraf SDK yoktur; kullanıcı verisi
   (zikirler, sayımlar, ayarlar) cihazdan çıkmaz. Bu madde reklam eklenirse yeniden değerlendirilir
@@ -34,6 +37,8 @@
 - Kontrol: lisans MIT / BSD / Apache-2.0 / SIL OFL (diğerleri ADR ile); son 12 ayda bakım görmüş;
   pub.dev "verified publisher" tercih sebebi; bilinen güvenlik açığı yok.
 - Sürümler `pubspec.lock` ile sabitlenir ve commit edilir.
+- Dolaylı bağımlılık istisnası (plan 0017, A-3): `dbus` (MPL-2.0) `flutter_local_notifications`'ın yalnız Linux
+  eklentisinden gelir, Android APK'ya girmez; ADR'siz kabul edildi (emryldrmr, 2026-11-15).
 - **Dış API'ler:** yalnızca ücretsiz, anahtarsız/kayıtsız API'ler. İçerik kullanım koşulları
   (Tanzil: metin değiştirilmeden + atıf; mealler: ticari olmayan kullanım) uygulanır ve
   Ayarlar > Kaynaklar'da gösterilir (ADR 0002).
