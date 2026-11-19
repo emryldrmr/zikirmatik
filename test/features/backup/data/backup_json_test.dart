@@ -218,8 +218,14 @@ void main() {
     });
 
     test('larger than five megabytes', () {
-      final big = Uint8List(maxBackupBytes + 1);
-      _expectInvalid(big);
+      // A valid backup padded with whitespace: only its size rejects it.
+      final valid = encodeBackup(_snapshot());
+      final padded = Uint8List(maxBackupBytes + 1)
+        ..fillRange(0, maxBackupBytes + 1, 0x20)
+        ..setRange(0, valid.length, valid);
+      _expectInvalid(padded);
+      // The same file at exactly the limit is accepted.
+      _valid(Uint8List.sublistView(padded, 0, maxBackupBytes));
     });
 
     test('fifty one char name', () {
