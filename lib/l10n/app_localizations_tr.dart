@@ -430,4 +430,61 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get continueChannelName => 'Yarım kalan zikir';
+
+  @override
+  String get settingsBackup => 'Yedekleme';
+
+  @override
+  String get backupSave => 'Yedekle';
+
+  @override
+  String get backupSaveSubtitle => 'Tüm verilerinizi bir dosyaya kaydeder';
+
+  @override
+  String get backupRestore => 'Geri yükle';
+
+  @override
+  String get backupRestoreSubtitle =>
+      'Bir yedek dosyasından verilerinizi geri getirir';
+
+  @override
+  String get backupUnencryptedNote => 'Yedek dosyası şifresizdir.';
+
+  @override
+  String get backupSaved => 'Yedek kaydedildi';
+
+  @override
+  String get backupSaveFailed => 'Yedek kaydedilemedi.';
+
+  @override
+  String get backupInvalid => 'Bu dosya geçerli bir zikirmatik yedeği değil.';
+
+  @override
+  String get backupTooNew =>
+      'Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyin.';
+
+  @override
+  String get backupOpenFailed => 'Dosya açılamadı.';
+
+  @override
+  String get backupRestoreWarning =>
+      'Mevcut tüm verileriniz yedektekiyle değiştirilecek.';
+
+  @override
+  String backupRestoreSummary(String date, int count) {
+    return '$date · $count zikir';
+  }
+
+  @override
+  String get backupCancel => 'Vazgeç';
+
+  @override
+  String get backupRestoreConfirm => 'Geri yükle';
+
+  @override
+  String get backupRestored => 'Yedek geri yüklendi';
+
+  @override
+  String get backupRestoreFailed =>
+      'Yedek geri yüklenemedi. Verileriniz değişmedi.';
 }

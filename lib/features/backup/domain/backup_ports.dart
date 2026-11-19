@@ -16,6 +16,36 @@ abstract interface class BackupStore {
   Future<Result<void>> replaceAll(BackupData data);
 }
 
+/// The backup file's format (plan 0018, R5): writes a snapshot, and checks a
+/// file completely before anything is restored (Req. 5).
+abstract interface class BackupFormat {
+  Uint8List encode(BackupSnapshot snapshot);
+
+  DecodedBackup decode(Uint8List bytes);
+}
+
+/// What reading a backup file gave (spec 0018, Req. 5).
+sealed class DecodedBackup {
+  const DecodedBackup();
+}
+
+/// Every part checked; safe to restore.
+final class Valid extends DecodedBackup {
+  const Valid(this.snapshot);
+
+  final BackupSnapshot snapshot;
+}
+
+/// Not a zikirmatik backup, broken, incomplete, too large or breaking a rule.
+final class Invalid extends DecodedBackup {
+  const Invalid();
+}
+
+/// Taken with a newer backup format than this app reads.
+final class TooNew extends DecodedBackup {
+  const TooNew();
+}
+
 /// How the system save dialog ended (Req. 2, Req. 7).
 enum SaveOutcome { saved, cancelled, failed }
 

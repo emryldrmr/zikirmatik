@@ -807,6 +807,108 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Yarım kalan zikir'**
   String get continueChannelName;
+
+  /// No description provided for @settingsBackup.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedekleme'**
+  String get settingsBackup;
+
+  /// No description provided for @backupSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedekle'**
+  String get backupSave;
+
+  /// No description provided for @backupSaveSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm verilerinizi bir dosyaya kaydeder'**
+  String get backupSaveSubtitle;
+
+  /// No description provided for @backupRestore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri yükle'**
+  String get backupRestore;
+
+  /// No description provided for @backupRestoreSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir yedek dosyasından verilerinizi geri getirir'**
+  String get backupRestoreSubtitle;
+
+  /// No description provided for @backupUnencryptedNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek dosyası şifresizdir.'**
+  String get backupUnencryptedNote;
+
+  /// No description provided for @backupSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek kaydedildi'**
+  String get backupSaved;
+
+  /// No description provided for @backupSaveFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek kaydedilemedi.'**
+  String get backupSaveFailed;
+
+  /// No description provided for @backupInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu dosya geçerli bir zikirmatik yedeği değil.'**
+  String get backupInvalid;
+
+  /// No description provided for @backupTooNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyin.'**
+  String get backupTooNew;
+
+  /// No description provided for @backupOpenFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dosya açılamadı.'**
+  String get backupOpenFailed;
+
+  /// No description provided for @backupRestoreWarning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mevcut tüm verileriniz yedektekiyle değiştirilecek.'**
+  String get backupRestoreWarning;
+
+  /// No description provided for @backupRestoreSummary.
+  ///
+  /// In tr, this message translates to:
+  /// **'{date} · {count} zikir'**
+  String backupRestoreSummary(String date, int count);
+
+  /// No description provided for @backupCancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get backupCancel;
+
+  /// No description provided for @backupRestoreConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri yükle'**
+  String get backupRestoreConfirm;
+
+  /// No description provided for @backupRestored.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek geri yüklendi'**
+  String get backupRestored;
+
+  /// No description provided for @backupRestoreFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek geri yüklenemedi. Verileriniz değişmedi.'**
+  String get backupRestoreFailed;
 }
 
 class _AppLocalizationsDelegate

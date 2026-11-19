@@ -276,5 +276,28 @@
     }
   },
   "continueBody": "Devam etmek için dokunun",
-  "continueChannelName": "Yarım kalan zikir"
+  "continueChannelName": "Yarım kalan zikir",
+  "settingsBackup": "Yedekleme",
+  "backupSave": "Yedekle",
+  "backupSaveSubtitle": "Tüm verilerinizi bir dosyaya kaydeder",
+  "backupRestore": "Geri yükle",
+  "backupRestoreSubtitle": "Bir yedek dosyasından verilerinizi geri getirir",
+  "backupUnencryptedNote": "Yedek dosyası şifresizdir.",
+  "backupSaved": "Yedek kaydedildi",
+  "backupSaveFailed": "Yedek kaydedilemedi.",
+  "backupInvalid": "Bu dosya geçerli bir zikirmatik yedeği değil.",
+  "backupTooNew": "Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyin.",
+  "backupOpenFailed": "Dosya açılamadı.",
+  "backupRestoreWarning": "Mevcut tüm verileriniz yedektekiyle değiştirilecek.",
+  "backupRestoreSummary": "{date} · {count} zikir",
+  "@backupRestoreSummary": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "count": {"type": "int"}
+    }
+  },
+  "backupCancel": "Vazgeç",
+  "backupRestoreConfirm": "Geri yükle",
+  "backupRestored": "Yedek geri yüklendi",
+  "backupRestoreFailed": "Yedek geri yüklenemedi. Verileriniz değişmedi."
 }

@@ -70,26 +70,16 @@ String localIso(DateTime moment) {
       '${two(local.second)}$sign${two(minutes ~/ 60)}:${two(minutes % 60)}';
 }
 
-/// What reading a backup file gave (spec 0018, Req. 5).
-sealed class DecodedBackup {
-  const DecodedBackup();
-}
+/// The JSON [BackupFormat] (plan 0018, A-2): [encodeBackup] and
+/// [decodeBackup] behind the port, so the UI never imports this file (FD-4).
+final class JsonBackupFormat implements BackupFormat {
+  const JsonBackupFormat();
 
-/// Every part checked; safe to restore.
-final class Valid extends DecodedBackup {
-  const Valid(this.snapshot);
+  @override
+  Uint8List encode(BackupSnapshot snapshot) => encodeBackup(snapshot);
 
-  final BackupSnapshot snapshot;
-}
-
-/// Not a zikirmatik backup, broken, incomplete, too large or breaking a rule.
-final class Invalid extends DecodedBackup {
-  const Invalid();
-}
-
-/// Taken with a newer backup format than this app reads.
-final class TooNew extends DecodedBackup {
-  const TooNew();
+  @override
+  DecodedBackup decode(Uint8List bytes) => decodeBackup(bytes);
 }
 
 /// Checks the whole file before anything is written (Req. 5): the marker, the

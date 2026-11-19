@@ -42,6 +42,7 @@ List<Override> appOverrides(AppDatabase db) => [
   // dialogs touch only the file the user picks.
   backupStoreProvider.overrideWithValue(DriftBackupStore(db)),
   backupFilesProvider.overrideWithValue(const ChannelBackupFiles()),
+  backupFormatProvider.overrideWithValue(const JsonBackupFormat()),
   ...featureWiring(),
 ];
 

@@ -18,6 +18,14 @@ final backupFilesProvider = Provider<BackupFiles>(
   ),
 );
 
+/// The backup file's format (plan 0018, A-2). Overridden like
+/// [backupStoreProvider]; tests bind the real JSON one.
+final backupFormatProvider = Provider<BackupFormat>(
+  (ref) => throw UnimplementedError(
+    'backupFormatProvider must be overridden in the composition root.',
+  ),
+);
+
 /// Called after a restore was stored (plan 0018, R4), so every feature reads
 /// its data again without a restart. Does nothing by default; the composition
 /// root binds it, so this feature need not reach into the others (FD-2).
