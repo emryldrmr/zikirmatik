@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/core/hand_layout.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
-import 'package:zikirmatik/features/counter/domain/tesbihat.dart';
 import 'package:zikirmatik/features/settings/settings.dart';
 
 import '../support/test_app.dart';
