@@ -11,6 +11,7 @@ import 'package:zikirmatik/core/clock.dart';
 import 'package:zikirmatik/core/haptics.dart';
 import 'package:zikirmatik/core/result.dart';
 import 'package:zikirmatik/core/screen.dart';
+import 'package:zikirmatik/features/backup/backup.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
 import 'package:zikirmatik/features/esma/esma.dart';
 import 'package:zikirmatik/features/history/history.dart';
@@ -31,8 +32,10 @@ import 'package:zikirmatik/features/suggested/suggested.dart';
 /// asks of the phone (spec 0010). History: [history] when given (spec 0014);
 /// otherwise empty. Time: [clock] when given; otherwise fixed at noon on
 /// 8 November 2026. Notifications: [notifier] when given (spec 0017);
-/// otherwise one with no permission. The cross-feature wiring is the app's
-/// own (`featureWiring`).
+/// otherwise one with no permission. Backup: [backupStore] and [files] when
+/// given (spec 0018); otherwise an empty store and dialogs that are
+/// cancelled; the file format is the real JSON one. The cross-feature wiring
+/// is the app's own (`featureWiring`).
 Widget testApp(
   WidgetTester tester, {
   CounterRepository? repo,
@@ -46,6 +49,8 @@ Widget testApp(
   FakeHistoryRepository? history,
   FakeClock? clock,
   FakeContinueNotifier? notifier,
+  FakeBackupStore? backupStore,
+  FakeBackupFiles? files,
 }) {
   final time = clock ?? FakeClock();
   final dhikrs =
@@ -81,6 +86,10 @@ Widget testApp(
       continueNotifierProvider.overrideWithValue(
         notifier ?? FakeContinueNotifier(),
       ),
+      // Spec 0018.
+      backupStoreProvider.overrideWithValue(backupStore ?? FakeBackupStore()),
+      backupFilesProvider.overrideWithValue(files ?? FakeBackupFiles()),
+      backupFormatProvider.overrideWithValue(const JsonBackupFormat()),
       ...featureWiring(),
     ],
     // Live view metrics (spec 0004: the phone's light/dark setting can change
@@ -465,4 +474,84 @@ class FakeContinueNotifier implements ContinueNotifier {
 
   @override
   Stream<String> get taps => _taps.stream;
+}
+
+/// In-memory [BackupStore] (spec 0018): [stored] is what a backup reads;
+/// [onReplace] lets a test write a restore into the other fakes, as the
+/// real store writes every table. Empty unless given.
+class FakeBackupStore implements BackupStore {
+  FakeBackupStore({BackupData? stored, this.onReplace})
+    : stored = stored ?? empty;
+
+  static final BackupData empty = BackupData(
+    dhikrs: const [],
+    selectedDhikrId: null,
+    tesbihat: const BackupTesbihat(),
+    days: const [],
+    settings: const BackupSettings(
+      vibration: true,
+      theme: 'system',
+      tapVibration: false,
+      keepScreenOn: false,
+      largeCount: false,
+      handLayout: 'center',
+      continueNotification: false,
+    ),
+  );
+
+  BackupData stored;
+
+  /// Called with each stored restore.
+  void Function(BackupData data)? onReplace;
+
+  bool failRead = false;
+
+  /// When true, a restore fails and nothing changes (AC-7).
+  bool failReplace = false;
+
+  /// Every stored restore, in order.
+  final List<BackupData> replaced = [];
+
+  @override
+  Future<Result<BackupData>> read() async =>
+      failRead ? const Err(StorageFailure('disk on fire')) : Ok(stored);
+
+  @override
+  Future<Result<void>> replaceAll(BackupData data) async {
+    if (failReplace) return const Err(StorageFailure('disk full'));
+    replaced.add(data);
+    stored = data;
+    onReplace?.call(data);
+    return const Ok(null);
+  }
+}
+
+/// Records the system save and open dialogs instead of calling the platform
+/// (spec 0018): [saveOutcome] is how saving ends, [openOutcome] what opening
+/// gives. Both cancelled unless set.
+class FakeBackupFiles implements BackupFiles {
+  FakeBackupFiles({
+    this.saveOutcome = SaveOutcome.cancelled,
+    this.openOutcome = const OpenCancelled(),
+  });
+
+  SaveOutcome saveOutcome;
+  OpenOutcome openOutcome;
+
+  /// Every save asked for: the suggested name and the bytes.
+  final List<({String name, Uint8List bytes})> saves = [];
+
+  int opens = 0;
+
+  @override
+  Future<SaveOutcome> save(String name, Uint8List bytes) async {
+    saves.add((name: name, bytes: bytes));
+    return saveOutcome;
+  }
+
+  @override
+  Future<OpenOutcome> open() async {
+    opens++;
+    return openOutcome;
+  }
 }

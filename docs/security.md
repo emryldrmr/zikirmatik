@@ -18,6 +18,12 @@
 - **Dış veri güvenilmezdir:** API yanıtı ayrıştırılıp doğrulanmadan (BR-11: 114 sure, 6236 ayet,
   hiza) önbelleğe yazılmaz; doğrulama tek bir transaction içinde yapılır, hatada hiçbir kısım yazılmaz.
   Yanıt boyutu ve zaman aşımı sınırlıdır.
+- **Yedek dosyası dış girdidir (spec 0018):** geri yüklenecek dosya en çok 5 MB'tır — büyüğü okunmaz (önce
+  sistemin bildirdiği boyut, okurken de 5 MB + 1 bayt sınırı); içerik bütünüyle doğrulanır (biçim işareti ve
+  sürümü, zorunlu alanlar, BR-1/BR-2, negatif değer yok, hedefe eşit sayım yok, tekrar eden id/gün yok, var olan
+  zikre seçim, tesbihat adımına uyan ilerleme, geçerli takvim günü, tanınan ayar değeri) ve ancak sonra tek
+  transaction'da yazılır; hatada hiçbir kısım yazılmaz. Yedek dosyası **şifresizdir** ve insan okuyabilir;
+  Ayarlar'da bu not gösterilir.
 - Çıktı: ham hata, yığın izi, SQL ya da URL kullanıcıya gösterilmez (`docs/conventions.md` Error handling).
 
 ## AuthN / AuthZ
@@ -27,9 +33,14 @@
   yereldir (`flutter_local_notifications`): sunucu, Firebase, ağ yok; veri cihazdan çıkmaz. Birleşik manifestteki
   `<paket>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` AndroidX'in kendi imza düzeyi iznidir, kullanıcıya sorulmaz.
   Yeni bir izin eklemek spec'te gerekçelendirilir ve planda insan onayı gerektirir.
+- **Dosyalar (spec 0018):** yedekleme ve geri yükleme depolama izni istemez; Android'in sistem kaydetme/açma
+  penceresi (Storage Access Framework, `ACTION_CREATE_DOCUMENT` / `ACTION_OPEN_DOCUMENT`) yalnız kullanıcının
+  seçtiği tek URI'ye erişim verir. Uygulama başka dosya okumaz/yazmaz, paket eklenmez (`zikirmatik/backup`
+  kanalı, `MainActivity`).
 - **Gizlilik:** analitik, telemetri, crash raporlama ve üçüncü taraf SDK yoktur; kullanıcı verisi
-  (zikirler, sayımlar, ayarlar) cihazdan çıkmaz. Bu madde reklam eklenirse yeniden değerlendirilir
-  (`specs/backlog.md` B-1).
+  (zikirler, sayımlar, ayarlar) uygulama tarafından cihazdan çıkarılmaz: ağ yok. Yedek dosyasını
+  (spec 0018) yalnız kullanıcı, sistem penceresinde kendi seçtiği yere (telefon, Drive, …) koyar.
+  Bu madde reklam eklenirse yeniden değerlendirilir (`specs/backlog.md` B-1).
 
 ## Dependencies
 - Her yeni paket (dependency veya dev_dependency) planda gerekçesiyle listelenir ve **insan onayıyla**

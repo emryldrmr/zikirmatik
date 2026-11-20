@@ -9,7 +9,11 @@ import 'settings_controller.dart';
 /// Ayarlar (spec 0004): vibration, keep screen on, display options (spec
 /// 0011), theme and notifications (spec 0017).
 class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.footer});
+
+  /// Shown last, after the notifications, below a divider (spec 0018: the
+  /// backup section, given by the app shell so settings need not know it).
+  final Widget? footer;
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -149,6 +153,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           value: settings.continueNotification,
           onChanged: _setContinueNotification,
         ),
+        // Spec 0018, AC-1: after the notifications, so the order above stays.
+        if (widget.footer case final footer?) ...[const Divider(), footer],
       ],
     );
   }

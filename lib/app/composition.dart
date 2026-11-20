@@ -6,6 +6,7 @@ import '../core/app_version.dart';
 import '../core/display.dart';
 import '../core/haptics.dart';
 import '../core/screen.dart';
+import '../features/backup/backup.dart';
 import '../features/counter/counter.dart';
 import '../features/esma/esma.dart';
 import '../features/history/history.dart';
@@ -37,6 +38,11 @@ List<Override> appOverrides(AppDatabase db) => [
   continueNotifierProvider.overrideWithValue(
     LocalContinueNotifier(channelName: continueChannelName()),
   ),
+  // Spec 0018: one transaction over the user's data; the system save/open
+  // dialogs touch only the file the user picks.
+  backupStoreProvider.overrideWithValue(DriftBackupStore(db)),
+  backupFilesProvider.overrideWithValue(const ChannelBackupFiles()),
+  backupFormatProvider.overrideWithValue(const JsonBackupFormat()),
   ...featureWiring(),
 ];
 
@@ -95,6 +101,16 @@ List<Override> featureWiring() => [
             .valueOrNull
             ?.continueNotification ??
         AppSettings.defaults.continueNotification,
+  ),
+  // Spec 0018, Req. 4 (plan R4): after a restore every feature reads its data
+  // again, without a restart; the theme follows the reloaded settings.
+  backupRestoredProvider.overrideWith(
+    (ref) => () {
+      reloadCounter(ref);
+      ref
+        ..invalidate(historyControllerProvider)
+        ..invalidate(settingsControllerProvider);
+    },
   ),
 ];
 

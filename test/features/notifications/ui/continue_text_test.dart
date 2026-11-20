@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zikirmatik/features/counter/counter.dart';
-import 'package:zikirmatik/features/counter/domain/tesbihat.dart';
 import 'package:zikirmatik/features/notifications/notifications.dart';
 
 // Spec 0017 — the continue notification's text (Req. 3; AC-1, AC-2).

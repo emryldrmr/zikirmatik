@@ -27,6 +27,8 @@
 | Sıradaki rozet | Eşiği en küçük kazanılmamış rozet; ona kalan gün = eşik − mevcut seri, en az 1. | Hepsi kazanılmışsa yoktur (spec 0016). |
 | Devam noktası (`ResumePoint`) | Bu açılışta en son sayma dokunuşu yapılan zikir ya da tesbihat, çıkış anındaki değerleriyle (ad, sayım, hedef; tesbihatta adım no). Yalnız bellekte tutulur, saklanmaz. | Seçili zikir değildir: seçim değiştirmek, geri al ve gezinme onu değiştirmez; o öğe sıfırlanır, baştan başlatılır ya da silinirse yeni dokunuşa kadar yoktur; tamamlanan tesbihatta yoktur (spec 0017). |
 | Yarım kalan zikir bildirimi | Ayar açıkken uygulamadan çıkınca devam noktasını gösteren tek, sessiz yerel bildirim; dokununca o sayaç Zikirlerim'de açılır, uygulamaya dönünce kalkar. | Hatırlatma bildirimi (0018) değildir; dini metin göstermez (spec 0017). |
+| Yedek (`BackupSnapshot`) | Kullanıcının tüm verisinin tek dosyası: zikirler (ad, hedef, sayım, tur, toplam; Zikirlerim sırası), seçili zikir, tesbihat ilerlemesi, günlük sayımlar, ayarlar; alındığı an ve uygulama sürümüyle. Şifresiz, insan okuyabilir JSON (`zikirmatik-yedek-YYYY-AA-GG.json`). | Kur'an önbelleği ve devam noktası girmez; seri ve rozetler geçmişten yeniden hesaplanır. Geri yükleme birleştirmez, tümünü değiştirir (spec 0018). |
+| Biçim sürümü (`formatVersion`) | Yedek dosyasının yapı sürümü (şimdi 1). Daha yenisi reddedilir ("Uygulamayı güncelleyin"); daha eskisi kabul edilir, eksik ayar varsayılanını alır. | Uygulama sürümü (`appVersion`) değildir (spec 0018). |
 | Önbellek (`QuranCache`) | API'den indirilip doğrulanmış, cihazda saklanan Kur'an + meal verisi. | Doğrulanmamış veri önbellek sayılmaz (BR-11). |
 
 ## Business rules
