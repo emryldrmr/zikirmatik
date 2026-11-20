@@ -1,6 +1,6 @@
 # Spec 0018 — JSON yedekleme ve geri yükleme
 
-- Status: In progress
+- Status: Shipped
 - Mode: lite
 - Plan: `specs/plans/0018-plan.md`
 - Self-critique: done
@@ -95,29 +95,49 @@ birleştirerek geri yükleme. Kararlar D1–D7 (emryldrmr, 2026-11-19) buraya ka
   sistem yedeğine (Auto Backup) dahil olma; başka uygulamalardan içe aktarma; CSV/başka biçim.
 
 ## Acceptance criteria
-- [ ] AC-1 — Ayarlar'da mevcut başlıkların sonunda "Yedekleme" başlığı, "Yedekle" ve "Geri yükle" satırları alt yazılarıyla ve "Yedek dosyası şifresizdir." notu görünür; diğer ayarlar ve sıraları değişmez.
-- [ ] AC-2 — "Yedekle" sistem kaydetme penceresini `zikirmatik-yedek-<bugünün yerel tarihi YYYY-AA-GG>.json` önerisiyle açar; kaydedilince "Yedek kaydedildi" görünür; pencere iptal edilirse mesaj yok ve veri değişmez; yazma hatasında "Yedek kaydedilemedi." görünür.
-- [ ] AC-3 — Gidiş-dönüş: hedefli ve hedefsiz zikirler (sayım, tur, toplam, sıra), seçili zikir (ya da seçili tesbihat ve adım ilerlemesi), en az iki günlük geçmiş ve varsayılandan farklı tüm ayarlarla alınan yedek; veri değiştirildikten (zikir silme/ekleme, sayma, ayar değiştirme) sonra geri yüklenince hepsi yedekteki değerlere döner; seri, en uzun seri ve rozetler yedek anındakiyle aynıdır.
-- [ ] AC-4 — Geçerli dosya seçilince onay penceresi "Mevcut tüm verileriniz yedektekiyle değiştirilecek." uyarısını, yedeğin tarihini ve zikir sayısını gösterir; "Vazgeç" hiçbir şeyi değiştirmez; dosya seçme penceresi iptal edilirse mesaj yok.
-- [ ] AC-5 — Onaydan sonra yedekte olmayan mevcut zikirler ve günler kalmaz (birleştirme yok); "Yedek geri yüklendi" görünür; uygulama yeniden başlatmadan yeni verileri (Zikirlerim, Geçmiş, tema dahil ayarlar) gösterir; uygulama kapatılıp açılınca da aynı değerler görünür.
-- [ ] AC-6 — Reddedilen dosyalar (JSON olmayan, zikirmatik yedeği olmayan JSON, zorunlu alanı eksik, 5 MB'tan büyük, kural dışı değer: 51 karakterli ya da boş ad, hedef 0 ya da 100001, negatif sayım, hedefe eşit sayım, var olmayan zikre seçim, geçersiz gün, tanınmayan ayar değeri) "Bu dosya geçerli bir zikirmatik yedeği değil." gösterir; daha yeni biçim sürümlü dosya "Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyin." gösterir; hiçbirinde onay penceresi açılmaz ve veri değişmez.
-- [ ] AC-7 — Geri yükleme kaydedilirken depolama hatası olursa "Yedek geri yüklenemedi. Verileriniz değişmedi." görünür ve mevcut veri birebir korunur; okunamayan dosyada "Dosya açılamadı." görünür.
-- [ ] AC-8 — Sınırlar: hiç zikri olmayan veriyle alınan yedek geri yüklenince Zikirlerim boştur (onayda "0 zikir"); 50 karakterli ad, hedef 100000 ve büyük toplamlar aynen geri gelir; daha eski biçim sürümlü geçerli dosya kabul edilir, eksik ayarlar varsayılan değeri alır.
-- [ ] AC-9 — Yarım kalan zikir: geri yükleme sonrası devam noktası yoktur (yeni sayma dokunuşuna kadar bildirim çıkmaz); yedekte bildirim ayarı açık ama izin yoksa ayar kapalı yüklenir ve izin istenmez.
-- [ ] AC-10 — Erişilebilirlik: satırlar tek öğe olarak başlık + alt yazıyla okunur; not okunur; tüm mesajlar duyurulur; onay penceresi metni ve düğmeleri okunur; en büyük yazı boyutunda ve 320 dp'de metin kırpılmaz; açık ve koyu temada okunur.
+- [x] AC-1 — Ayarlar'da mevcut başlıkların sonunda "Yedekleme" başlığı, "Yedekle" ve "Geri yükle" satırları alt yazılarıyla ve "Yedek dosyası şifresizdir." notu görünür; diğer ayarlar ve sıraları değişmez.
+- [x] AC-2 — "Yedekle" sistem kaydetme penceresini `zikirmatik-yedek-<bugünün yerel tarihi YYYY-AA-GG>.json` önerisiyle açar; kaydedilince "Yedek kaydedildi" görünür; pencere iptal edilirse mesaj yok ve veri değişmez; yazma hatasında "Yedek kaydedilemedi." görünür.
+- [x] AC-3 — Gidiş-dönüş: hedefli ve hedefsiz zikirler (sayım, tur, toplam, sıra), seçili zikir (ya da seçili tesbihat ve adım ilerlemesi), en az iki günlük geçmiş ve varsayılandan farklı tüm ayarlarla alınan yedek; veri değiştirildikten (zikir silme/ekleme, sayma, ayar değiştirme) sonra geri yüklenince hepsi yedekteki değerlere döner; seri, en uzun seri ve rozetler yedek anındakiyle aynıdır.
+- [x] AC-4 — Geçerli dosya seçilince onay penceresi "Mevcut tüm verileriniz yedektekiyle değiştirilecek." uyarısını, yedeğin tarihini ve zikir sayısını gösterir; "Vazgeç" hiçbir şeyi değiştirmez; dosya seçme penceresi iptal edilirse mesaj yok.
+- [x] AC-5 — Onaydan sonra yedekte olmayan mevcut zikirler ve günler kalmaz (birleştirme yok); "Yedek geri yüklendi" görünür; uygulama yeniden başlatmadan yeni verileri (Zikirlerim, Geçmiş, tema dahil ayarlar) gösterir; uygulama kapatılıp açılınca da aynı değerler görünür.
+- [x] AC-6 — Reddedilen dosyalar (JSON olmayan, zikirmatik yedeği olmayan JSON, zorunlu alanı eksik, 5 MB'tan büyük, kural dışı değer: 51 karakterli ya da boş ad, hedef 0 ya da 100001, negatif sayım, hedefe eşit sayım, var olmayan zikre seçim, geçersiz gün, tanınmayan ayar değeri) "Bu dosya geçerli bir zikirmatik yedeği değil." gösterir; daha yeni biçim sürümlü dosya "Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyin." gösterir; hiçbirinde onay penceresi açılmaz ve veri değişmez.
+- [x] AC-7 — Geri yükleme kaydedilirken depolama hatası olursa "Yedek geri yüklenemedi. Verileriniz değişmedi." görünür ve mevcut veri birebir korunur; okunamayan dosyada "Dosya açılamadı." görünür.
+- [x] AC-8 — Sınırlar: hiç zikri olmayan veriyle alınan yedek geri yüklenince Zikirlerim boştur (onayda "0 zikir"); 50 karakterli ad, hedef 100000 ve büyük toplamlar aynen geri gelir; daha eski biçim sürümlü geçerli dosya kabul edilir, eksik ayarlar varsayılan değeri alır.
+- [x] AC-9 — Yarım kalan zikir: geri yükleme sonrası devam noktası yoktur (yeni sayma dokunuşuna kadar bildirim çıkmaz); yedekte bildirim ayarı açık ama izin yoksa ayar kapalı yüklenir ve izin istenmez.
+- [x] AC-10 — Erişilebilirlik: satırlar tek öğe olarak başlık + alt yazıyla okunur; not okunur; tüm mesajlar duyurulur; onay penceresi metni ve düğmeleri okunur; en büyük yazı boyutunda ve 320 dp'de metin kırpılmaz; açık ve koyu temada okunur.
 
 ## Definition of Done
-- [ ] Every acceptance criterion mapped to proof (test or reproducible observation)
-- [ ] `scripts/check` green
-- [ ] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
-- [ ] Docs / ADRs updated if behavior or architecture changed
-- [ ] Spec moved to `specs/done/` (it becomes immutable there)
+- [x] Every acceptance criterion mapped to proof (test or reproducible observation)
+- [x] `scripts/check` green
+- [x] Independent review done; real findings fixed, noise rejected with written rationale, deferred ones in `specs/backlog.md`
+- [x] Docs / ADRs updated if behavior or architecture changed
+- [x] Spec moved to `specs/done/` (it becomes immutable there)
 
 ## Scorecard (fill at ship — honest numbers make the process improvable)
 | Metric | Value |
 |---|---|
-| Spec revisions | |
-| Fix rounds | |
-| Review findings: real / noise / deferred | |
-| Regressions introduced | |
-| Bugs escaped to production | |
+| Spec revisions | 1 |
+| Fix rounds | 2 (fix-1: review round 1 Low-1, Info-1 — docs only; fix-2: VERIFY round 1 G-1 — test only) |
+| Review findings: real / noise / deferred | 3 / 0 / 0 (review round 1: Low-1, Info-1 real, fixed in fix-1; VERIFY round 1: G-1 Medium real, fixed in fix-2; review round 2: clean; VERIFY round 2: clean) |
+| Regressions introduced | 0 |
+| Bugs escaped to production | 0 (not yet released) |
+
+## Evidence (VERIFY)
+Independent VERIFY round 2 (read-only reviewer subagent, separate from the builder), 2026-11-20 @7ff7059, after fix round 2 and review round 2 (clean); triage in `specs/plans/0018-plan.md` `## Triage`.
+Full green: CHECK GREEN (full, 6 steps, 163 s) @e4ac9d6 — local (later commits change only specs/). CI @7ff7059 (run 44623089604): `check` success, `doctor` success. QA's own run of the 0018 test files: `+53: All tests passed!`. Residue: not required — `scripts/check.conf` unchanged.
+Deliberate breaks (temp copy outside the repo, `lib/features/backup/data/backup_json.dart` only, restored and diffed after each): B1 5 MB check removed → `rejects larger than five megabytes` red · B2 `>` → `>=` → same test red (boundary file) · B3 target max + 1 → `rejects target 100001` red · B4 target `>= max` rejected → `fifty char name and max target kept` red · B5 BR-1 check skipped → `rejects fifty one char name` red · B6 name limit 49 → `fifty char name and max target kept` red · B7 newer format `> version + 1` → `newer format is too new` red · B8 settings keys required → `missing settings keys take defaults` red.
+
+| Acceptance criterion | Evidence | Status |
+|---|---|---|
+| AC-1 | `backup_section_test.dart` — `backup section after notifications with subtitles and note`; S-1 | PASS |
+| AC-2 | `save suggests dated name and confirms`, `save cancelled shows nothing`, `save failure message`; O1; S-6, S-7, S-13 | PASS |
+| AC-3 | `drift_backup_store_test.dart` — `round trip restores every table`, `streak and badges match`; `backup_json_test.dart` — `encode decode round trip`; O3 | PASS |
+| AC-4 | `valid file shows warning date and count`, `cancel changes nothing`, `pick cancelled shows nothing`; O2; S-3 | PASS |
+| AC-5 | `replace leaves no extra dhikrs or days`, `restored data loads after reopen`, `restore refreshes my dhikrs history and theme`; O3; S-11 | PASS |
+| AC-6 | `backup_json_test.dart` `rejects` group (one test per case) + `newer format is too new`; `invalid file shows message no dialog`, `too large file rejected unread`; O5; B1, B2, B3, B5, B7; S-8, S-9 | PASS |
+| AC-7 | `failed replace rolls back`, `restore failure message keeps data`, `unreadable file message`; S-10, S-12 | PASS |
+| AC-8 | `empty backup`, `fifty char name and max target kept`, `large totals kept`, `missing settings keys take defaults`, `zero dhikrs in summary`; B4, B6, B8 | PASS |
+| AC-9 | `restore clears resume point`, `notification setting off without permission and no request` | PASS |
+| AC-10 | `rows are one semantics node`, `messages announced`, `largest text at 320 dp`, `light and dark`; S-1 light/dark, S-2, S-4, S-5 (O4 TalkBack not run — user decision, criterion proven by widget tests) | PASS |
+
+UI: S-1 section light/dark · S-2 section 320 dp text ×2 · S-3 confirm dialog · S-4 confirm dialog 320 dp text ×2 · S-5 confirm dialog dark · S-6 saved · S-7 save failed · S-8 invalid · S-9 too new · S-10 open failed · S-11 restored · S-12 restore failed · S-13 cancelled, no message — agent-captured (headless widget render, Roboto + Material icons), outside the repo; judged by emryldrmr at SHIP, 2026-11-20. System save/open pickers cannot render headless — covered by device observations O1, O2. Device observations O1–O3, O5 by emryldrmr (Xiaomi 2412DPC0AG, Android 16), recorded in the plan.
