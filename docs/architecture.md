@@ -26,7 +26,7 @@ sınırlar, saf Dart'ta hızlı test edilen iş kuralları ve tek dosyada izole 
 | `lib/features/suggested/` | Önerilen Zikirler listesi (gömülü veri), BR-9 | Önerilen zikir içeriği |
 | `lib/features/esma/` | Esmaü'l-Hüsna listesi (gömülü veri), BR-9 | 99 isim içeriği |
 | `lib/features/quran/` | Kur'an + meal: indirme, doğrulama, önbellek, okuma ekranı; BR-10…BR-12 | Kur'an/meal önbelleği; AlQuran Cloud adaptörü |
-| `lib/features/settings/` | Ayarlar ekranı: titreşim ve tema (spec 0004), her sayımda titreşim (spec 0009), ekranı açık tut (spec 0010), büyük rakam ve el yerleşimi (spec 0011), "Bildirimler" başlığı altında yarım kalan zikir bildirimi (spec 0017; izin anahtar açılırken istenir, geri alınmışsa ekran açılınca/öne dönünce kapanır); en sonda kabuğun verdiği `footer`: "Yedekleme" bölümü (spec 0018; ayarlar yedeği bilmez); sonra varsayılan meal ve Kaynaklar ekranı kendi spec'leriyle | Kullanıcı tercihleri (`settings`, tek satır; satır yoksa varsayılanlar) |
+| `lib/features/settings/` | Ayarlar ekranı: titreşim ve tema (spec 0004), her sayımda titreşim (spec 0009), ekranı açık tut (spec 0010), büyük rakam ve el yerleşimi (spec 0011), "Bildirimler" başlığı altında yarım kalan zikir bildirimi (spec 0017; izin anahtar açılırken istenir, geri alınmışsa ekran açılınca/öne dönünce kapanır); en sonda kabuğun verdiği `footer`: "Yedekleme" bölümü (spec 0018; ayarlar yedeği bilmez); her zaman en sonda "Hakkında" bölümü ve `SourcesScreen` (Kaynaklar: Esma, Önerilen Zikirler, tesbihat, yazı tipi; Esma ve Önerilen metni o ekranların `esmaSource`/`suggestedSource` metniyle aynı; spec 0019; 0020 Kur'an bölümünü en üste ekler); varsayılan meal kendi spec'iyle | Kullanıcı tercihleri (`settings`, tek satır; satır yoksa varsayılanlar) |
 
 ## Communication rules
 
@@ -55,14 +55,14 @@ yerleşimi, ara titreşim) → Önerilen Zikirler ve Esmaü'l-Hüsna → Kur'an 
 spec'iyle gelir; sonraki özellikler kendi ayarlarını Ayarlar ekranına ekler. (Ayarlar öne alındı,
 Kaynaklar Kur'an'a bağlandı — emryldrmr, 2026-11-04.)
 
-Kalan sıra (0001–0017 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07; ses tuşuyla sayma
+Kalan sıra (0001–0018 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07; ses tuşuyla sayma
 çıkarıldı, vazgeçildi — emryldrmr, 2026-11-07; "Günün Esması kartı + kişisel Esma notu" bekletildi, hatırlatıcı
 bildirimlerle birlikte yeniden ele alınacak — emryldrmr, 2026-11-08; B-2 günlük geçmişten ayrı spec'e ayrıldı —
 emryldrmr, 2026-11-08; bildirimler JSON yedeklemenin önüne alındı — emryldrmr, 2026-11-14; günlük hatırlatma + seri hatırlatması
-atlandı — emryldrmr, 2026-11-19): 0015 depolama hatası geri
+atlandı — emryldrmr, 2026-11-19; "Kur'an + meal + Kaynaklar" üçe bölündü — emryldrmr, 2026-11-21): 0015 depolama hatası geri
 bildirimi (B-2) → 0016 rozetler (5 sabit, en uzun seriye dayanır) → 0017 yarım kalan zikir bildirimi
 (`POST_NOTIFICATIONS`, `docs/security.md`) → ~~günlük hatırlatma + seri hatırlatması~~
-(atlandı) → 0018 JSON yedekleme/geri yükleme (Firebase ile elle senkron `specs/backlog.md` B-6) → Kur'an + meal + Kaynaklar → Günün Ayeti (Günün Esması
+(atlandı) → 0018 JSON yedekleme/geri yükleme (Firebase ile elle senkron `specs/backlog.md` B-6) → 0019 Kaynaklar sayfası → 0020 Kur'an + Diyanet meali (Kaynaklar'a Kur'an bölümünü ekler) → 0021 meal seçimi (isteğe bağlı değil: reklamdan önce şart, `specs/backlog.md` B-1) → Günün Ayeti (Günün Esması
 kararına bağlı). Numaralar sıra içindir; her biri spec yazılırken kesinleşir.
 
 ## Deliberately out of scope
