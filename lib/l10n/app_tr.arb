@@ -299,5 +299,15 @@
   "backupCancel": "Vazgeç",
   "backupRestoreConfirm": "Geri yükle",
   "backupRestored": "Yedek geri yüklendi",
-  "backupRestoreFailed": "Yedek geri yüklenemedi. Verileriniz değişmedi."
+  "backupRestoreFailed": "Yedek geri yüklenemedi. Verileriniz değişmedi.",
+  "settingsAbout": "Hakkında",
+  "settingsSources": "Kaynaklar",
+  "settingsSourcesSubtitle": "Uygulamadaki dini metinlerin ve yazı tipinin kaynakları",
+  "sourcesTitle": "Kaynaklar",
+  "sourcesEsmaHeader": "Esmaü'l-Hüsna",
+  "sourcesSuggestedHeader": "Önerilen Zikirler",
+  "sourcesTesbihatHeader": "Tesbihat",
+  "sourcesFontHeader": "Yazı tipi",
+  "sourcesTesbihat": "Müslim, Mesâcid 146 (namaz sonrası 33 tesbih, 33 tahmid, 33 tekbir); yazım: Diyanet İşleri Başkanlığı.",
+  "sourcesFont": "Amiri Quran — The Amiri Project Authors · SIL Open Font License 1.1 · github.com/aliftype/amiri"
 }

@@ -5,14 +5,17 @@ import '../../../core/hand_layout.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/app_settings.dart';
 import 'settings_controller.dart';
+import 'sources_screen.dart';
 
 /// Ayarlar (spec 0004): vibration, keep screen on, display options (spec
-/// 0011), theme and notifications (spec 0017).
+/// 0011), theme, notifications (spec 0017) and, last, "Hakkında" with the
+/// Kaynaklar page (spec 0019).
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key, this.footer});
 
-  /// Shown last, after the notifications, below a divider (spec 0018: the
-  /// backup section, given by the app shell so settings need not know it).
+  /// Shown after the notifications and before "Hakkında", below a divider
+  /// (spec 0018: the backup section, given by the app shell so settings need
+  /// not know it).
   final Widget? footer;
 
   @override
@@ -155,6 +158,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         ),
         // Spec 0018, AC-1: after the notifications, so the order above stays.
         if (widget.footer case final footer?) ...[const Divider(), footer],
+        // Spec 0019, Req. 1: "Hakkında" is always last, after the footer.
+        const Divider(),
+        _Header(l10n.settingsAbout),
+        ListTile(
+          key: const Key('settings-sources'),
+          title: Text(l10n.settingsSources),
+          subtitle: Text(l10n.settingsSourcesSubtitle),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const SourcesScreen()),
+          ),
+        ),
       ],
     );
   }
