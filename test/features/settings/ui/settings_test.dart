@@ -208,6 +208,9 @@ void main() {
 
     await _goTo(tester, 'settings');
     await _showThemes(tester); // plan 0011, A-1
+    // Plan 0019, A-1: the longer list (Hakkında) can leave "Açık" under the
+    // app bar once "Sistem" is in view; bring it in too.
+    await _scrollTo(tester, _theme(ThemeChoice.light), -100);
     await _tap(tester, _theme(ThemeChoice.light));
     expect(_brightness(tester), Brightness.light);
     expect(settings.stored.theme, ThemeChoice.light);
