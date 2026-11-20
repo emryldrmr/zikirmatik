@@ -55,7 +55,7 @@ yerleşimi, ara titreşim) → Önerilen Zikirler ve Esmaü'l-Hüsna → Kur'an 
 spec'iyle gelir; sonraki özellikler kendi ayarlarını Ayarlar ekranına ekler. (Ayarlar öne alındı,
 Kaynaklar Kur'an'a bağlandı — emryldrmr, 2026-11-04.)
 
-Kalan sıra (0001–0018 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07; ses tuşuyla sayma
+Kalan sıra (0001–0019 shipped; "sayma kolaylıkları" üçe bölündü — emryldrmr, 2026-11-07; ses tuşuyla sayma
 çıkarıldı, vazgeçildi — emryldrmr, 2026-11-07; "Günün Esması kartı + kişisel Esma notu" bekletildi, hatırlatıcı
 bildirimlerle birlikte yeniden ele alınacak — emryldrmr, 2026-11-08; B-2 günlük geçmişten ayrı spec'e ayrıldı —
 emryldrmr, 2026-11-08; bildirimler JSON yedeklemenin önüne alındı — emryldrmr, 2026-11-14; günlük hatırlatma + seri hatırlatması
