@@ -487,4 +487,37 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get backupRestoreFailed =>
       'Yedek geri yüklenemedi. Verileriniz değişmedi.';
+
+  @override
+  String get settingsAbout => 'Hakkında';
+
+  @override
+  String get settingsSources => 'Kaynaklar';
+
+  @override
+  String get settingsSourcesSubtitle =>
+      'Uygulamadaki dini metinlerin ve yazı tipinin kaynakları';
+
+  @override
+  String get sourcesTitle => 'Kaynaklar';
+
+  @override
+  String get sourcesEsmaHeader => 'Esmaü\'l-Hüsna';
+
+  @override
+  String get sourcesSuggestedHeader => 'Önerilen Zikirler';
+
+  @override
+  String get sourcesTesbihatHeader => 'Tesbihat';
+
+  @override
+  String get sourcesFontHeader => 'Yazı tipi';
+
+  @override
+  String get sourcesTesbihat =>
+      'Müslim, Mesâcid 146 (namaz sonrası 33 tesbih, 33 tahmid, 33 tekbir); yazım: Diyanet İşleri Başkanlığı.';
+
+  @override
+  String get sourcesFont =>
+      'Amiri Quran — The Amiri Project Authors · SIL Open Font License 1.1 · github.com/aliftype/amiri';
 }

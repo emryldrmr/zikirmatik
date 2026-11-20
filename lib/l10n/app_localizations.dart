@@ -909,6 +909,66 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Yedek geri yüklenemedi. Verileriniz değişmedi.'**
   String get backupRestoreFailed;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hakkında'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsSources.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaynaklar'**
+  String get settingsSources;
+
+  /// No description provided for @settingsSourcesSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamadaki dini metinlerin ve yazı tipinin kaynakları'**
+  String get settingsSourcesSubtitle;
+
+  /// No description provided for @sourcesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaynaklar'**
+  String get sourcesTitle;
+
+  /// No description provided for @sourcesEsmaHeader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Esmaü\'l-Hüsna'**
+  String get sourcesEsmaHeader;
+
+  /// No description provided for @sourcesSuggestedHeader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önerilen Zikirler'**
+  String get sourcesSuggestedHeader;
+
+  /// No description provided for @sourcesTesbihatHeader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat'**
+  String get sourcesTesbihatHeader;
+
+  /// No description provided for @sourcesFontHeader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazı tipi'**
+  String get sourcesFontHeader;
+
+  /// No description provided for @sourcesTesbihat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Müslim, Mesâcid 146 (namaz sonrası 33 tesbih, 33 tahmid, 33 tekbir); yazım: Diyanet İşleri Başkanlığı.'**
+  String get sourcesTesbihat;
+
+  /// No description provided for @sourcesFont.
+  ///
+  /// In tr, this message translates to:
+  /// **'Amiri Quran — The Amiri Project Authors · SIL Open Font License 1.1 · github.com/aliftype/amiri'**
+  String get sourcesFont;
 }
 
 class _AppLocalizationsDelegate
